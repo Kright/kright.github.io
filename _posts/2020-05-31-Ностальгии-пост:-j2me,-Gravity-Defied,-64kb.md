@@ -1,5 +1,5 @@
 ---
-title: "Ностальгии пост: j2me, Gravity Defied, 64kb"
+title: "Ностальгии пост: j2me, gravity defied, 64kb"
 author: kright
 ---
 # Ностальгии пост: j2me, Gravity Defied, 64kb

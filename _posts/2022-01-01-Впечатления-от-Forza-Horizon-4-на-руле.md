@@ -1,5 +1,5 @@
 ---
-title: "Впечатления от Forza Horizon 4 на руле"
+title: "Впечатления от forza horizon 4 на руле"
 author: kright
 ---
 # Впечатления от Forza Horizon 4 на руле

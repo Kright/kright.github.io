@@ -1,5 +1,5 @@
 ---
-title: "Learn OpenGL. Урок 5.3 карты теней"
+title: "Learn opengl. урок 5.3 карты теней"
 author: kright
 ---
 <img src="imgs/logo.png" width="200" align="left">

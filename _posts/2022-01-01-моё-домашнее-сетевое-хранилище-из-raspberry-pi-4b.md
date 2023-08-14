@@ -1,5 +1,5 @@
 ---
-title: "моё домашнее сетевое хранилище из raspberry pi 4b"
+title: "Моё домашнее сетевое хранилище из raspberry pi 4b"
 author: kright
 ---
 https://teletype.in/@kright/raspberry-pi-4b-nas

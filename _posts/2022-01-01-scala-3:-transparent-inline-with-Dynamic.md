@@ -1,5 +1,5 @@
 ---
-title: "scala 3: transparent inline with Dynamic"
+title: "Scala 3: transparent inline with dynamic"
 author: kright
 ---
 # Scala 3: transparent inline with Dynamic

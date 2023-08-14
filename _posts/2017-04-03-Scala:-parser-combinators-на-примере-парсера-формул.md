@@ -1,5 +1,5 @@
 ---
-title: Scala parser combinators на примере парсера формул
+title: "Scala: parser combinators на примере парсера формул"
 author: kright
 ---
 # Scala: parser combinators на примере парсера формул
@@ -19,7 +19,7 @@ author: kright
 
 Ответственный за парсинг кусочек кода
 
-```Scala
+```scala
 object FormulaParser extends RegexParsers with PackratParsers {
 
     def id: Parser[Id] = "[a-zA-Z][a-zA-Z0-9_]*".r ^^ Id
@@ -40,7 +40,7 @@ object FormulaParser extends RegexParsers with PackratParsers {
 
 Посмотрите на следущую строчку:
 
-```Scala
+```scala
 def value: Parser[Expression] = number | funcCall | id | ("(" ~> expression <~ ")")
 ```
 
@@ -70,7 +70,7 @@ def value: Parser[Expression] = number | funcCall | id | ("(" ~> expression <~ "
 
 Итак, самое простое — RegexParsers. Добавляют неявные преобразования из строк и регулярных выражений в парсеры.
 
-```Scala
+```scala
 object SimpleExample extends RegexParsers {
     def boolTrue: Parser[Boolean] = "true" ^^ (_ => true)
     // если читаем строчку "true", то вызывается функция, которая преобразует строчку в истинное значение boolean
@@ -92,7 +92,7 @@ object SimpleExample extends RegexParsers {
 
 Кстати, значок ~ обозначает не только метод у парсера, но и имя case класса, хранящего пару значений. Кусочек кода из Parsers.scala:
 
-```Scala
+```scala
 case class ~[+a, +b](_1: a, _2: b) {
     override def toString = "("+ _1 +"~"+ _2 +")"
 }
@@ -100,7 +100,7 @@ case class ~[+a, +b](_1: a, _2: b) {
 
 Допустим, мы хотим собрать из нескольких парсеров один:
 
-```Scala
+```scala
 def intInBrackets: Parser[Int] = "(" ~ int ~ ")" ^^ (p => p._1._2)
 ```
 
@@ -116,7 +116,7 @@ def intInBrackets: Parser[Int] = "(" ~ int ~ ")" ^^ (p => p._1._2)
 
 В данном случае скобки не несут никакой полезной информации. Можно сделать так:
 
-```Scala
+```scala
 def intInBrackets: Parser[Int] = "(" ~>  int <~ ")"
 ```
 
@@ -127,13 +127,13 @@ def intInBrackets: Parser[Int] = "(" ~>  int <~ ")"
 
 Выражения с оператором <~ советуют заключать в скобки, так как у него не очень высокий приоритет.
 
-```Scala
+```scala
 def funcCall: Parser[FuncCall] = id ~ ("(" ~> expression <~ ")") ^^ (pair => FuncCall(pair._1, pair._2))
 ```
 
 Теперь должно быть понятно, что делает следующий код:
 
-```Scala
+```scala
 def number: Parser[Number] = "-" ~> number ^^ (n => Number(-n.value)) |
         ("[0-9]+\\.[0-9]*".r | "[0-9]+".r) ^^ (s => Number(s.toDouble))
         // s.toDouble преобразует строку в число.
@@ -153,7 +153,7 @@ private def binOperation(p: Expression ~ String ~ Expression) = p match {
 
 Допустим, мы хотим распарсить последовательность единичек:
 
-```Scala
+```scala
 object Ones extends RegexParsers {
     def ones: Parser[Any] =  ones ~ "1" | "1"
 }
@@ -167,7 +167,7 @@ object Ones extends RegexParsers {
 
 В данном случае можно изменить описание так, чтобы каждый раз "поглощалось" что-нибудь. Например:
 
-```Scala
+```scala
 def ones: Parser[Any] =  "1" ~ ones | "1"
 ```
 
@@ -175,7 +175,7 @@ def ones: Parser[Any] =  "1" ~ ones | "1"
 
 Нас спасут packrat — парсеры. Их идея заключается в том, что парсер может хранить "для себя" некоторую информацию о вызовах. Например, чтобы сохранять результат работы и не парсить одно и то же дважды… или чтобы корректно работать в случаях с рекурсией.
 
-```Scala
+```scala
 object Ones extends RegexParsers with PackratParsers{
     lazy val ones: PackratParser[Any] =  ones ~ "1" | "1"
 }
@@ -185,7 +185,7 @@ object Ones extends RegexParsers with PackratParsers{
 
 PackratParser лучше создавать только один раз и хранить в переменной. Кроме того, если парсер p использует q, а q использует p, стоит использовать ленивую инициализацию.
 
-```Scala
+```scala
 lazy val term: PackratParser[Expression] = term ~ ("*" | "/") ~ value ^^ binOperation | value
 
 lazy val expression: PackratParser[Expression] = expression ~ ("+" | "-") ~ term ^^ binOperation | term
@@ -195,7 +195,7 @@ lazy val expression: PackratParser[Expression] = expression ~ ("+" | "-") ~ term
 
 Возможно, у вас возникает вопрос: где парсер хранит информацию? Если её хранить прямо внутри PackratParser, то вызов парсера для другого ввода может дать некорректные результаты. Так вот, необходимая информация хранится вместе с "входными" данными парсера. Можно заглянуть в код библиотеки и убедиться в этом:
 
-```Scala
+```scala
 class PackratReader[+T](underlying: Reader[T]) extends Reader[T] { outer =>
 
     private[PackratParsers] val cache = mutable.HashMap.empty[(Parser[_], Position), MemoEntry[_]]
@@ -205,7 +205,7 @@ class PackratReader[+T](underlying: Reader[T]) extends Reader[T] { outer =>
 
 Поэтому парсер принимает на вход не строку, а new PackratReader(new CharSequenceReader(string))
 
-```Scala
+```scala
 def apply(code: String): Either[LexerError, Expression] =
     parse(expression, new PackratReader(new CharSequenceReader(code))) match {
         case Success(result, next) => Right(result)
@@ -219,7 +219,7 @@ def apply(code: String): Either[LexerError, Expression] =
 
 Код целиком:
 
-```Scala
+```scala
 object FormulaParser extends RegexParsers with PackratParsers {
 
     def id: Parser[Id] = "[a-zA-Z][a-zA-Z0-9_]*".r ^^ Id
@@ -266,7 +266,7 @@ case классы — просто классы-обёртки над значе
 
 Код, который вычисляет выражения, тоже прост. Я предполагаю, что на вход подаются корректные выражения.
 
-```Scala
+```scala
 object Evaluator {
     def apply(expression: Expression,
               variables: (String) => Double = Map.empty,
@@ -311,7 +311,7 @@ object Evaluator {
 
 Код, который проверяет работу:
 
-```Scala
+```scala
 object Main extends App {
     def eval(code: String,
              variables: (String) => Double = Map.empty,

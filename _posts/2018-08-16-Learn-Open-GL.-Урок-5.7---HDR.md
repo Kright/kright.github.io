@@ -1,5 +1,5 @@
 ---
-title: Learn Open GL. Урок 5.7 - HDR
+title: "Learn Open GL. Урок 5.7 - HDR"
 author: kright
 ---
 <img src="imgs/logo.png" width="200" align="left">

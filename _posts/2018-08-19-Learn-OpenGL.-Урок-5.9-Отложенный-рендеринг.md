@@ -1,5 +1,5 @@
 ---
-title: Learn OpenGL. Урок 5.9 Отложенный рендеринг
+title: "Learn OpenGL. Урок 5.9 Отложенный рендеринг"
 author: kright
 ---
 <img src="imgs/logo.png" width="200" align="left">

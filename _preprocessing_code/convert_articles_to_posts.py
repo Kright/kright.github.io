@@ -56,6 +56,11 @@ def process_article(article_path: Path, date: str, dry_run: bool = False):
         log.debug(f"replace '{text}' with '{new_text}'")
         article_text = article_text.replace(text, new_text)
 
+    languages = {line for line in article_text.split('\n') if line.startswith('```') and len(line) > 3}
+    for language in languages:
+        log.debug(f"replace '{language} with {language.lower()}")
+        article_text = article_text.replace(language + '\n', language.lower() + '\n')
+
     frontmatter = textwrap.dedent(f"""\
         ---
         title: "{article_path.name[:-3]}"

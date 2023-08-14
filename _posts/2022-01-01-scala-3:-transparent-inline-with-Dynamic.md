@@ -1,5 +1,5 @@
 ---
-title: scala 3 transparent inline with Dynamic
+title: "scala 3: transparent inline with Dynamic"
 author: kright
 ---
 # Scala 3: transparent inline with Dynamic
@@ -8,7 +8,7 @@ author: kright
 
 В скале есть интерфейс Dynamic. От него можно унаследоваться и получить динамическую типизацию - при отсутствии поля в классе компилятор подставит вызов специального метода.
 
-```Scala
+```scala
 import scala
 import scala.language.dynamics
 
@@ -23,7 +23,7 @@ a.x = 2
 
 Класс MyClass может быть любым, например таким:
 
-```Scala
+```scala
 class MyClass extends Dynamic {
   private var x: Int = 0
 	
@@ -41,7 +41,7 @@ class MyClass extends Dynamic {
 
 Конкретно такой класс получился не особо полезным - по поведению он похож на 
 
-```Scala
+```scala
 class MyClass(){var x: Int = 0}
 ```
 
@@ -49,7 +49,7 @@ class MyClass(){var x: Int = 0}
 
 Что, если нам захочется сделать класс с полями разных типов?
 
-```Scala
+```scala
 class MyClass() {
     var x: Int = 0 
 	var b: Boolean = false
@@ -59,7 +59,7 @@ class MyClass() {
 Если попробуем написать альтернативу этому классу с помощью Dynamic, в качестве принимаемых и возвращаемых типов придётся указывать Any и кастовать к какому-то типу.
 Впрочем, у нас тут Scala 3, в которой появились Union types, можно указать в качестве типа поля Int | Boolean и что-то иное типа строки компилятор не даст присвоить.
 
-```Scala
+```scala
 class MyClass extends Dynamic {  
   private var x: Int = 0  
   private var b: Boolean = false  
@@ -86,7 +86,7 @@ class MyClass extends Dynamic {
 
 И тут c ноги врывается transparent inline! Перепишем метод selectDynamic:
 
-```Scala
+```scala
 import scala.compiletime.error
 
 MyClass { 
@@ -106,7 +106,7 @@ MyClass {
 
 Ну либо на это можно смотреть так:
 
-```Scala
+```scala
 val x: Int = a.selectDynamic("x")
 val b: Boolean = a.selectDynamic("b")
 ```
@@ -122,7 +122,7 @@ val b: Boolean = a.selectDynamic("b")
 
 Для полноты картины покажу, как можно переписать второй метод:
 
-```Scala
+```scala
 transparent inline def updateDynamic(inline field: String)(inline value: Int | Boolean): Unit = { 
   inline field match  
     case "x" =>  
@@ -141,7 +141,7 @@ transparent inline def updateDynamic(inline field: String)(inline value: Int | B
 
 Пример кода выше не очень практичен - можно сделать обычный класс с полями x: Int, b:Boolean и он будет прекрасно работать. В классе c Dynamic уже известные поля можно заменить на реальные поля и это тоже будет прекрасно работать, компилятор будет обращаться напрямую к ним вместо вызова selectDynamic:
 
-```Scala
+```scala
 class MyDynamic extends Dynamic{
     var x: Double = 0
 	var b: Boolean = 0

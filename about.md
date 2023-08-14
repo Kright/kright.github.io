@@ -1,9 +1,10 @@
 ---
 layout: page
-title: "Title"
+title: "Обо мне"
 permalink: /about
 ---
 
-## header
+[linkedIn](https://www.linkedin.com/in/igorslobodskov/)
 
-some text
+[habr](https://habr.com/ru/users/lgorSL/posts/)
+

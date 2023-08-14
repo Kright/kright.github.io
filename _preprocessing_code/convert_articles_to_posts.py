@@ -63,7 +63,7 @@ def process_article(article_path: Path, date: str, dry_run: bool = False):
 
     frontmatter = textwrap.dedent(f"""\
         ---
-        title: "{article_path.name[:-3]}"
+        title: "{article_path.name[:-3].capitalize()}"
         author: kright
         ---
         """)

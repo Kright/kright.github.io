@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Learn opengl. урок 5.9 отложенный рендеринг | kright.github.io</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Learn opengl. урок 5.9 отложенный рендеринг" />
+<meta name="author" content="kright" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/2018/08/19/Learn-OpenGL.-%D0%A3%D1%80%D0%BE%D0%BA-5.9-%D0%9E%D1%82%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-%D1%80%D0%B5%D0%BD%D0%B4%D0%B5%D1%80%D0%B8%D0%BD%D0%B3.html" />
+<meta property="og:url" content="http://localhost:4000/2018/08/19/Learn-OpenGL.-%D0%A3%D1%80%D0%BE%D0%BA-5.9-%D0%9E%D1%82%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-%D1%80%D0%B5%D0%BD%D0%B4%D0%B5%D1%80%D0%B8%D0%BD%D0%B3.html" />
+<meta property="og:site_name" content="kright.github.io" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-08-19T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Learn opengl. урок 5.9 отложенный рендеринг" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"kright"},"dateModified":"2018-08-19T00:00:00+02:00","datePublished":"2018-08-19T00:00:00+02:00","headline":"Learn opengl. урок 5.9 отложенный рендеринг","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2018/08/19/Learn-OpenGL.-%D0%A3%D1%80%D0%BE%D0%BA-5.9-%D0%9E%D1%82%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-%D1%80%D0%B5%D0%BD%D0%B4%D0%B5%D1%80%D0%B8%D0%BD%D0%B3.html"},"url":"http://localhost:4000/2018/08/19/Learn-OpenGL.-%D0%A3%D1%80%D0%BE%D0%BA-5.9-%D0%9E%D1%82%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-%D1%80%D0%B5%D0%BD%D0%B4%D0%B5%D1%80%D0%B8%D0%BD%D0%B3.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=04936c4141575b8269035838047e98a4dd849258">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Learn opengl. урок 5.9 отложенный рендеринг</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="https://github.com/Kright/kright.github.io" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<nav>
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+</nav>
+
+
+<p>19 Aug 2018</p>
+
+<p><img src="imgs/logo.png" width="200" align="left" /></p>
+
+<p>В предыдущих статьях мы использовали прямое освещение <em>(forward rendering или forward shading)</em>. Это простой подход, при котором мы рисуем объект с учётом всех источников света, потом рисуем следующий объект вместе с всем освещением на нём, и так для каждого объекта. Это достаточно просто понять и реализовать, но вместе с тем получается довольно медленно с точки зрения производительности: для каждого объекта придётся перебрать все источники света. Кроме того, прямое освещение работает неэффективно на сценах с большим количество перекрывающих друг друга объектов, так как большая часть вычислений пиксельного шейдера не пригодится и будет перезаписана значениями для более близких объектов.</p>
+
+<p>Отложенное освещение или отложенный рендеринг (deferred shading или deferred rendering) обходит эту проблему и кардинально меняет то, как мы рисуем объекты. Это даёт новые возможности значительно оптимизировать сцены с большим количеством источников света, позволяя рисовать сотни и даже тысячи источников света с приемлемой скоростью. Ниже изображена сцена с 1847 точечными источниками света, нарисовання с помощью отложенного освещения (изображение предоставил Hannes Nevalainen). Что-то подобное было бы невозможно при прямом расчёте освещения:</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL Отложенный рендеринг/deferred_example.png" alt="img1" /></p>
+
+<h2 id="содержание">Содержание</h2>
+
+<p>Часть 1. Начало</p>
+<ol>
+    <li><a href="https://habrahabr.ru/post/310790/">OpenGL</a></li>
+    <li><a href="https://habrahabr.ru/post/311198/">Создание окна</a></li>
+    <li><a href="https://habrahabr.ru/post/311234/">Hello Window</a></li>
+    <li><a href="https://habrahabr.ru/post/311808/">Hello Triangle</a></li>
+    <li><a href="https://habrahabr.ru/post/313380/">Shaders</a></li>
+    <li><a href="https://habrahabr.ru/post/315294/">Текстуры</a></li>
+    <li><a href="https://habrahabr.ru/post/319144/">Трансформации</a></li>
+    <li><a href="https://habrahabr.ru/post/324968/">Системы координат</a></li>
+    <li><a href="https://habrahabr.ru/post/327604/">Камера</a></li>
+</ol>
+
+<p>Часть 2. Базовое освещение</p>
+<ol>
+    <li><a href="https://habrahabr.ru/post/329592/">Цвета</a></li>
+    <li><a href="https://habrahabr.ru/post/333932/">Основы освещения</a></li>
+    <li><a href="https://habrahabr.ru/post/336166/">Материалы</a></li>
+    <li><a href="https://habrahabr.ru/post/337550/">Текстурные карты</a></li>
+    <li><a href="https://habrahabr.ru/post/337642/">Источники света</a></li>
+    <li><a href="https://habrahabr.ru/post/338254/">Несколько источников освещения</a></li>
+</ol>
+
+<p>Часть 3. Загрузка 3D-моделей</p>
+<ol>
+    <li><a href="https://habrahabr.ru/post/338436/">Библиотека Assimp</a></li>
+    <li><a href="https://habrahabr.ru/post/338436/">Класс полигональной сетки Mesh</a></li>
+    <li><a href="https://habrahabr.ru/post/338998/">Класс 3D-модели</a></li>
+</ol>
+
+<p>Часть 4. Продвинутые возможности OpenGL <br /><br /></p>
+<ol>
+    <li><a href="https://habrahabr.ru/post/342610/">Тест глубины</a></li>
+    <li><a href="https://habrahabr.ru/post/344238/">Тест трафарета</a></li>
+    <li><a href="https://habrahabr.ru/post/343096/">Смешивание цветов</a></li>
+    <li><a href="https://habrahabr.ru/post/346964/">Отсечение граней</a></li>
+    <li><a href="https://habrahabr.ru/post/347354/">Кадровый буфер</a></li>
+    <li><a href="https://habrahabr.ru/post/347750/">Кубические карты</a></li>
+    <li><a href="https://habrahabr.ru/post/350008/">Продвинутая работа с данными</a></li>
+    <li><a href="https://habrahabr.ru/post/350156/">Продвинутый GLSL</a></li>
+    <li><a href="https://habrahabr.ru/post/350782/">Геометричечкий шейдер</a></li>
+    <li><a href="https://habrahabr.ru/post/352962/">Инстансинг</a></li>
+    <li><a href="https://habrahabr.ru/post/351706/">Сглаживание</a></li>
+</ol>
+
+<p>Часть 5. Продвинутое освещение <br /><br /></p>
+<ol>
+    <li><a href="https://habrahabr.ru/post/353054/">Продвинутое освещение. Модель Блинна-Фонга.</a></li>
+    <li><a href="https://habrahabr.ru/post/353632/">Гамма-коррекция</a></li>
+    <li><a href="https://habrahabr.ru/post/353956/">Карты теней</a></li>
+    <li><a href="https://habr.com/post/354208/">Всенаправленные карты теней</a></li>
+    <li><a href="https://habr.com/post/415579/">Normal Mapping</a></li>
+    <li><a href="https://habr.com/post/416163/">Parallax Mapping</a></li>
+    <li><a href="https://habr.com/post/420409/">HDR</a></li>
+    <li><a href="https://habr.com/post/420375/">Bloom</a></li>
+    <li><a href="https://habr.com/post/420565/">Отложенный рендеринг</a></li>
+    <li><a href="https://habr.com/post/421385/">SSAO</a></li>
+</ol>
+
+<p>Часть 6. PBR <br /><br /></p>
+<ol>
+    <li><a href="https://habr.com/post/426123/">Теория</a></li>
+    <li><a href="https://habr.com/post/424453/">Аналитические источники света</a></li>
+    <li><a href="https://habr.com/post/426987/">IBL. Диффузная облученность.</a></li>
+    <li><a href="https://habr.com/post/429744/">IBL. Зеркальная облученность. </a></li>
+</ol>
+
+<p>Идея отложенного освещения состоит в том, что мы откладываем самые вычислетельно сложные части (типа освещения) на потом. Отложенное освещение состоит из двух проходов: в первом проходе, геометрическом <em>(geometry pass)</em>, рисуется вся сцена и различная информация сохраняется в набор текстур, называемых G-буффером. Например: позиции, цвета, нормали и/или зеркальность поверхности для каждого пикселя. Сохранённая в G-буфере графическая информация позже используется для расчёта освещения. Ниже приведено содержания G-буфера для одного кадра:</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL Отложенный рендеринг/deferred_g_buffer.png" alt="img2" /></p>
+
+<p>Во втором проходе, называемом проходом освещения (lighting pass), мы используем текстуры из G-буффера, когда рисуем полноэкранный прямоугольник. Вместо использования вершинного и фрагементного шейдеров отдельно для кадого объекта, мы пиксель за пикселем рисуем сразу всю сцену. Расчёт освещения остаётся точно таким же, как и при прямом проходе, но мы берём необходимые данные только из G-буфера и переменных шейдера <em>(uniforms)</em>, а не из вершинного шейдера.</p>
+
+<p>Изображение ниже хорошо показывает общий процесс рисования.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL Отложенный рендеринг/deferred_overview.png" alt="img3" /></p>
+
+<p>Главным преимуществом является то, что сохранённая в G-буфере информация принадлежит самым близким фрагментам, которые ничем не заслонены: тест глубины оставляет только их. Благодаря этому мы расчитываем освещение для каждого пикселя только по одному разу, не совершая лишенй работы. Более того, отложенное освещение даёт нам возможности для дальнейших оптимизаций, позволяющих использовать намного больше источников освещения, чем при прямом освещении.</p>
+
+<p>Впрочем, есть и пара недостатков: G-буфер хранит большое количество информации о сцене. Вдобавок, данные типа позиции требуется хранить с высокой точностью, в итоге G-буфер занимает довольно много места в памяти. Ещё одним недостатком является то, что мы не сможем использовать полупрозрачные объекты (так как в буфере хранится информация только для самой близкой поверхности) и сглаживание типа MSAA тоже не будет работать. Существуют несколько обходных путей для решения этих проблем, они рассмотрены в конце статьи.</p>
+
+<p><em>(Прим. пер. - G-буффер занимает реально много места в памяти. Например, для экрана 1920*1080 и использовании 128 бит на пиксель буфер займёт 33мб. Вырастают требования к пропускной способности памяти - данных пишется и читается значительно больше)</em></p>
+
+<h3 id="g-буфер">G-буфер</h3>
+
+<p>G-буфером называют текстуры, используемые для сохранения связанной с освещением информации, используемой в последнем проходе рендеринга. Давайте посмотрим, какая информация нам нужна для расчёта освещения при прямом рендеринге:</p>
+
+<ul>
+  <li>3д вектор позиции: используется, чтобы узнать положение фрагмента относительно камеры и источников света.</li>
+  <li>Дуффузный цвет фрагмента (отражательная способность для красного, зелёного и синего цветов - в общем, цвет).</li>
+  <li>3д вектор нормали (для определения, под каким углом свет падает на поверхность)</li>
+  <li>float для хранения зеркальной составляющей</li>
+  <li>Позиция источника света и его цвет.</li>
+  <li>Позиция камеры.</li>
+</ul>
+
+<p>С помощью этих переменных мы можем посчитать освещение по уже знакомой нам модели Блинна-Фонга. Цвет и положение источника света, а так же позиция камеры могут быть общими переменными, но остальные значения будут своими для каждого фрагмента изображения. Если мы передадим ровно же данные в финальный проход отложенного освещения, что мы бы использовалили при прямом проходе, мы получим тот же самый результат, не смотря на то, что мы будет рисовать фрагменты на обычном 2д прямоугольнике.</p>
+
+<p>В OpenGL нет ограничений на то, что мы можем хранить в текстуре, так что имеет смысл хранить всю информацию в одной или нескольких текстурах размером с экран (называемых G-буфером) и использовать их все в проходе освещения. Так как размер текстур и экрана совпадает, мы получим те же самые входные данные, что и при прямом освещении.</p>
+
+<p>В псевдокоде общая картина выглядит примерно так:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span><span class="p">(...)</span> <span class="c1">// render loop</span>
+<span class="p">{</span>
+    <span class="c1">// 1. геометрический проход: вся геометрическая/цветовая информация пишется в g-буфер</span>
+    <span class="n">glBindFramebuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="n">gBuffer</span><span class="p">);</span>
+    <span class="n">glClear</span><span class="p">(</span><span class="n">GL_COLOR_BUFFER_BIT</span> <span class="o">|</span> <span class="n">GL_DEPTH_BUFFER_BIT</span><span class="p">);</span>
+    <span class="n">gBufferShader</span><span class="p">.</span><span class="n">use</span><span class="p">();</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">Object</span> <span class="n">obj</span> <span class="o">:</span> <span class="n">Objects</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">ConfigureShaderTransformsAndUniforms</span><span class="p">();</span>
+        <span class="n">obj</span><span class="p">.</span><span class="n">Draw</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="c1">// 2. проход освещения: используем g-буфер для рассчёта освещения сцены</span>
+    <span class="n">glBindFramebuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">glClear</span><span class="p">(</span><span class="n">GL_COLOR_BUFFER_BIT</span><span class="p">);</span>
+    <span class="n">lightingPassShader</span><span class="p">.</span><span class="n">use</span><span class="p">();</span>
+    <span class="n">BindAllGBufferTextures</span><span class="p">();</span>
+    <span class="n">SetLightingUniforms</span><span class="p">();</span>
+    <span class="n">RenderQuad</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Информация, которая необходима для каждого пикселя: вектор <strong>позиции</strong>, вектор <strong>нормали</strong>, вектор <strong>цвета</strong> и значение для <strong>зеркальной</strong> составляющей. В геометрическом проходе мы нарисуем все объекты сцены и сохраним все эти данные в G-буфер. Мы можем использовать множественные цели рендерига <em>(multiple render targets)</em>, чтобы заполнить все буферы за один проход рисования, такой подход обсуждался в предыдущей статье про реализацию свечения: <a href="https://learnopengl.com/Advanced-Lighting/Bloom]">Bloom</a>, <a href="https://habr.com/post/420375/">перевод на хабре</a>.</p>
+
+<p>Для геометрического прохода создадим фреймбуфер с очевидными именем gBuffer, к которому присоединим несколько цветовых буферов и один буфер глубины. Для хранения позиций и нормали предпочтительно использовать текстуру с высокой точностью (16 или 32-битные float значения для каждой компоненты), диффузный цвет и значения зеркального отражения мы будем хранить в текстуре по-умолчанию (точность 8 бит на компоненту).</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">gBuffer</span><span class="p">;</span>
+<span class="n">glGenFramebuffers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">gBuffer</span><span class="p">);</span>
+<span class="n">glBindFramebuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="n">gBuffer</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">gPosition</span><span class="p">,</span> <span class="n">gNormal</span><span class="p">,</span> <span class="n">gColorSpec</span><span class="p">;</span>
+
+<span class="c1">// буфер позиций</span>
+<span class="n">glGenTextures</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">gPosition</span><span class="p">);</span>
+<span class="n">glBindTexture</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">gPosition</span><span class="p">);</span>
+<span class="n">glTexImage2D</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">GL_RGB16F</span><span class="p">,</span> <span class="n">SCR_WIDTH</span><span class="p">,</span> <span class="n">SCR_HEIGHT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">GL_RGB</span><span class="p">,</span> <span class="n">GL_FLOAT</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MIN_FILTER</span><span class="p">,</span> <span class="n">GL_NEAREST</span><span class="p">);</span>
+<span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MAG_FILTER</span><span class="p">,</span> <span class="n">GL_NEAREST</span><span class="p">);</span>
+<span class="n">glFramebufferTexture2D</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="n">GL_COLOR_ATTACHMENT0</span><span class="p">,</span> <span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">gPosition</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">// буфер нормалей</span>
+<span class="n">glGenTextures</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">gNormal</span><span class="p">);</span>
+<span class="n">glBindTexture</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">gNormal</span><span class="p">);</span>
+<span class="n">glTexImage2D</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">GL_RGB16F</span><span class="p">,</span> <span class="n">SCR_WIDTH</span><span class="p">,</span> <span class="n">SCR_HEIGHT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">GL_RGB</span><span class="p">,</span> <span class="n">GL_FLOAT</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MIN_FILTER</span><span class="p">,</span> <span class="n">GL_NEAREST</span><span class="p">);</span>
+<span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MAG_FILTER</span><span class="p">,</span> <span class="n">GL_NEAREST</span><span class="p">);</span>
+<span class="n">glFramebufferTexture2D</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="n">GL_COLOR_ATTACHMENT1</span><span class="p">,</span> <span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">gNormal</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">// буфер для цвета + коэффициента зеркального отражения</span>
+<span class="n">glGenTextures</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">gAlbedoSpec</span><span class="p">);</span>
+<span class="n">glBindTexture</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">gAlbedoSpec</span><span class="p">);</span>
+<span class="n">glTexImage2D</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">GL_RGBA</span><span class="p">,</span> <span class="n">SCR_WIDTH</span><span class="p">,</span> <span class="n">SCR_HEIGHT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">GL_RGBA</span><span class="p">,</span> <span class="n">GL_UNSIGNED_BYTE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MIN_FILTER</span><span class="p">,</span> <span class="n">GL_NEAREST</span><span class="p">);</span>
+<span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MAG_FILTER</span><span class="p">,</span> <span class="n">GL_NEAREST</span><span class="p">);</span>
+<span class="n">glFramebufferTexture2D</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="n">GL_COLOR_ATTACHMENT2</span><span class="p">,</span> <span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">gAlbedoSpec</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">// укажем OpenGL, какие буферы мы будем использовать при рендеринге</span>
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">attachments</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">GL_COLOR_ATTACHMENT0</span><span class="p">,</span> <span class="n">GL_COLOR_ATTACHMENT1</span><span class="p">,</span> <span class="n">GL_COLOR_ATTACHMENT2</span> <span class="p">};</span>
+<span class="n">glDrawBuffers</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">attachments</span><span class="p">);</span>
+
+<span class="c1">// После так же добавим буфер глубины и проверку на валидность фреймбуфера.</span>
+<span class="p">[...]</span>
+</code></pre></div></div>
+
+<p>Так как мы используем несколько целей рендеринга, мы должны явно указать OpenGL, в какие буферы из присоединённых к GBuffer мы собираемся рисовать в <code class="language-plaintext highlighter-rouge">glDrawBuffers()</code>. Также стоит отметить, что мы храним позиции и нормали имеют по 3 компоненты, и мы храним их в RGB текстурах. Но при этом мы сразу в одну RGBA текстуру помещаем и цвет и коэффициент зеркального отражения - благодаря этому мы используем на один буфер меньше. Если Ваша реализация отложенного рендеринга станет более сложной и использующей большее количество данных, Вы легко найдёте новые способы скомбинировать данные и расположить их в текстурах.</p>
+
+<p>В дальнейшем мы должны отрендерить данные в G-буфер. Если каждый объект имееет цвет, нормаль и коэффициент зеркального отражения, мы можем написать что-то вроде следующего шейдера:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#version 330 core
+layout (location = 0) out vec3 gPosition;
+layout (location = 1) out vec3 gNormal;
+layout (location = 2) out vec4 gAlbedoSpec;
+
+in vec2 TexCoords;
+in vec3 FragPos;
+in vec3 Normal;
+
+uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_specular1;
+
+void main()
+{
+    // записываем позицию фрагмента в первую текстуру G-буфера
+    gPosition = FragPos;
+    // так же записываем уникальную для каждого фрагмента нормаль в G-буфер
+    gNormal = normalize(Normal);
+    // и цвет
+    gAlbedoSpec.rgb = texture(texture_diffuse1, TexCoords).rgb;
+    // сохраняем коэффициент отражения в канал прозрачности
+    gAlbedoSpec.a = texture(texture_specular1, TexCoords).r;
+}
+</code></pre></div></div>
+
+<p>Так как мы используем несколько целей рендеринга, при помощи <code class="language-plaintext highlighter-rouge">layout</code> указываем, что и в какой буфер текущего фреймбуфера мы рендерим. Обратите внимание, что мы не сохраняем коэффициент зеркального отражения в отдельный буфер, так как мы можем хранить float значение в альфа-канале одного из буферов.</p>
+
+<blockquote>
+  <p>Имейте ввиду, что при расчётах освещения крайне важно хранить все переменные в одном и том же координатном пространстве, в данном случае мы храним (и производим вычисления) в пространстве мира.</p>
+</blockquote>
+
+<p>Если мы сейчас отрендерим несколько нанокостюмов в G-буфер и нарисуем его содержимое с помощью проецирования каждого буфера на четверть экрана, мы увидим что-то типа такого:</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL Отложенный рендеринг/deferred_g_buffer.png" alt="img4" /></p>
+
+<p>Попробуйте визуализировать вектора позиций и нормалей и убедитесь, что они верны. Например, вектора нормалей, указывающих вправо, будут красным. Аналогично с объектами, расположенными правее центра сцены. После того, как Вы будете удовлетворены содержимым G-буфера, перейдём к следующей части: проходу освещения.</p>
+
+<h3 id="проход-освещения">Проход освещения</h3>
+
+<p>Теперь, когда у нас есть большок количество информации в G-буфере, мы имеем возможность полностью вычислить освещение и финальные цвета для каждого пикселя G-буфера, используя его содержание в качестве входных данных для алгоритмов расчёта освещения. Так как значения G-буфера представляют только видимые фрагменты, мы выполним сложные рассчёты освещения ровно по одному разу для каждого пикселя. Благодаря этому отложенное освещение довольно эффективно, особенно в сложных сценах, в которых при прямом рендеринге для каждого пикселя довольно часто приходится производить вычисление освещения по нескольку раз.</p>
+
+<p>Для прохода освещения мы собираемся рендерить полноэкранный прямоугльник (немного похоже на эффект пост-обработки) и произвести медленное вычисление освещения для каждого пикселя.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+glActiveTexture(GL_TEXTURE0);
+glBindTexture(GL_TEXTURE_2D, gPosition);
+glActiveTexture(GL_TEXTURE1);
+glBindTexture(GL_TEXTURE_2D, gNormal);
+glActiveTexture(GL_TEXTURE2);
+glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+// и ещё в юниформы записываем информацию об освещении
+shaderLightingPass.use();
+SendAllLightUniformsToShader(shaderLightingPass);
+shaderLightingPass.setVec3("viewPos", camera.Position);
+RenderQuad();
+</code></pre></div></div>
+
+<p>Мы присоединяем <em>(bind)</em> все необходимые текстуры G-буфера перед рендерингом и вдобавок устанавливаем относящиеся к освещению значения переменных в шейдере.</p>
+
+<p>Фрагментный шейдер прохода освещения сильно похож на тот, что мы использовали в уроках совещения. Принципиально новым является способ, которым мы получаем входные данные для освещение прямо из G-буфера.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#version 330 core
+out vec4 FragColor;
+
+in vec2 TexCoords;
+
+uniform sampler2D gPosition;
+uniform sampler2D gNormal;
+uniform sampler2D gAlbedoSpec;
+
+struct Light {
+    vec3 Position;
+    vec3 Color;
+};
+const int NR_LIGHTS = 32;
+uniform Light lights[NR_LIGHTS];
+uniform vec3 viewPos;
+
+void main()
+{
+    // получаем информацию из G-буфера
+    vec3 FragPos = texture(gPosition, TexCoords).rgb;
+    vec3 Normal = texture(gNormal, TexCoords).rgb;
+    vec3 Albedo = texture(gAlbedoSpec, TexCoords).rgb;
+    float Specular = texture(gAlbedoSpec, TexCoords).a;
+
+    // вычисляем освещение как обычно
+    vec3 lighting = Albedo * 0.1; // хардкодим фоновое освещение
+    vec3 viewDir = normalize(viewPos - FragPos);
+    for(int i = 0; i &lt; NR_LIGHTS; ++i)
+    {
+        // рассеянное освещение
+        vec3 lightDir = normalize(lights[i].Position - FragPos);
+        vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Albedo * lights[i].Color;
+        lighting += diffuse;
+    }
+
+    FragColor = vec4(lighting, 1.0);
+}
+</code></pre></div></div>
+
+<p>Шейдер освещения принимает 3 текстуры, которые содержат всю информацию, записанную в геометрическом проходе и из которых состоит G-буфер. Если мы берём входные данные для освещения из текстур, мы получаем точно такие же значения, как если при обычном прямом рендеринге. В начале фрагментного шейдера мы получаем значения относящихся к освещению переменных простым чтением из текстуры. Заметим, что мы получает и цвет и коэффициент зеркального отражения из одной текстуры - <code class="language-plaintext highlighter-rouge">gAlbedoSpec</code>.</p>
+
+<p>Так как для каждого фрагмента есть значения (а так же uniform переменные шейдера), необходимые для рассчёта освещеняи по модели Блинна-Фонга, нам нет необходимости изменять код расчёта освещения. Единственное, что было изменено - способ получения входных значений.</p>
+
+<p>Запуск простой демонстрации с 32 маленькими источникам света выглядит примерно так:</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL Отложенный рендеринг/deferred_shading.png" alt="img5" /></p>
+
+<p>Одним из недостатков отложенного освещения являетя невозможность смешивания, так как все g-буфера для каждого пикселя содержат информацию только об одной поверхности, в то время как смешивание использует комбинации нескольких фрагментов. <a href="https://learnopengl.com/Advanced-OpenGL/Blending">(Blending)</a>, <a href="https://habr.com/post/343096/">перевод</a>. Ещё одним недостатком отложенного освещения является то, что оно вынуждает вас использовать один общий для всех объектов способ расчёта освещения; хотя это ограничение можно как-нибудь обойти с помощью добавления информации о материале в g-буфер.</p>
+
+<p>Чтобы справиться с этими недостатками (особенно с отсутствием смешивания), часто разделяют рендеринг на две части: рендеринг с отложенным освещением, и вторая часть с прямым рендерингом предназначина для наложения чего-то на сцену или использования шейдеров, не сочетающихся с отложенным освещением. <em>(Прим пер. Из примеров: добавление полупрозрачных дыма, огня, стёкол)</em> Для иллюстрации работы мы нарисуем источники света как маленькие кубики с помощью прямого рендеринга, так как кубики освещения требуют специальный шейдер (равномерно светятся одним цветом).</p>
+
+<h3 id="комбинируем-отложенный-рендериг-с-прямым">Комбинируем отложенный рендериг с прямым.</h3>
+
+<p>Предположим, что мы хотим нарисовать каждый источник света в виде 3д кубика с центром, совпадающим с позицией источника света и излучающим свет с цветом источника. Первой идеей, которая приходит в голову, является прямой рендеринг кубиков для каждого источника света поверх результатов отложенного рендеринга. Т.е., мы рисуем кубики как обычно, но только после отложенного рендеринга. Код будет выглядить примерно так:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// проход отложенного освещения
+[...]
+RenderQuad();
+
+// теперь рисуем все кубики для источников света прямым рендерингом
+shaderLightBox.use();
+shaderLightBox.setMat4("projection", projection);
+shaderLightBox.setMat4("view", view);
+for (unsigned int i = 0; i &lt; lightPositions.size(); i++)
+{
+    model = glm::mat4();
+    model = glm::translate(model, lightPositions[i]);
+    model = glm::scale(model, glm::vec3(0.25f));
+    shaderLightBox.setMat4("model", model);
+    shaderLightBox.setVec3("lightColor", lightColors[i]);
+    RenderCube();
+}
+</code></pre></div></div>
+<p>Эти отрендеренные кубы не учитывают значения глубины из отложенного рендеринга и в результате рисуются всегда поверх уже отрендеренных объектов: это не то, чего мы добиваемся.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL Отложенный рендеринг/deferred_lights_no_depth.png" alt="img6" /></p>
+
+<p>Сначала нам нужно скопировать информацию о глубине из геометрического прохода  в буфер глубины, и только после этого нарисовать светящиеся кубики. Таким образом, фрагменты светящихся кубиков будут нарисованы только в том случае, если они находятся ближе, чем уже нарисованные объекты.</p>
+
+<p>Мы можем скопировать содержимое фреймбуфера в другой фреймбуфер с помощью функции <code class="language-plaintext highlighter-rouge">glBlitFramebuffer</code>. Мы уже использовали эту функцию в примере со сглаживанинием: (<a href="https://learnopengl.com/#!Advanced-OpenGL/Anti-Aliasing">anti-aliasing</a>), <a href="https://habr.com/post/351706/">перевод</a>. Функция <code class="language-plaintext highlighter-rouge">glBlitFramebuffer</code> копирует указанную пользователем часть фреймбуфера в указанную часть другого фреймбуфера.</p>
+
+<p>Для объектов, нарисованных в проходе отложенного освещения, мы сохранили глубину в g-буфере объекта фреймбуфера. Если мы просто скопируем содержимое буфера глубины g-буфера в буфер глубины по-умолчанию, светящиеся кубики будут нарисованы так, как будто вся геометрия сцены была нарисована с помощью прямого прохода рендеринга. Как было кратко объяснено в примере со сглаживанием, мы должны установить фреймбуферы для чтения и записи:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
+glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // буфер глубины по-умолчанию
+glBlitFramebuffer(
+  0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST
+);
+glBindFramebuffer(GL_FRAMEBUFFER, 0);
+// теперь рисуем светящиеся кубики как и раньше
+[...]
+</code></pre></div></div>
+
+<p>Здесь мы копируем целиком содержимое буфера глубины фреймбуфера в буфер глубины по-умолчанию (При необходимости можно аналогично скопировать буферы цвета или stensil буфер). Если мы теперь отрендерим светящиеся кубики, они нарисуются так, как будто геометрия сцены реальна (хотя она рисуется как простой).</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL Отложенный рендеринг/deferred_lights_depth.png" alt="img7" /></p>
+
+<p>Исходный код демо можно найти <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/8.1.deferred_shading/deferred_shading.cpp">здесь</a>.</p>
+
+<p>С таким подходом мы можем легко комбинировать отложенный рендеринг с прямым. Это превосходно, так как мы сможем применять смешивание и рисовать объекты, которы требуют специальных шейдеров, не применимых при отложенном рендеренге.</p>
+
+<h3 id="больше-источников-света">Больше источников света</h3>
+
+<p>Отложенное освещение часто хвалят за возможность рисовать огромное количество источников света без сильного снижения производительности. Отложенное освещение само по себе не позволяет рисовать очень большого количества источников света, так как мы всё ещё должны для каждого пикселя посчитать вклад всех источников света. Для рисования огромного количества источников света используется очень красивая оптимизация, применимая к отложенному рендерингу - области действия источников света. (light volumes)</p>
+
+<p>Обычно, когда мы рисуем фрагменты в сильно освещённой сцене, мы учитываем вклад <strong>каждого</strong> источника света на сцене независимо от его расстояния до фрагмента. Если большая часть источников света никогда не повлияют на фрагмент, зачем мы тратим время на вычисления для них?</p>
+
+<p>Идея области действия источника света состоит в том, чтобы найти радиус (или объём) источника света - т.е., область, в которой свет способен достигнуть поверхности. Так как большинство источников света используют какое-нибудь затухание, мы можем найти максимальное расстояние (радиус), которое свет может достигнуть. После этого мы выполняем сложные рассчёты освещения только для тех источников света, которые влияют на данный фрагмент. Это спасает нас от огромного количесва вычислений, так как мы вычисляем освещение только там, где это необходимо.</p>
+
+<p>При таком подходе основной хитростью является определение размера области действия источнка света.</p>
+
+<h3 id="вычисление-области-действия-источника-света-радиуса">Вычисление области действия источника света (радиуса)</h3>
+
+<p>Для получения радиуса источника света мы должны решить уравнение затухания для яркости, которую мы посчитаем тёмной - это может быть 0.0 или что-то чуть более освещённое, но всё ещё тёмное: например, 0.03. Для демонстрации, как можно посчитать радиус, мы будем использовать одну из сложных, наиболее общих функций затухания из примера с <a href="https://learnopengl.com/#!Lighting/Light-casters">light caster</a></p>
+
+\[F_{light} = \frac{I}{K_c + K_l * d + K_q * d^2}\]
+
+<p>Мы хотим решить это уравнение для случая, когда $inline$F_{light} = 0.0$inline$, т.е., когда источник света будет полностью тёмным. Впрочем, данное уравнение никогда не достигнет точного значения 0.0, так что решения не существует. Однако мы вместо этого можем решить уравнение для яркости для значения, близкого к 0.0, которое можно считать практически тёмным. В этом примере мы считаем приемлемым значение яркости в $inline$\frac{5}{256}$inline$ - делёное на 256, так как 8-битный фреймбуфер может содержать 256 различных значений яркости.</p>
+
+<blockquote>
+  <p>Выбранная функция затухания становится практически тёмной на расстоянии радиуса действия, если мы ограничим её на меньшей яркости чем 5/256, то область действия источника света станет слишком большой - это не так эффективно. В идеале человек не должен видеть внезапной резкой границы света от источника света. Конечно, это зависит от типа сцены, большее значение минимальной яркости даёт меньшие области действия источников света и повышает эффективность рассчётов, но может приводить к заметным артефакты на изображении: освещение будет резко обрываться на границах области действия источника света.</p>
+</blockquote>
+
+<p>Уравнение затухания, которое мы должны решить, становится таким:</p>
+
+\[\frac{5}{256} = \frac{I_{max}}{Attenuation}\]
+
+<p>Здесь $inline$I_{max}$inline$ - наиболее яркая составляющая света (из r, g, b каналов). Мы спользуем самую яркую компоненту, так как остальные компоненты дудут более слабое ограничение на область действия источника света.</p>
+
+<p>Продолжим решать уравнение:</p>
+
+\[\frac{5}{256} \cdot Attenuation = I_{max}\]
+
+\[Attenuation = I_{max} \cdot \frac{256}{5}\]
+
+\[K_c + K_l \cdot d + K_q \cdot d^2 = I_{max} \cdot \frac{256}{5}\]
+
+\[K_c + K_l \cdot d + K_q \cdot d^2 - I_{max} \cdot \frac{256}{5} = 0\]
+
+<p>Последнее уравнение является квадратным уравнением в форме $a x^2 + b x + c = 0$ со следующим решением:</p>
+
+\[x = \frac{-K_l + \sqrt{K_l^2 - 4 K_q (K_c - I_max \frac{256}{5})}}{2 K_q}\]
+
+<p>Мы получили общее уравнение, которое позволяет подставить параметры (коэффициенты константного затухания, линейного и квадратичного), чтобы найти x - радиус области действия источника света.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>float constant  = 1.0;
+float linear    = 0.7;
+float quadratic = 1.8;
+float lightMax  = std::fmaxf(std::fmaxf(lightColor.r, lightColor.g), lightColor.b);
+float radius    =
+  (-linear +  std::sqrtf(linear * linear - 4 * quadratic * (constant - (256.0 / 5.0) * lightMax))) 
+  / (2 * quadratic);
+</code></pre></div></div>
+
+<p>Формула возвращает радиус примерно между 1.0 и 5.0 в зависимости от максимальной яркости источника света.</p>
+
+<p>Мы находим этот радиус для каждого источника света на сцене и используем его для того, чтобы для каждого фрагмента учитывать только те источники света, внутри областей действия которых он находится. Ниже приведён переделанный проход освещения, который учитывает области дейстия источников света. Обратите внимание, что этот подход реализован только в целях обучения и плохо подходит для практического применения (скоро обсудим, почему).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct Light {
+    [...]
+    float Radius;
+};
+
+void main()
+{
+    [...]
+    for(int i = 0; i &lt; NR_LIGHTS; ++i)
+    {
+        // находим расстояние от текущего фрагмента до источника света
+        float distance = length(lights[i].Position - FragPos);
+        if(distance &lt; lights[i].Radius)
+        {
+            // делаем сложные вычисления освещения
+            [...]
+        }
+    }
+}
+</code></pre></div></div>
+
+<p>Результат точно такой же, как и раньше, но сейчас для каждого источника света учитывается его влияние только внутри области его действия.</p>
+
+<p><a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/8.2.deferred_shading_volumes/deferred_shading_volumes.cpp">Финальный код демо.</a>.</p>
+
+<h3 id="реальное-применение-области-действия-источника-света">Реальное применение области действия источника света.</h3>
+
+<p>Фрагментный шейдер, показанный выше, не будет работать на практике и служит только для иллюстрации, как мы можем избавиться от ненужных вычислений освещения. В реальности видеокарта и язык шейдеров GLSL очень плохо оптимизируют циклы и ветвления. Причной этого является то, что выполенние шейдера на видеокарте производится параллельно для различных пикселей, и многие архитектуры накладывают ограничение, что при паралельном выполнении различные потоки должны вычислять один и тот же шейдер. Часто это приводит к тому, что запущенный шейдер всегда вычисляет все ветвления, чтобы все шейдеры работали одинаковое время. <em>(Прим пер. Это не влияет на результат вычислений, но может снижать производительность шейдера.)</em> Из-за этого может получиться, что наша проверка на радиус бесполезна: мы всё ещё будем вычислять освещение для всех источников!</p>
+
+<p>Подходящим подходом для использования области действия света будет рендеринг сфер с радиусом как у источника света. Центр сферы совпадает с позицией источника света, так что сфера содержит внутри себя область действия источника света. Здесь есть небольшая хитрость - мы используем в основном такой же отложенный фрагментный шейдер для рисования сферы. При рисовании сферы фрагментный шейдер вызывается именно для тех пикселей, на которые влияет источник света, мы рендерим только нужные пиксели и пропускаем все остальные. Иллюстрация на картинке ниже:</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL Отложенный рендеринг/deferred_light_volume_rendered.png" alt="img8" /></p>
+
+<p>Мы сделаем так для каждого источника света, результаты вычислений будут сложены все вместе. Результат будет именно такой же, как и раньше, но на этот раз мы рендерим только необходимые пиксели для каждого источника света. Это значительно снижаем сложность вычислений с <em>количество_объектов*количество_источников_света</em> до 
+<em>количество_объектов + количество_источников_света</em>, что делает отложенный рендеринг неимоверно эффективным в сценах с большим количеством источников света.</p>
+
+<p>При этом подходе всё ещё есть проблема: отсечение обратных граней должно быть включено (чтобы не рассчитывать освещение дважды) и, когда оно включено, пользователь может оказаться внутри области источника света, из-за чего она не будет рисоваться (по причине отсечения обратных граней). Это может быть решено с помощью хитрого использования stenсil буфера.</p>
+
+<p>Рендеринг областей действия источников света приводит к большим потерям производительности, и хотя это значительно быстрее, чем обычное отложенное освещение, это не является лучшим решением. Существуют ещё два популярных (и более эффективных) способа рассчёта освещения при отложенном рендеринге: отложенное оcвещение <em>(deferred lighting)</em> и потайловое отложенное затенение <em>(tile-based deferred shading)</em>. Эти способы невероятно эффективны при рендеринге большого количества источников света и так же позволяют относительно эффективно использовать сглаживание MSAA. Ради размера этой статьи мы оставим эти оптимизации для рассмотрения в последующих статьях.</p>
+
+<h3 id="отложенный-рендеринг-vs-прямой">Отложенный рендеринг vs прямой</h3>
+
+<p>Отложенный рендеринг (без оптимизаций освещения) сам по-себе уже является хорошей оптимизацией, так как каждый пиксель только один раз требует вычисления фрагментного шейдера, в то время как при прямом рендеринге мы часто вычисляем освещения по нескольку раз для пикселя. Вместе с тем, отложенное освещение имеет недостатки - большое использование памяти, отсутствие сглаживания MSAA, смешивание можно использовать только при прямом рендеринге.</p>
+
+<p>Для простой сцены с небольшим количеством источников света отложенный рендеринг не обязательно будет быстрее (иногда даже медленнее), так как дополнительные расходы (запись в g-буфер и т.п.) могут перевесить преимущества от меньшего количества рассчётов освещения. В более сложных сценах отложенный рендеринг становится значительной оптимизацией, особенно при использовании более продвинутых способов рассчёта освещения.</p>
+
+<p>В заключение я хочу отметить: изначально все эффекты, которые могут быть получены прямым рендерингом, так же могут быть реализованны в отложенном рендеринге, зачастую это требует лишь небольших изменений. Например, если мы хотим использовать карты нормалей при отложенном рендеринге, мы можем изменить геометрическй проход так, чтобы шейдер возвращал нормаль на основе значений из карты нормалей вместо нормали геометрической поверхности. Проход освещения вообще не потребует изменений. Если вы хотите добавить parallax mapping, вы сначала немного измените текстурные координаты в геометрическом шейдере перед чтением из текстур значений цветов, отражающей способности и нормалей. Как только вы поймёте идею отложенного рендеринга, внесение изменений в него будет довольно простым.</p>
+
+<h3 id="дополнительные-ссылки">Дополнительные ссылки</h3>
+
+<ul>
+  <li><a href="http://ogldev.atspace.co.uk/www/tutorial35/tutorial35.html">Tutorial 35: Deferred Shading - Part 1</a> - Туториал от OGLDev из трёх частей об отложенном освещении. Во второй и третьей части обсуждается рисование областей действия источников света.</li>
+  <li><a href="https://software.intel.com/sites/default/files/m/d/4/1/d/8/lauritzen_deferred_shading_siggraph_2010.pdf">Deferred Rendering for Current and Future Rendering Pipelines</a>: cлайды от  Andrew Lauritzen о потайловом отложенном рендеринге <em>(tile-based deferred shading)</em> и отложенном оcвещении <em>(deferred lighting)</em>.</li>
+</ul>
+
+<p><strong>P.S.</strong> У нас есть <a href="https://t.me/joinchat/Cpb05A46UPpMWdNVVCb4Vg">телеграм-конфа</a> для координации переводов. Если есть серьезное желание помогать с переводом, то милости просим!</p>
+
+<p><a href="https://habr.com/ru/post/420565/">Пост на хабре</a></p>
+
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Kright/kright.github.io">kright.github.io</a> is maintained by <a href="https://github.com/Kright">Kright</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

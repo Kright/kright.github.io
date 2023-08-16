@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Learn opengl. урок 5.3 карты теней | kright.github.io</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Learn opengl. урок 5.3 карты теней" />
+<meta name="author" content="kright" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/2018/04/20/Learn-OpenGL.-%D0%A3%D1%80%D0%BE%D0%BA-5.3-%D0%BA%D0%B0%D1%80%D1%82%D1%8B-%D1%82%D0%B5%D0%BD%D0%B5%D0%B9.html" />
+<meta property="og:url" content="http://localhost:4000/2018/04/20/Learn-OpenGL.-%D0%A3%D1%80%D0%BE%D0%BA-5.3-%D0%BA%D0%B0%D1%80%D1%82%D1%8B-%D1%82%D0%B5%D0%BD%D0%B5%D0%B9.html" />
+<meta property="og:site_name" content="kright.github.io" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-04-20T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Learn opengl. урок 5.3 карты теней" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"kright"},"dateModified":"2018-04-20T00:00:00+02:00","datePublished":"2018-04-20T00:00:00+02:00","headline":"Learn opengl. урок 5.3 карты теней","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2018/04/20/Learn-OpenGL.-%D0%A3%D1%80%D0%BE%D0%BA-5.3-%D0%BA%D0%B0%D1%80%D1%82%D1%8B-%D1%82%D0%B5%D0%BD%D0%B5%D0%B9.html"},"url":"http://localhost:4000/2018/04/20/Learn-OpenGL.-%D0%A3%D1%80%D0%BE%D0%BA-5.3-%D0%BA%D0%B0%D1%80%D1%82%D1%8B-%D1%82%D0%B5%D0%BD%D0%B5%D0%B9.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=04936c4141575b8269035838047e98a4dd849258">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Learn opengl. урок 5.3 карты теней</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="https://github.com/Kright/kright.github.io" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<nav>
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+</nav>
+
+
+<p>20 Apr 2018</p>
+
+<p><img src="imgs/logo.png" width="200" align="left" /></p>
+
+<p>Тень - это отсутствие света. Если лучи от источника света не попадают на объект, так как поглощаются другим объектом, то первый объект находится в тени. Тени добавляют реализма к изображению и дают увидеть взаимное расположение объектов. Благодаря ним сцена приобретает “глубину”. Сравните следующие изображения сцены с тенями и без:</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_with_without.png" alt="with_shadows_and_without" /></p>
+
+<p>Как можно заметить, тени делают намного более очевидным то, как объекты расположены друг относительно друга. Благодаря теням видно, что один из кубов висит в воздухе.</p>
+
+<p>Тени сложновато реализовать, особенно потому что реалтайм алгоритм для идеальных теней ещё не придуман. Существуют несколько хороших способов для приблизительного рассчёта теней, но они все имеют свои особенности, которые надо принимать во внимание.</p>
+
+<p>Один из методов - карты теней <em>(shadow maps)</em> - относительно простой в реализации, используется в большинстве видеоигр и даёт достойные результаты. Карты теней не так уж и трудно понять, они довольно дёшевы с точки зрения производительности и их легко улучшить до более продвинутых алгоритмов (типа теней от <a href="https://learnopengl.com/#!Advanced-Lighting/Shadows/Point-Shadows">точечного источника света</a> или каскадных карт теней)</p>
+
+<h1 id="содержание">Содержание</h1>
+
+<p>Часть 1. Начало<br /><br /></p>
+<ol>
+    <li><a href="https://habrahabr.ru/post/310790/">OpenGL</a></li>
+    <li><a href="https://habrahabr.ru/post/311198/">Создание окна</a></li>
+    <li><a href="https://habrahabr.ru/post/311234/">Hello Window</a></li>
+    <li><a href="https://habrahabr.ru/post/311808/">Hello Triangle</a></li>
+    <li><a href="https://habrahabr.ru/post/313380/">Shaders</a></li>
+    <li><a href="https://habrahabr.ru/post/315294/">Текстуры</a></li>
+    <li><a href="https://habrahabr.ru/post/319144/">Трансформации</a></li>
+    <li><a href="https://habrahabr.ru/post/324968/">Системы координат</a></li>
+    <li><a href="https://habrahabr.ru/post/327604/">Камера</a></li>
+</ol>
+<p>Часть 2. Базовое освещение<br /><br /></p>
+<ol>
+    <li><a href="https://habrahabr.ru/post/329592/">Цвета</a></li>
+    <li><a href="https://habrahabr.ru/post/333932/">Основы освещения</a></li>
+    <li><a href="https://habrahabr.ru/post/336166/">Материалы</a></li>
+    <li><a href="https://habrahabr.ru/post/337550/">Текстурные карты</a></li>
+    <li><a href="https://habrahabr.ru/post/337642/">Источники света</a></li>
+    <li><a href="https://habrahabr.ru/post/338254/">Несколько источников освещения</a></li>
+</ol>
+<p>Часть 3. Загрузка 3D-моделей<br /><br /></p>
+<ol>
+    <li><a href="https://habrahabr.ru/post/338436/">Библиотека Assimp</a></li>
+    <li><a href="https://habrahabr.ru/post/338436/">Класс полигональной сетки Mesh</a></li>
+    <li><a href="https://habrahabr.ru/post/338998/">Класс модели Model</a></li>
+</ol>
+<p>Часть 4. Продвинутые возможности OpenGL <br /><br /></p>
+<ol>
+    <li><a href="https://habrahabr.ru/post/342610/">Тест глубины</a></li>
+    <li><a href="https://habrahabr.ru/post/344238/">Тест трафарета</a></li>
+    <li><a href="https://habrahabr.ru/post/343096/">Смешивание цветов</a></li>
+    <li><a href="https://habrahabr.ru/post/346964/">Отсечение граней</a></li>
+    <li><a href="https://habrahabr.ru/post/347354/">Кадровый буфер</a></li>
+    <li><a href="https://habrahabr.ru/post/347750/">Кубические карты</a></li>
+    <li><a href="https://habrahabr.ru/post/350008/">Продвинутая работа с данными</a></li>
+    <li><a href="https://habrahabr.ru/post/350156/">Продвинутый GLSL</a></li>
+<li><a href="https://habrahabr.ru/post/350782/">Геометричечкий шейдер</a></li>
+<li><a href="https://habrahabr.ru/post/352962/">Инстансинг</a></li>
+<li><a href="https://habrahabr.ru/post/351706/">Сглаживание</a></li>
+</ol>
+<p>Часть 5. Продвинутое освещение <br /><br /></p>
+<ol>
+    <li><a href="https://habrahabr.ru/post/353054/">Продвинутое освещение. Модель Блинна-Фонга.</a></li>
+    <li><a href="https://habrahabr.ru/post/353632/">Гамма-коррекция</a></li>
+    <li><a href="https://habrahabr.ru/post/353956/">Карты теней</a></li>
+    <li><a href="https://habr.com/post/354208/">Всенаправленные карты теней</a></li>
+    <li><a href="https://habr.com/post/415579/">Normal Mapping</a></li>
+    <li><a href="https://habr.com/post/416163/">Parallax Mapping</a></li>
+    <li><a href="https://habr.com/post/420409/">HDR</a></li>
+    <li><a href="https://habr.com/post/420375/">Bloom</a></li>
+    <li><a href="https://habr.com/post/420565/">Отложенный рендеринг</a></li>
+    <li><a href="https://habr.com/post/421385/">SSAO</a></li>
+</ol>
+<p>Часть 6. PBR <br /><br /></p>
+<ol>
+    <li><a href="https://habr.com/post/426123/">Теория</a></li>
+    <li><a href="https://habr.com/post/424453/">Аналитические источники света</a></li>
+    <li><a href="https://habr.com/post/426987/">IBL. Диффузная облученность.</a></li>
+    <li><a href="https://habr.com/post/429744/">IBL. Зеркальная облученность. </a></li>
+</ol>
+
+<p><em>(Примечение переводчика - в дальнейшем некоторые русские версии терминов будут дублироваться устоявшимся английским вариантом. Если вы их знаете - не будет заблуждений, не знаете - запоминайте вместе с оригинальным термином, в интернете куча хороших статей на английском и довольно мало на русском)</em></p>
+
+<h2 id="карты-теней">Карты теней</h2>
+
+<p>Идея, лежащая в основе карт теней, достаточно проста: мы рисуем сцену с точки зрения источника света. Всё, что мы видим, освещено, остальное - в тени. Представьте кусочек пола с большим кубом между ней и источником света. Так как источник света “видит” куб, а не кусочек пола, эта часть пола будет затенена.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_theory.png" alt="shadow_mapping_theory" /></p>
+
+<p>На картинке выше синими линиями нарисованы поверхности, которые источник света может увидеть. Закрытые  поверхности нарисованы чёрным - они будут нарисованы затенёнными. Если нарисовать линию (луч) от источника света вершине самого правого куба, то она сначала пересечёт висящий в воздухе кубик. Из-за этого левая поверхность висящего кубика освещена, в отличие от куба справа.</p>
+
+<p>Мы хотим найти точку самого первого пересечения луча с поверхностью и сравнить её с остальными пересечениями. Если точка пересечения луча с поверхностью не совпадает с ближайшим пересечением, то она в тени. Повторение такой операции для тысяч различных лучей от источника будет крайне неэффективным и не подойдёт для рисования в каждом кадре игры.</p>
+
+<p>Возможно Вы уже читали про тест глубины: <a href="https://habrahabr.ru/post/342610">перевод на хабре</a>, <a href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">оригинал</a>. Значение в буфере глубины- это глубина фрагмента из точки зрения камеры, ограниченная значениями от 0 до 1. Что если мы отрендерим сцену с точки зрения источника света и сохраним значения глубины в текстуру? Таким образом мы получим  наименьшие значения глубины, которые видно с точки зрения источника света. Кроме того, значения глубины показывают поверхности, ближайщие для источника света. Такую текстуру называют картой глубины <em>(depth map)</em> или картой теней <em>(shadow map)</em>.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_theory_spaces.png" alt="shadow_mapping_theory_spaces" /></p>
+
+<p>На левой картинке показан направленый источник света (все лучи параллельны), отбрасывающий тень на поверхность ниже куба. С помощью значений глубины, сохранённых в текстуру, мы находим ближайшую к источнику поверхность и с её помощью определяем, что находится в тени. Мы создаём карту глубины с помощью рендеринга сцены, в качестве матриц вида и проекции используя матрицы, соответствующие нашему источнику света.</p>
+
+<blockquote>
+  <p>Направленный свет с параллельными лучами не имеет позиции и находится как бы “бесконечно далеко”. Тем не менее, ради создания карты теней нам придётся рисовать сцену из позиции на линии направления света.</p>
+</blockquote>
+
+<p><em>Прим. переводчика - openGL отсекает поверхности, которые слишком далеко (z &gt; 1) или слишком близко (z &lt; 0 или z &lt; -1 в зависимости от настроек)). Матрица камеры выбирается так, чтобы z координата для объектов на сцене была в этом интервале, иначе мы их не увидим. С математической точки зрения позиции нет, но реально позицией камеры можно считать точку, которая при рисовании отображаеся в маскимально близкую точку по центру экрана</em></p>
+
+<p>На картинке справа мы видим тот же самый свет, куб и наблюдателя. Мы рисуем фрагмент поверхности в точке <code class="language-plaintext highlighter-rouge">P</code>, и нам надо определить, находится ли он в тени. Для этого мы переводим <code class="language-plaintext highlighter-rouge">P</code> в координатное пространство источника света <code class="language-plaintext highlighter-rouge">T(P)</code>. Так как точка <code class="language-plaintext highlighter-rouge">P</code> не видна из точки зрения света, её координата <code class="language-plaintext highlighter-rouge">z</code> в нашем примере будет <code class="language-plaintext highlighter-rouge">0.9</code>. По координатам точки <code class="language-plaintext highlighter-rouge">x,у</code> мы можем заглянуть в карту глубины и узнать, что ближайшая к источнику света точка - <code class="language-plaintext highlighter-rouge">С</code> с глубиной 0.4 Это значение меньше, чем для точки <code class="language-plaintext highlighter-rouge">P</code>, поэтому точка <code class="language-plaintext highlighter-rouge">P</code> находится в тени.</p>
+
+<p>Рисование теней состоит из двух проходов: сначала рисуем карту глубины, во втором проходе рисуем мир как обычно, с помощью карты глубины определяя, какие фрагменты поверхности находятся в тени. Это может показаться сложным, но когда мы пройдём всё шаг за шагом, всё станет понятным.</p>
+
+<h2 id="карта-глубины">Карта глубины</h2>
+
+<p>В первом проходе мы сгенерируем карту глубины. Карта глубины - это текстура со значениями глубины, отрендеренная с точки зрения источника света. Мы потом будем использовать её для вычисления теней. Чтобы сохранить отрендеренный результат в текстуру, нам понадобится кадровый буфер <em>(framebuffer)</em>: <a href="https://habrahabr.ru/post/347354/">перевод на хабре</a>, <a href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">оригинал</a>.</p>
+
+<p>Сначала создадим кадровый буфер для рисования карты глубины:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">depthMapFBO</span><span class="p">;</span>
+<span class="n">glGenFramebuffers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">depthMapFBO</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>После создадим 2д текстуру, чтобы использовать её качестве буфера глубины для кадрового буфера.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">SHADOW_WIDTH</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span> <span class="n">SHADOW_HEIGHT</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">;</span>
+
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">depthMap</span><span class="p">;</span>
+<span class="n">glGenTextures</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">depthMap</span><span class="p">);</span>
+<span class="n">glBindTexture</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">depthMap</span><span class="p">);</span>
+<span class="n">glTexImage2D</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">GL_DEPTH_COMPONENT</span><span class="p">,</span>
+             <span class="n">SHADOW_WIDTH</span><span class="p">,</span> <span class="n">SHADOW_HEIGHT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">GL_DEPTH_COMPONENT</span><span class="p">,</span> <span class="n">GL_FLOAT</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MIN_FILTER</span><span class="p">,</span> <span class="n">GL_NEAREST</span><span class="p">);</span>
+<span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MAG_FILTER</span><span class="p">,</span> <span class="n">GL_NEAREST</span><span class="p">);</span>
+<span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_WRAP_S</span><span class="p">,</span> <span class="n">GL_REPEAT</span><span class="p">);</span>
+<span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_WRAP_T</span><span class="p">,</span> <span class="n">GL_REPEAT</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Создание карты глубины не выглядит сложным. Так как нас интереуют только значения глубины (а не цвета <code class="language-plaintext highlighter-rouge">r,g,b,a</code>), мы указываем формат текстуры <code class="language-plaintext highlighter-rouge">GL_DEPTH_COMPONENT</code>. Устанавливаем высоту и ширну текстуры 1024*1024 - это будет размер карты глубины.</p>
+
+<p>Теперь присоединим текстуру глубины к кадровому буферу в качестве буфера глубины</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">glBindFramebuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="n">depthMapFBO</span><span class="p">);</span>
+<span class="n">glFramebufferTexture2D</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="n">GL_DEPTH_ATTACHMENT</span><span class="p">,</span> <span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">depthMap</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="n">glDrawBuffer</span><span class="p">(</span><span class="n">GL_NONE</span><span class="p">);</span>
+<span class="n">glReadBuffer</span><span class="p">(</span><span class="n">GL_NONE</span><span class="p">);</span>
+<span class="n">glBindFramebuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Когда мы рисуем сцену с точки зрения источника света, нас интересует только глубина, буфер цвета не нужен. Кадровый буфер будет неполным без буфера цвета, поэтому мы должны явно указать, что не собираемся рендерить цвет. Для этого мы устанавливаем <code class="language-plaintext highlighter-rouge">GL_NONE</code> для <code class="language-plaintext highlighter-rouge">glDrawBuffer</code> и <code class="language-plaintext highlighter-rouge">glReadBuffer</code>.</p>
+
+<p>Теперь у нас есть правильно настроенный кадровый буфер, которые записывает значения глубины в текстуру, и мы можем рендерить карту глубины. Полная реализация для обоих проходов рендеринга выглядит примерно так:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. сначала рисуем карту глубины</span>
+<span class="n">glViewport</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">SHADOW_WIDTH</span><span class="p">,</span> <span class="n">SHADOW_HEIGHT</span><span class="p">);</span>
+<span class="n">glBindFramebuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="n">depthMapFBO</span><span class="p">);</span>
+    <span class="n">glClear</span><span class="p">(</span><span class="n">GL_DEPTH_BUFFER_BIT</span><span class="p">);</span>
+    <span class="n">ConfigureShaderAndMatrices</span><span class="p">();</span>
+    <span class="n">RenderScene</span><span class="p">();</span>
+
+<span class="c1">// 2. рисуем сцену как обычно с тенями (используя карту глубины)</span>
+<span class="n">glBindFramebuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="n">glViewport</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">SCR_WIDTH</span><span class="p">,</span> <span class="n">SCR_HEIGHT</span><span class="p">);</span>
+    <span class="n">glClear</span><span class="p">(</span><span class="n">GL_COLOR_BUFFER_BIT</span> <span class="o">|</span> <span class="n">GL_DEPTH_BUFFER_BIT</span><span class="p">);</span>
+    <span class="n">ConfigureShaderAndMatrices</span><span class="p">();</span>
+    <span class="n">glBindTexture</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">depthMap</span><span class="p">);</span>
+    <span class="n">RenderScene</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Этот код не содержит некоторых подробностей, но он даёт общую идею карт теней. Обратитке внимание на вызовы <code class="language-plaintext highlighter-rouge">glViewport</code>: обычно размер карты глубины отличается от размера экрана (или текстуры, в которую рендерится итоговое изображение). Если вы забудете его поменять, то текстуре глубины будет обновлён только квадратный кусочек с размером экрана или (если текстура меньше) часть информации на ней не будет отображена (останется за краями).</p>
+
+<h2 id="пространство-источника-света">Пространство источника света</h2>
+
+<p>Единственное, что неизвестно в коде выше - что делает функция <code class="language-plaintext highlighter-rouge">ConfigureShaderAndMatrices()</code>?
+Во втором проходе она работает как обычно - устанавливает соответствующие матрицы вида и проекции для камеры и матрицы модели для объектов. Однако, в первом проходе мы используем иные матрицы для проекции и вида: для рисования сцены с точки зрения источника света.</p>
+
+<p>Мы моделируем направленный источник света, поэтому все лучи света параллельны. По этой причине мы будет использовать ортографическую матрицу проекции для источника света (в ней нет переспектиных искажений).</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="n">near_plane</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="n">far_plane</span> <span class="o">=</span> <span class="mi">7</span><span class="p">.</span><span class="mi">5</span><span class="n">f</span><span class="p">;</span>
+<span class="n">glm</span><span class="o">::</span><span class="n">mat4</span> <span class="n">lightProjection</span> <span class="o">=</span> <span class="n">glm</span><span class="o">::</span><span class="n">ortho</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="n">near_plane</span><span class="p">,</span> <span class="n">far_plane</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Это пример матрицы ортографической проекции, используемый в демо к этой статье. Так как матрица проекции определяет расстояние, на котором вы будете видеть объекты (т.е., их не будет отсекать видеокарта как слишком близкие или далёкие), стоит убедиться, что размер области отсечения содержит все объекты, которые Вы хотите отобразить в карте глубины.</p>
+
+<p>Чтобы создать матрицу вида, в котором будут видны все объекты с точки зрения источника света, мы будет использовать непопулярную функцию <code class="language-plaintext highlighter-rouge">glm::lookAt</code>, сейчас источник света “смотрит” в центр сцены.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">glm</span><span class="o">::</span><span class="n">mat4</span> <span class="n">lightView</span> <span class="o">=</span> <span class="n">glm</span><span class="o">::</span><span class="n">lookAt</span><span class="p">(</span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="mi">4</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">),</span>
+                                  <span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">),</span>
+                                  <span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p><em>(Прим. пер. - первый вектор - расположение камеры, второй - куда она смотрит, третий - направление взгляда вверх)</em></p>
+
+<p>Комбинация этих двух матриц даёт нам матрицу преобразования из координат мира в координаты, в которых источник света “видит” мир. Это именно то, что нужно нам для рендеринга карты глубины.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">glm</span><span class="o">::</span><span class="n">mat4</span> <span class="n">lightSpaceMatrix</span> <span class="o">=</span> <span class="n">lightProjection</span> <span class="o">*</span> <span class="n">lightView</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Матрица <code class="language-plaintext highlighter-rouge">lightSpaceMatrix</code> - это как раз то, что выше мы обозначали как <code class="language-plaintext highlighter-rouge">T</code>. С этой матрицей мы может отреднерить сцену как обычно, используя её вместо матриц вида и проекции обычной камеры. Однако, нас интересуют только значения глубины, и хочется сохранить производительность, не производя лишних вычислений для неиспользуемого цвета. Поэтому мы напишем максимально простой шейдер для рисования только карты глубины.</p>
+
+<h2 id="рендеринг-в-карту-глубины">Рендеринг в карту глубины</h2>
+
+<p>Когда мы рендерим сцену для источника света, нам нужны только координаты вершин и ничего больше. Для такого простого шейдера (назовём его <code class="language-plaintext highlighter-rouge">simpleDepthShader</code>) напишем вершинный шейдер:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#version 330 core
+</span><span class="n">layout</span> <span class="p">(</span><span class="n">location</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">in</span> <span class="n">vec3</span> <span class="n">aPos</span><span class="p">;</span>
+
+<span class="n">uniform</span> <span class="n">mat4</span> <span class="n">lightSpaceMatrix</span><span class="p">;</span>
+<span class="n">uniform</span> <span class="n">mat4</span> <span class="n">model</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">gl_Position</span> <span class="o">=</span> <span class="n">lightSpaceMatrix</span> <span class="o">*</span> <span class="n">model</span> <span class="o">*</span> <span class="n">vec4</span><span class="p">(</span><span class="n">aPos</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Для каждой модели этот шейдер отображает вершины модели в пространство источника света с помощью <code class="language-plaintext highlighter-rouge">lightSpaceMatrix</code>.
+Так как у нас нет цветового буфера в буфере кадров для теней, фрагментный шейдер не требует никаких вычислений, и мы может оставить его пустым:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#version 330 core
+</span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// gl_FragDepth = gl_FragCoord.z;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Пустой фрагментный шейдер ничего не даелает, и в конце работы шейдера мы получим обновлённый буфер глубины. Мы можем раскомментировать эту линию кода, реально глубина будет вычислена в любом случае.</p>
+
+<p>Рисование в буфер глубины превращается в следующий код:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">simpleDepthShader</span><span class="p">.</span><span class="n">use</span><span class="p">();</span>
+<span class="n">glUniformMatrix4fv</span><span class="p">(</span><span class="n">lightSpaceMatrixLocation</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">GL_FALSE</span><span class="p">,</span> <span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">lightSpaceMatrix</span><span class="p">));</span>
+
+<span class="n">glViewport</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">SHADOW_WIDTH</span><span class="p">,</span> <span class="n">SHADOW_HEIGHT</span><span class="p">);</span>
+<span class="n">glBindFramebuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="n">depthMapFBO</span><span class="p">);</span>
+    <span class="n">glClear</span><span class="p">(</span><span class="n">GL_DEPTH_BUFFER_BIT</span><span class="p">);</span>
+    <span class="n">RenderScene</span><span class="p">(</span><span class="n">simpleDepthShader</span><span class="p">);</span>
+<span class="n">glBindFramebuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Функция <code class="language-plaintext highlighter-rouge">RenderScene</code> принимает шейдер, вызывает необходимые для рисования функции и утснавливает матрицы модели при необходимости.</p>
+
+<p>В результате у нас заполненный буфер глубины, для каждого пикселя содержащий глубину ближайщего фрагмента с точки зрения света. Можно спроецировать эту текстуру на прямоугольник размером с экран и показать её. (схоже с тем, что было в постобработке в примере c кадровым буфером. <a href="https://habrahabr.ru/post/347354/">перевод на хабре</a>, <a href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">оригинал</a>.)</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_depth_map.png" alt="shadow_mapping_depth_map" /></p>
+
+<p>Для рисования карты глубины на прямоугольнике используется такой шейдер:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#version 330 core
+out vec4 FragColor;
+
+in vec2 TexCoords;
+
+uniform sampler2D depthMap;
+
+void main()
+{
+    float depthValue = texture(depthMap, TexCoords).r;
+    FragColor = vec4(vec3(depthValue), 1.0);
+}
+</code></pre></div></div>
+
+<p>Если при рендеринге тени матрица проекции будет перспективной, а не ортогональной, то глубина будет изменяться нелинейно. В конце статьи мы обсудим это отличие.</p>
+
+<p>Исходный код рендеринга сцены в карту глубины можно увидеть <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/3.1.1.shadow_mapping_depth/shadow_mapping_depth.cpp">здесь</a>.</p>
+
+<h3 id="рисование-теней">Рисование теней</h3>
+
+<p>С помощью правильно сделанной карты глубины мы сможем рисовать тени. Мы проверяем, находится ли фрагмент в тени с фрагментном шейдере, но преобразование в пространство источника света делаем в вершинном шейдере.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#version 330 core
+</span><span class="n">layout</span> <span class="p">(</span><span class="n">location</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">in</span> <span class="n">vec3</span> <span class="n">aPos</span><span class="p">;</span>
+<span class="n">layout</span> <span class="p">(</span><span class="n">location</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="n">in</span> <span class="n">vec3</span> <span class="n">aNormal</span><span class="p">;</span>
+<span class="n">layout</span> <span class="p">(</span><span class="n">location</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="n">in</span> <span class="n">vec2</span> <span class="n">aTexCoords</span><span class="p">;</span>
+
+<span class="n">out</span> <span class="n">VS_OUT</span> <span class="p">{</span>
+    <span class="n">vec3</span> <span class="n">FragPos</span><span class="p">;</span>
+    <span class="n">vec3</span> <span class="n">Normal</span><span class="p">;</span>
+    <span class="n">vec2</span> <span class="n">TexCoords</span><span class="p">;</span>
+    <span class="n">vec4</span> <span class="n">FragPosLightSpace</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">vs_out</span><span class="p">;</span>
+
+<span class="n">uniform</span> <span class="n">mat4</span> <span class="n">projection</span><span class="p">;</span>
+<span class="n">uniform</span> <span class="n">mat4</span> <span class="n">view</span><span class="p">;</span>
+<span class="n">uniform</span> <span class="n">mat4</span> <span class="n">model</span><span class="p">;</span>
+<span class="n">uniform</span> <span class="n">mat4</span> <span class="n">lightSpaceMatrix</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">vs_out</span><span class="p">.</span><span class="n">FragPos</span> <span class="o">=</span> <span class="n">vec3</span><span class="p">(</span><span class="n">model</span> <span class="o">*</span> <span class="n">vec4</span><span class="p">(</span><span class="n">aPos</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">));</span>
+    <span class="n">vs_out</span><span class="p">.</span><span class="n">Normal</span> <span class="o">=</span> <span class="n">transpose</span><span class="p">(</span><span class="n">inverse</span><span class="p">(</span><span class="n">mat3</span><span class="p">(</span><span class="n">model</span><span class="p">)))</span> <span class="o">*</span> <span class="n">aNormal</span><span class="p">;</span>
+    <span class="n">vs_out</span><span class="p">.</span><span class="n">TexCoords</span> <span class="o">=</span> <span class="n">aTexCoords</span><span class="p">;</span>
+    <span class="n">vs_out</span><span class="p">.</span><span class="n">FragPosLightSpace</span> <span class="o">=</span> <span class="n">lightSpaceMatrix</span> <span class="o">*</span> <span class="n">vec4</span><span class="p">(</span><span class="n">vs_out</span><span class="p">.</span><span class="n">FragPos</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">gl_Position</span> <span class="o">=</span> <span class="n">projection</span> <span class="o">*</span> <span class="n">view</span> <span class="o">*</span> <span class="n">model</span> <span class="o">*</span> <span class="n">vec4</span><span class="p">(</span><span class="n">aPos</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Из нового здесь - дополнительный вектор <code class="language-plaintext highlighter-rouge">FragPosLightSpace</code> на выходе вершинного шейдера. Мы принимаем ту же самую <code class="language-plaintext highlighter-rouge">lightSpaceMatrix</code>, что использовалась в первом проходе для рисования глубины, и с её помощью переводим вектор в пространство источника света. Вершинный шейдер передаёт во фрагментный одновременно коодринаты вершины и в пространстве мира  (<code class="language-plaintext highlighter-rouge">vs_out.FragPos</code>) и в пространстве источника света (<code class="language-plaintext highlighter-rouge">vs_out.FragPosLightSpace</code>).</p>
+
+<p>Мы будем использовать фрагментный шейдер, основанный на световой модели Блинна-Фонга. Во фрагментном шейдере мы найдём значение <code class="language-plaintext highlighter-rouge">shadow</code> - оно будет равно 1.0, если фрагмент находится в тени и 0.0 для освещённого. Результирующие <code class="language-plaintext highlighter-rouge">diffuse</code>  и <code class="language-plaintext highlighter-rouge">specular</code> цвета (диффузное и зеркальное освещение) будут домножаться на <code class="language-plaintext highlighter-rouge">(1.0 - shadow)</code>. Тени редко полностью чёрные по причине непрямого освещения, поэтому фоновое освещение будет присутствовать независимо от тени.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#version 330 core
+</span><span class="n">out</span> <span class="n">vec4</span> <span class="n">FragColor</span><span class="p">;</span>
+
+<span class="n">in</span> <span class="n">VS_OUT</span> <span class="p">{</span>
+    <span class="n">vec3</span> <span class="n">FragPos</span><span class="p">;</span>
+    <span class="n">vec3</span> <span class="n">Normal</span><span class="p">;</span>
+    <span class="n">vec2</span> <span class="n">TexCoords</span><span class="p">;</span>
+    <span class="n">vec4</span> <span class="n">FragPosLightSpace</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">fs_in</span><span class="p">;</span>
+
+<span class="n">uniform</span> <span class="n">sampler2D</span> <span class="n">diffuseTexture</span><span class="p">;</span>
+<span class="n">uniform</span> <span class="n">sampler2D</span> <span class="n">shadowMap</span><span class="p">;</span>
+
+<span class="n">uniform</span> <span class="n">vec3</span> <span class="n">lightPos</span><span class="p">;</span>
+<span class="n">uniform</span> <span class="n">vec3</span> <span class="n">viewPos</span><span class="p">;</span>
+
+<span class="kt">float</span> <span class="nf">ShadowCalculation</span><span class="p">(</span><span class="n">vec4</span> <span class="n">fragPosLightSpace</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">[...]</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">vec3</span> <span class="n">color</span> <span class="o">=</span> <span class="n">texture</span><span class="p">(</span><span class="n">diffuseTexture</span><span class="p">,</span> <span class="n">fs_in</span><span class="p">.</span><span class="n">TexCoords</span><span class="p">).</span><span class="n">rgb</span><span class="p">;</span>
+    <span class="n">vec3</span> <span class="n">normal</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">fs_in</span><span class="p">.</span><span class="n">Normal</span><span class="p">);</span>
+    <span class="n">vec3</span> <span class="n">lightColor</span> <span class="o">=</span> <span class="n">vec3</span><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+    <span class="c1">// ambient</span>
+    <span class="n">vec3</span> <span class="n">ambient</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">15</span> <span class="o">*</span> <span class="n">color</span><span class="p">;</span>
+    <span class="c1">// diffuse</span>
+    <span class="n">vec3</span> <span class="n">lightDir</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">lightPos</span> <span class="o">-</span> <span class="n">fs_in</span><span class="p">.</span><span class="n">FragPos</span><span class="p">);</span>
+    <span class="kt">float</span> <span class="n">diff</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">lightDir</span><span class="p">,</span> <span class="n">normal</span><span class="p">),</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">vec3</span> <span class="n">diffuse</span> <span class="o">=</span> <span class="n">diff</span> <span class="o">*</span> <span class="n">lightColor</span><span class="p">;</span>
+    <span class="c1">// specular</span>
+    <span class="n">vec3</span> <span class="n">viewDir</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">viewPos</span> <span class="o">-</span> <span class="n">fs_in</span><span class="p">.</span><span class="n">FragPos</span><span class="p">);</span>
+    <span class="kt">float</span> <span class="n">spec</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+    <span class="n">vec3</span> <span class="n">halfwayDir</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">lightDir</span> <span class="o">+</span> <span class="n">viewDir</span><span class="p">);</span>
+    <span class="n">spec</span> <span class="o">=</span> <span class="n">pow</span><span class="p">(</span><span class="n">max</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">halfwayDir</span><span class="p">),</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">),</span> <span class="mi">64</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">vec3</span> <span class="n">specular</span> <span class="o">=</span> <span class="n">spec</span> <span class="o">*</span> <span class="n">lightColor</span><span class="p">;</span>
+    <span class="c1">// calculate shadow</span>
+    <span class="kt">float</span> <span class="n">shadow</span> <span class="o">=</span> <span class="n">ShadowCalculation</span><span class="p">(</span><span class="n">fs_in</span><span class="p">.</span><span class="n">FragPosLightSpace</span><span class="p">);</span>
+    <span class="n">vec3</span> <span class="n">lighting</span> <span class="o">=</span> <span class="p">(</span><span class="n">ambient</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="n">shadow</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">diffuse</span> <span class="o">+</span> <span class="n">specular</span><span class="p">))</span> <span class="o">*</span> <span class="n">color</span><span class="p">;</span>
+
+    <span class="n">FragColor</span> <span class="o">=</span> <span class="n">vec4</span><span class="p">(</span><span class="n">lighting</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Это по большей части копия шейдера, который мы использовали в примере с освещением: <a href="https://habrahabr.ru/post/353054/">перевод на хабре</a>, <a href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">advanced lighting</a>.</p>
+
+<p>Здесь добавлено только вычисление тени. Основную часть работы делает функция <code class="language-plaintext highlighter-rouge">ShadowCalculation</code>. В конце фрагментного шейдера мы домножаем вклад от диффузного и зеркального отражение света на (1.0 - shadow) - т.е., в зависимости от того, насколько сильно фрагмент не затенён. Кроме того, этот шейдер на вход дополнительно принимает позицию фрагмента в пространстве источника света и текстуру со значениями глубины (которая была отрендерена в первом проходе).</p>
+
+<p>Чтобы проверить, находится ли фрагмент в тени, приведём позицию к в пространстве источника света к нормализованным координатам. Когда мы возвращаем позицию вершины в <code class="language-plaintext highlighter-rouge">gl_Position</code> в вершинном шейдере, openGL автоматически делит <code class="language-plaintext highlighter-rouge">x,y,z</code> на <code class="language-plaintext highlighter-rouge">w</code>, чтобы корректно работала перспектива. Так как <code class="language-plaintext highlighter-rouge">FragPosLightSpace</code> передаётся не в как  <code class="language-plaintext highlighter-rouge">gl_Position</code>, нам придётся сделать это деление самим.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="nf">ShadowCalculation</span><span class="p">(</span><span class="n">vec4</span> <span class="n">fragPosLightSpace</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// perform perspective divide</span>
+    <span class="n">vec3</span> <span class="n">projCoords</span> <span class="o">=</span> <span class="n">fragPosLightSpace</span><span class="p">.</span><span class="n">xyz</span> <span class="o">/</span> <span class="n">fragPosLightSpace</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+    <span class="p">[...]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Получаем позицию фрагмента в пространстве источника света.</p>
+
+<blockquote>
+  <p>При использовании ортографической проекции координата <code class="language-plaintext highlighter-rouge">w=1.0</code> не изменяется и деление на w становится не нужным. Но деление необходимо при использовании перспективной проекции, и наш код будет корректно работать для обоих случаев.</p>
+</blockquote>
+
+<p><em>(Прим. пер. - деление на w необходимо делать именно в фрагментном шейдере. Вот в <a href="https://habrahabr.ru/post/249467/">этой статье</a> на первой картинке показана разница между линейной и перспективной интерполяцией для текстурных координат.)</em></p>
+
+<p>Текстурные координаты лежат в интервале [0,1], а координаты видимых фрагментов при рендеринге принимают значения в [-1,1]. Приведём их к интервалу [0,1]:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">projCoords</span> <span class="o">=</span> <span class="n">projCoords</span> <span class="o">*</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>По этим координатам мы можем посмотреть значение глубины в текстуре - это будет глубина ближайщего к источнику света объекта.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="n">closestDepth</span> <span class="o">=</span> <span class="n">texture</span><span class="p">(</span><span class="n">shadowMap</span><span class="p">,</span> <span class="n">projCoords</span><span class="p">.</span><span class="n">xy</span><span class="p">).</span><span class="n">r</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Чтобы получить глубину текущего фрагмента, мы просто берём его координату z в пространстве источника света.</p>
+
+<pre><code class="language-с">float currentDepth = projCoords.z;
+</code></pre>
+
+<p>После этого простым сравнением <code class="language-plaintext highlighter-rouge">currentDepth</code> и <code class="language-plaintext highlighter-rouge">closestDepth</code> можно определить, является ли наш фрагмент ближайщим или лежит в тени.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="n">shadow</span> <span class="o">=</span> <span class="n">currentDepth</span> <span class="o">&gt;</span> <span class="n">closestDepth</span>  <span class="o">?</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Весь код функции ShadowCalculation получается таким:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="nf">ShadowCalculation</span><span class="p">(</span><span class="n">vec4</span> <span class="n">fragPosLightSpace</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// perform perspective divide</span>
+    <span class="n">vec3</span> <span class="n">projCoords</span> <span class="o">=</span> <span class="n">fragPosLightSpace</span><span class="p">.</span><span class="n">xyz</span> <span class="o">/</span> <span class="n">fragPosLightSpace</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+    <span class="c1">// transform to [0,1] range</span>
+    <span class="n">projCoords</span> <span class="o">=</span> <span class="n">projCoords</span> <span class="o">*</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">;</span>
+    <span class="c1">// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)</span>
+    <span class="kt">float</span> <span class="n">closestDepth</span> <span class="o">=</span> <span class="n">texture</span><span class="p">(</span><span class="n">shadowMap</span><span class="p">,</span> <span class="n">projCoords</span><span class="p">.</span><span class="n">xy</span><span class="p">).</span><span class="n">r</span><span class="p">;</span> 
+    <span class="c1">// get depth of current fragment from light's perspective</span>
+    <span class="kt">float</span> <span class="n">currentDepth</span> <span class="o">=</span> <span class="n">projCoords</span><span class="p">.</span><span class="n">z</span><span class="p">;</span>
+    <span class="c1">// check whether current frag pos is in shadow</span>
+    <span class="kt">float</span> <span class="n">shadow</span> <span class="o">=</span> <span class="n">currentDepth</span> <span class="o">&gt;</span> <span class="n">closestDepth</span>  <span class="o">?</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">shadow</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Использование этого шейдера вместе с текстурами и обычными матрицами вида и проекции для второго прохода рендера даст результат примерно как на картинке:</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_shadows.png" alt="shadow_mapping_shadows" /></p>
+
+<p>Если Вы сделали всё правильно, вы увидите тени на полу и кубиках (впрочем, с некоторыми артефактами). <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/3.1.2.shadow_mapping_base/shadow_mapping_base.cpp">Исходный код демо</a>.</p>
+
+<h2 id="улучшаем-карты-теней">Улучшаем карты теней</h2>
+
+<p>Мы смогли добиться работы для карт теней, но Вы можете видеть некоторые артефакты на изображении. Дальнейший текст посвящён их исправлению.</p>
+
+<h2 id="муаровый-узор">Муаровый узор</h2>
+
+<p>Очевидно, в изображении ниже что-то неправильно. Увеличенная картинка напоминает <a href="https://ru.wikipedia.org/wiki/%D0%9C%D1%83%D0%B0%D1%80%D0%BE%D0%B2%D1%8B%D0%B9_%D1%83%D0%B7%D0%BE%D1%80">муаровый узор</a>.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_acne.png" alt="shadow_mapping_acne" /></p>
+
+<p>Весь пол покрыт явно заметными чередующимися чёрными полосками. Этот эффект может быть объяснён с помощью одной каринки:</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_acne_diagram.png" alt="shadow_mapping_acne_diagram" /></p>
+
+<p><em>(Прим. пер. - для описания эффекта автор использует термин “<strong>shadow acne</strong>”. Я не нашёл устоявшегося перевода. Я мог бы перевести это как “теневые точки”, но в русскоязычном интернете по этому термину всё равно ничего не найти)</em></p>
+
+<p>Так как у карты теней ограниченное разрешение (в примере выше мы использовали текстуру <code class="language-plaintext highlighter-rouge">1024*1024</code>), несколько пикслей  на итоговом изоражении могут получить одно и то же значение из карты глубины. На картинке выше показан пол, на котором каждый наклонный кусочек (снизу слева вверх на право) представляет собой один тексель из карты глубины. <em>(тексель - текстурный пиксель)</em></p>
+
+<p>В общем-то это нормально, но может стать проблемой, если свет падает под углом к поверхности, как на примере выше. Некоторые фрагменты, получающие глубину из текстуры, получают значение больше или меньше, что не соответствуюет реальной глубине пола для этого фрагмента. Из-за этого часть фрагментов считаются затенёнными - и мы видим полосочки.</p>
+
+<p>Мы можем решить это проблему с помощью маленького хака - сдвиг значений глубины на маленькую величину <em>(shadow bias)</em>, чтобы все фрагменты были над поверхностью.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_acne_bias.png" alt="shadow_mapping_acne_bias" /></p>
+
+<p><em>(Прим. пер. - у меня сильное чувство, что картинки нарисованы некорректно. Чтобы фрагмент не был затенён, зигзагообразные линии, описывающие значения из карты глубины, должны быть ниже поверхности)</em></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="n">bias</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mo">005</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">shadow</span> <span class="o">=</span> <span class="n">currentDepth</span> <span class="o">-</span> <span class="n">bias</span> <span class="o">&gt;</span> <span class="n">closestDepth</span>  <span class="o">?</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Сдвиг на 0.005 для нашей сцены в целом решает проблему, но некоторые поверхности, на которые свет падает под очень маленьким углом, всё ещё будут иметь полосочки тени. Более серьёзным подходом будет изменение сдвига в зависимости от угла, под которым свет падает на поверхность. Воспользуемся скалярным произведением.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="n">bias</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mo">05</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">lightDir</span><span class="p">)),</span> <span class="mi">0</span><span class="p">.</span><span class="mo">005</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Таким образом, поверхности типа пола, которые почти перпендикулярны лучам света, будут иметь очень маленький сдвиг. Чем больше угол между нормалью и направлением света, тем больше будет сдвиг. На следующей картинке показана та же сцена, но уже с использованием сдвига: она выглядит явно лучше.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_with_bias.png" alt="shadow_mapping_with_bias" /></p>
+
+<p>Выбор корректных значений для сдвига требует их подбора, так как они могут отличаться для каждой сцены, но обычно это делается простым увеличение сдвига до тех пор, пока не пропадут артефакты.</p>
+
+<h2 id="эффект-питера-пэна">Эффект Питера Пэна</h2>
+<p><em>(Piter Panning)</em></p>
+
+<p>Недостаток использования сдвига для глубины в том, что мы применяем его к реальной глубине объекта. В результате этот сдвиг может стать достаточно большим, чтобы появилось заметное расстояние между объектом и тенью, которую он отбрасывает, как на картинке ниже (с преувеличенно большим смещением):</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_peter_panning.png" alt="shadow_mapping_peter_panning" /></p>
+
+<p>Это называется эффектом Питера Пэна, так как тень немного убегает от своего объекта. Мы можем использовать маленькую уловку для решения большей части проблем: использовать отсечение фронтально ориентированных полигонов при рисовании карты глубины. Прочитать про отсчение граней <a href="https://habrahabr.ru/post/346964/">на хабре</a>, <a href="https://learnopengl.com/Advanced-OpenGL/Face-Culling">оригинал</a>.
+По-умолчанию openGL отсекает обратно ориентированные полигоны. Мы можем переключить openGL, чтобы сделать наоборот.</p>
+
+<p>В первом проходе рендеринга нам нужны только значения глубины, и нам не важно, какую глубину взять - от фронтальной поверхности или от обратной. Мы не заметим неправильных результатов, так как нам не важно, есть ли тени внутри объекта - их всё равно не видно.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_culling.png" alt="shadow_mapping_culling" /></p>
+
+<p>Чтобы убрать эффект Питера Пэна, мы отсекаем фронтальные грани на первом проходе. Обратите внимание, что необходимо включить <code class="language-plaintext highlighter-rouge">GL_CULL_FACE</code>.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">glCullFace</span><span class="p">(</span><span class="n">GL_FRONT</span><span class="p">);</span>
+<span class="n">RenderSceneToDepthMap</span><span class="p">();</span>
+<span class="n">glCullFace</span><span class="p">(</span><span class="n">GL_BACK</span><span class="p">);</span> <span class="c1">// возвращаем в первоначальное состояние</span>
+</code></pre></div></div>
+
+<p>Это решает проблему с эффектом Питера Пена, но только для объектов, которые имеют поверхность со всех сторон. В нашем примере это превосходно работает для кубиков, но не будет работать для пола, так как отсечение фронтальных полигонов полностью уберёт пол. Если вы собираетесь использовать этот способ, используйте отсечение фронмально ориентированных полигонов только там, где это имеет смысл.</p>
+
+<p><em>(Прим. пер.- конкретно в этом примере нет ничего страшного в том, что отсечение полностью уберёт пол, так как ниже него нет объектов, и не важно, есть под ним тень или нет.)</em></p>
+
+<p>Если объекты расположены слишком близко к затеняемой поверхности, то результат может выглядеть неправильным. Используйте отсечение фронтальных граней только для объектов, для которых это имеет смысл. Впрочем, с помощью хорошо выбранных значений для сдвига можно полностью избежать эффекта Питера Пена.</p>
+
+<p>Ещё один видимый недостаток, который вам может нравиться или нет - некоторые поверхности за пределами  области видимости источника света могут рисоваться затенёнными, даже если на них теоретически должен падать свет. Это происходит из-за того, что для удалённой точки в системе отсчёта источника света координаты будут больше, чем 1.0, а текстурные координаты меняются только от 0.0 до 1.0. Если поверхность находится слишком в стороне от источника света, то в карте глубины нет значения для неё.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_outside_frustum.png" alt="shadow_mapping_outside_frustum" /></p>
+
+<p>На изображении выше можно представить область света - всё остальное находится в тени. Освещённая область показывает, как карта глубины проецируется на пол. Причина такого поведения в том, что ранее для текстуры глубины мы установили режим <code class="language-plaintext highlighter-rouge">GL_REPEAT</code>.</p>
+
+<p>Хотелось бы для таких фрагментов возвращать глубину 1.0 - это значит, что они никогда не будут в тени (так как у видимого объекта глубина не может быть больше единицы). Для этого мы установим цвет края для текстуры и остановим опцию “GL_CLAMP_TO_BORDER”</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_WRAP_S</span><span class="p">,</span> <span class="n">GL_CLAMP_TO_BORDER</span><span class="p">);</span>
+<span class="n">glTexParameteri</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_WRAP_T</span><span class="p">,</span> <span class="n">GL_CLAMP_TO_BORDER</span><span class="p">);</span>
+<span class="kt">float</span> <span class="n">borderColor</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="n">f</span> <span class="p">};</span>
+<span class="n">glTexParameterfv</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_BORDER_COLOR</span><span class="p">,</span> <span class="n">borderColor</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Теперь, если мы читаем значение из карты глубины по координатам вне интервала [0,1], мы будем получать в ответ глубину 1.0, из за чего значение <code class="language-plaintext highlighter-rouge">shadow</code> в шейдере будет 0.0. Теперь сцена выглядит лучше:</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_clamp_edge.png" alt="shadow_mapping_clamp_edge" /></p>
+
+<p>Похоже, часть картинки всё ещё находится в тёмной области. Это поверхность, которая находится дальше дальней области отсечения для источника света. Вы можете видеть, что эта тёмная область всегда возникает далеко от источника освещения.</p>
+
+<p>Для таких областей координата <code class="language-plaintext highlighter-rouge">z</code> в пространстве источника света оказывается больше, чем 1.0, в этом случае опция <code class="language-plaintext highlighter-rouge">GL_CLAMP_TO_BORDER</code> нам не помогает. Мы сравниваем реальную глубину (которая больше 1.0) со значением из карты глубин (в текстуре глубины хранятся значения не больше 1.0) - поэтому далёкие участки будут в тени.</p>
+
+<p>Исправление этого эффекта относительно простое - мы будем считать незатенёнными все объекты, для которых z координата больше единицы.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="nf">ShadowCalculation</span><span class="p">(</span><span class="n">vec4</span> <span class="n">fragPosLightSpace</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">[...]</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">projCoords</span><span class="p">.</span><span class="n">z</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">shadow</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">shadow</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Проверка для дальней плоскости отсечения в сочетании с возвращеним глубины 1.0 для значений за границами текстуры дают нам желаемый результат.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_over_sampling_fixed.png" alt="shadow_mapping_over_sampling_fixed" /></p>
+
+<p>В результате всё это значит, что мы рисуем тени только там, где координаты в пространстве источника света помещаются в пределах текстуры глубины, в остальных местах теней не будет. Обычно в играх такое случается только вдали от камеры, и этот эффект выглядит намного лучше, чем тёмные области.</p>
+
+<h2 id="pcf">PCF</h2>
+
+<p><strong>Percentage-closer filtering</strong></p>
+
+<p>Прямо сейчас тени выглядят хорошим дополнением к сцене, но это всё ещё не то, чего мы хотим. Если увеличить кусочек изображения с тенью, становится очевидной зависимость теней от размера текстуры глубины.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_zoom.png" alt="shadow_mapping_zoom" /></p>
+
+<p>Текстура глубины имеет фиксированный размер, и довольно часто несколько пикселей на итоговой картинке используют значение глубины из одного и того же текселя текстуры. В итоге получаются зазубренные края тени.</p>
+
+<p>Вы можете уменьшить размер этих квадратиков, если увеличите размер текстуры с тенями и подберёте положение источника света.</p>
+
+<p>Ещё одно (частичное) решение проблемы с зазубренными краями теней - PCF (Percentage-closer filtering), содержащий различные функции фильтрации, которые дают нам мягкие тени. Идея состоит в том, чтобы выбирать несколько значений из карты глубины - каждое с немного отличающимися координатами. Для каждого значения мы проверяем, находимся в тени или нет. Потом усредняем все результаты и получаем красивые мягие тени.</p>
+
+<p>Простая реализация PCF - просто выбрать соседние тексели в карте глубины и усреднить результат:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="n">shadow</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+<span class="n">vec2</span> <span class="n">texelSize</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">/</span> <span class="n">textureSize</span><span class="p">(</span><span class="n">shadowMap</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">;</span> <span class="o">++</span><span class="n">x</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">;</span> <span class="o">++</span><span class="n">y</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">float</span> <span class="n">pcfDepth</span> <span class="o">=</span> <span class="n">texture</span><span class="p">(</span><span class="n">shadowMap</span><span class="p">,</span> <span class="n">projCoords</span><span class="p">.</span><span class="n">xy</span> <span class="o">+</span> <span class="n">vec2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">texelSize</span><span class="p">).</span><span class="n">r</span><span class="p">;</span>
+        <span class="n">shadow</span> <span class="o">+=</span> <span class="n">currentDepth</span> <span class="o">-</span> <span class="n">bias</span> <span class="o">&gt;</span> <span class="n">pcfDepth</span> <span class="o">?</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">shadow</span> <span class="o">/=</span> <span class="mi">9</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Здесь <code class="language-plaintext highlighter-rouge">textureSize</code> - вектор из двух чисел, ширины и высоты текстуры глубины. Единица, делённая на этот вектор, даёт размер текселя на текстуре. Мы будем смещаться на этот размер, чтобы читать значения из соседних текселей. В этом примере мы берём 9 значений в окрестности точки  <code class="language-plaintext highlighter-rouge">(x,y)</code>, проверяем на наличие тени и в конце делим на количество проверок, получая усреднённое значение.</p>
+
+<p>Если использовать больше точек и/или изменить <code class="language-plaintext highlighter-rouge">texelSize</code>, то можно улучшить качество мягких теней. Ниже картинка с тенями с простым PCF фильтром:</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_soft_shadows.png" alt="shadow_mapping_soft_shadows" /></p>
+
+<p>Издалека тени выглядят намного лучше. У них нет резких краёв, но если приблизиться, то всё ещё видно артефакты (впрочем, 9 оттенков тени разнообразнее одного). В целом, PCF даёт хороший результат в большинстве случаев.</p>
+
+<p><a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/3.1.3.shadow_mapping/shadow_mapping.cpp">Исходный код примера</a></p>
+
+<p>На самом деле, существует намного больше способов реализовать PCF, и некоторые методы могут значительно улучшить мягкие тени. Но эта статья и так уже большая, так что обсудим это позже.</p>
+
+<h2 id="перспективная-проекция-vs-ортографическая">Перспективная проекция vs ортографическая</h2>
+
+<p>Есть различия в рендеринге карты глубины с помощью матриц ортографической или перспективной проекции. Ортографическая проекция не вносит перспективных искажений в сцену, все лучики света двигаются параллельно, что хорошо для направленного освещения. У перспективной проекции всё иначе. На картинках ниже показаны затенённые области с помощью этих двух способов.</p>
+
+<p><img src="/assets/images/2018/Learn OpenGL карты теней/shadow_mapping_projection.png" alt="shadow_mapping_projection" />
+Для перспективной проекции позиция источника света реально важна (в отличие от источника направленного освещения). Перспективную проекцию чаще всего используют для точечных источников света, а ортографическую - для направленного света.</p>
+
+<p>Ещё одно небольшое отличие перспективной проекции - визуализация буфера глубины часто будет давать полностью белый результат. Это происходит потому, что перспективная проеция преобразует глубину нелинейно, и большая часть значений оказываются около ближней плоскости отсечения. Чтобы можно было хорошо видеть значения глубины, как для ортографической проекции, можно преобразовать нелинейные значения глубины обратно в линейные. Это обсуждалось в статье про буфер глубины: <a href="https://habrahabr.ru/post/342610/">хабр</a>, <a href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">оригинал</a>.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#version 330 core
+</span><span class="n">out</span> <span class="n">vec4</span> <span class="n">FragColor</span><span class="p">;</span>
+
+<span class="n">in</span> <span class="n">vec2</span> <span class="n">TexCoords</span><span class="p">;</span>
+
+<span class="n">uniform</span> <span class="n">sampler2D</span> <span class="n">depthMap</span><span class="p">;</span>
+<span class="n">uniform</span> <span class="kt">float</span> <span class="n">near_plane</span><span class="p">;</span>
+<span class="n">uniform</span> <span class="kt">float</span> <span class="n">far_plane</span><span class="p">;</span>
+
+<span class="kt">float</span> <span class="nf">LinearizeDepth</span><span class="p">(</span><span class="kt">float</span> <span class="n">depth</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">float</span> <span class="n">z</span> <span class="o">=</span> <span class="n">depth</span> <span class="o">*</span> <span class="mi">2</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span> <span class="c1">// Back to NDC</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">2</span><span class="p">.</span><span class="mi">0</span> <span class="o">*</span> <span class="n">near_plane</span> <span class="o">*</span> <span class="n">far_plane</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">far_plane</span> <span class="o">+</span> <span class="n">near_plane</span> <span class="o">-</span> <span class="n">z</span> <span class="o">*</span> <span class="p">(</span><span class="n">far_plane</span> <span class="o">-</span> <span class="n">near_plane</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">float</span> <span class="n">depthValue</span> <span class="o">=</span> <span class="n">texture</span><span class="p">(</span><span class="n">depthMap</span><span class="p">,</span> <span class="n">TexCoords</span><span class="p">).</span><span class="n">r</span><span class="p">;</span>
+    <span class="n">FragColor</span> <span class="o">=</span> <span class="n">vec4</span><span class="p">(</span><span class="n">vec3</span><span class="p">(</span><span class="n">LinearizeDepth</span><span class="p">(</span><span class="n">depthValue</span><span class="p">)</span> <span class="o">/</span> <span class="n">far_plane</span><span class="p">),</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span> <span class="c1">// perspective</span>
+    <span class="c1">// FragColor = vec4(vec3(depthValue), 1.0); // orthographic</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Этот код показывает значения глубины, схожие с тем, что мы видели при ортографической проекции. Обратите внимание, что это нужно только для отладки. Нелинейное преобразование монотонно и сравнение двух значений глубины будет давать одинаковые результаты независимо от того, являются они линейными или нелинейными.</p>
+
+<h2 id="дополнительные-ресурсы">Дополнительные ресурсы:</h2>
+
+<ul>
+  <li><a href="http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-16-shadow-mapping/">tutorial-16-shadow-mapping</a>- схожий пример с некоторыми дополнительными деталями.</li>
+  <li><a href="http://ogldev.atspace.co.uk/www/tutorial23/tutorial23.html">Shadow mapping - Part 1</a>: ещё один пример от ogldev</li>
+  <li><a href="https://www.youtube.com/watch?v=EsccgeUpdsM">How shadow mapping works:</a> - видео из 3ёх частей про карты теней и их реализацию</li>
+  <li><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ee416324%28v=vs.85%29.aspx">Common Techniques to Improve Shadow Depth Maps</a>: хорошая статья от Microsoft, перечисляющая большое количество методов улучшения качества карт теней.</li>
+</ul>
+
+<p><a href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Оригинальная статья</a></p>
+
+<p><a href="https://habr.com/ru/post/353956/">Пост на хабре</a></p>
+
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Kright/kright.github.io">kright.github.io</a> is maintained by <a href="https://github.com/Kright">Kright</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

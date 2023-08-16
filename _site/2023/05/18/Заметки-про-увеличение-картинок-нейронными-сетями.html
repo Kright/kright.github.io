@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Заметки про увеличение картинок нейронными сетями | kright.github.io</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Заметки про увеличение картинок нейронными сетями" />
+<meta name="author" content="kright" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="TLDR - это не готовое решение, это попытка самостоятельно разобраться, подобрать архитектуру и обучить генеративно-состязательную модель (GAN) для увеличения картинок в 2 или 4 раза. Я не претендую на то, что моя модель или путь рассуждений лучше каких-то других. Кроме того, относительно недавно стали популярны трансформеры и diffusion модели - заметки не про них." />
+<meta property="og:description" content="TLDR - это не готовое решение, это попытка самостоятельно разобраться, подобрать архитектуру и обучить генеративно-состязательную модель (GAN) для увеличения картинок в 2 или 4 раза. Я не претендую на то, что моя модель или путь рассуждений лучше каких-то других. Кроме того, относительно недавно стали популярны трансформеры и diffusion модели - заметки не про них." />
+<link rel="canonical" href="http://localhost:4000/2023/05/18/%D0%97%D0%B0%D0%BC%D0%B5%D1%82%D0%BA%D0%B8-%D0%BF%D1%80%D0%BE-%D1%83%D0%B2%D0%B5%D0%BB%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BE%D0%BA-%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D0%BD%D0%BD%D1%8B%D0%BC%D0%B8-%D1%81%D0%B5%D1%82%D1%8F%D0%BC%D0%B8.html" />
+<meta property="og:url" content="http://localhost:4000/2023/05/18/%D0%97%D0%B0%D0%BC%D0%B5%D1%82%D0%BA%D0%B8-%D0%BF%D1%80%D0%BE-%D1%83%D0%B2%D0%B5%D0%BB%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BE%D0%BA-%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D0%BD%D0%BD%D1%8B%D0%BC%D0%B8-%D1%81%D0%B5%D1%82%D1%8F%D0%BC%D0%B8.html" />
+<meta property="og:site_name" content="kright.github.io" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-05-18T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Заметки про увеличение картинок нейронными сетями" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"kright"},"dateModified":"2023-05-18T00:00:00+02:00","datePublished":"2023-05-18T00:00:00+02:00","description":"TLDR - это не готовое решение, это попытка самостоятельно разобраться, подобрать архитектуру и обучить генеративно-состязательную модель (GAN) для увеличения картинок в 2 или 4 раза. Я не претендую на то, что моя модель или путь рассуждений лучше каких-то других. Кроме того, относительно недавно стали популярны трансформеры и diffusion модели - заметки не про них.","headline":"Заметки про увеличение картинок нейронными сетями","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2023/05/18/%D0%97%D0%B0%D0%BC%D0%B5%D1%82%D0%BA%D0%B8-%D0%BF%D1%80%D0%BE-%D1%83%D0%B2%D0%B5%D0%BB%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BE%D0%BA-%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D0%BD%D0%BD%D1%8B%D0%BC%D0%B8-%D1%81%D0%B5%D1%82%D1%8F%D0%BC%D0%B8.html"},"url":"http://localhost:4000/2023/05/18/%D0%97%D0%B0%D0%BC%D0%B5%D1%82%D0%BA%D0%B8-%D0%BF%D1%80%D0%BE-%D1%83%D0%B2%D0%B5%D0%BB%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BE%D0%BA-%D0%BD%D0%B5%D0%B9%D1%80%D0%BE%D0%BD%D0%BD%D1%8B%D0%BC%D0%B8-%D1%81%D0%B5%D1%82%D1%8F%D0%BC%D0%B8.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=04936c4141575b8269035838047e98a4dd849258">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Заметки про увеличение картинок нейронными сетями</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="https://github.com/Kright/kright.github.io" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<nav>
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+</nav>
+
+
+<p>18 May 2023</p>
+
+<p><strong>TLDR</strong> - это не готовое решение, это попытка самостоятельно разобраться, подобрать архитектуру и обучить генеративно-состязательную модель (GAN) для увеличения картинок в 2 или 4 раза. Я не претендую на то, что моя модель или путь рассуждений лучше каких-то других. Кроме того, относительно недавно стали популярны трансформеры и diffusion модели - заметки не про них.</p>
+
+<p>С заметками не получилось линейной структуры повествования - есть отступления “в сторону” и уточнения. Можно пропускать нерелевантные заметки. Например, описание подготовки данных нужно, если вы хотите воспроизвести эксперименты - а в остальных случаях можно пропустить. Я написал каждую отдельную заметку по-возможности цельной и независимой от других.</p>
+
+<p>Я уже был знаком со свёрточными сетками, но мне хотелось попробовать генеративно-состязательные сети. Понять, почему используют те или иные подходы. Попробовать свои идеи. Посмотреть, насколько быстро можно научить модель и насколько хорошо она будет работать.</p>
+
+<p>Для обучения оказалось достаточно возможностей моего ПК. Какие-то простые эксперименты занимали десятки минут или несколько часов, самый длинный с обучением финальной большой модели - трое суток.</p>
+
+<h2 id="ссылки">Ссылки</h2>
+
+<p>Статьи на архиве или код на гитхабе - ни разу не истина в первой инстанции, в них предостаточно странных и неоптимальных решений. Я советую брать и аккуратно проверять каждое из них. И не боятсья пробовать что-то своё.</p>
+
+<h3 id="real-time-single-image-and-video-super-resolution-using-an-efficient-sub-pixel-convolutional-neural-network">Real-Time Single Image and Video Super-Resolution Using an Efficient Sub-Pixel Convolutional Neural Network</h3>
+
+<p>2016 год: https://arxiv.org/abs/1609.05158</p>
+
+<p>Максимально простая и быстрая архитектура - буквально три свёрточных слоя. Кроме того, в pytorch есть слой PixelShuffle, который ссылается именно на эту статью. https://pytorch.org/docs/stable/generated/torch.nn.PixelShuffle.html</p>
+
+<p>Я использовал эту архитектуру как отправную точку, но в ней есть спорные моменты.</p>
+
+<h3 id="sr-gan-esr-gan-real-esr-gan">SR-GAN, ESR-GAN, Real-ESR-GAN</h3>
+
+<p>Серия статей одних и тех же авторов. В основном большая часть заметок относится к ним.
+Я много лет назад прочитал первую статью, хотел разобраться, но руки дошли только сейчас. Авторы без дела не сидели и написали ещё две.
+Для полного понимания происходящего лучше читать все три по порядку. И смотреть репозитории к ним, там есть интересные моменты. Но бОльшую часть нюансов я начал понимать, только когда попробовал учить модели сам.</p>
+
+<h4 id="sr-gan-super-resolution-generative-adversarial-networks">SR-GAN (Super-resolution generative adversarial networks)</h4>
+
+<p>https://arxiv.org/abs/1609.04802</p>
+
+<p>Увеличение фотографий в четыре раза, одна из первых статей, написана в 2016 году.</p>
+
+<p>Размер картинок - 96х96 пикселей.</p>
+
+<h4 id="esr-gan-enchanced-esr-gan">ESR-GAN (Enchanced ESR-GAN)</h4>
+<p>2018 год.</p>
+
+<p>Arxiv: https://arxiv.org/abs/1809.00219</p>
+
+<p>Github: https://github.com/xinntao/ESRGAN</p>
+
+<p>Размер картинок 128х128.</p>
+
+<p>Отказались от использования батч-нормализации в генераторе, из-за чего пришлось менять всю архитектуру генератора
+Ипользовали в качестве ошибки разность предсказаний для реальной и сгенерированной картинки.</p>
+
+<h4 id="real-esr-gan">Real ESR-GAN</h4>
+
+<p>Пока что последняя в этом процессе добавления буковок слева к названию</p>
+
+<p>Arxiv: https://arxiv.org/abs/2107.10833</p>
+
+<p>Github: https://github.com/xinntao/Real-ESRGAN</p>
+
+<p>Наконец-то размер картинок для обучения - 256х256 пикселей. Хотя, возможно, это как-то связано с развитием видеокарт и увеличением количества памяти.</p>
+
+<p>Архитектура практически так же, что и в предыдущей статье. Но авторы очень серьёзно подошли к процессу искажений - к фотографии добавляются шумы, размытие, артефакты сжатия, и уже вот этот “подпорченный” результат нейросетка пытается увеличивать обратно в красивую картинку.</p>
+
+<h2 id="pytorch-cuda-gpu-и-время-обучения">pytorch, cuda, gpu и время обучения</h2>
+
+<p>Видеокарта - geforce 2060 super, 8Gb.
+Обучать на CPU медленнее на порядок - лучше разобраться с видеокартой.
+В подготовленном датасете получилось 400 000 картинок размером 256х256, они заняли 32 Гб на SSD.</p>
+
+<p>Простые начальные нейронные сетки пробегали датасет очень быстро и я учил по несколько эпох, но с усложнением сети скорость загрузки данных становилась всё менее важной. На последней, самой большой нейронной сетке одна эпоха обучения занимала аж трое суток с одной картинкой в батче - иначе не хватало видеопамяти. Это примерно 0.7 секунды на шаг обучения.</p>
+
+<p>Что забавно, далеко не всегда время обучения сильно важно. Например, я часто запускал обучение на ночь или утром перед уходом на работу - и не важно, учится сетка 3 часа или 8 - я доберусь до неё ещё позже.</p>
+
+<p>Я поставил pytorch с поддержкой cuda на linux mint. Поставить на ubuntu было бы проще. По факту linux mint 21.1 базируется на ubuntu 22.04. Поэтому в <code class="language-plaintext highlighter-rouge">/etc/apt/sources.list</code> мне пришлось в файле  <code class="language-plaintext highlighter-rouge">cuda-ubuntu2204-x86_64.list</code> тащить версию для убунты.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>deb [signed-by=/usr/share/keyrings/cuda-archive-keyring.gpg] https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /
+</code></pre></div></div>
+<p>И в случае с докером аналогично “jammy stable”, которое само собой относится к убунте. Не знаю насколько это правильное решение.</p>
+
+<p>Ещё я попробовал докер: https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch
+Что мне не понравилось - нельзя просто так поставить докер и иметь все библиотеки внутри него. В хостовую систему вдобавок придётся ставить nvidia gpu drivers и nvidia container toolkit. А для этого регистироваться на сайте nvidia…. Короче, докер не спасает от установки драйверов.
+В итоге у меня torch с cuda в докере так и не заработал и при этом заработал на хосте, так что я на него забил.</p>
+
+<h2 id="почему-не-использую-google-colab">Почему не использую google colab</h2>
+
+<p>В Google colab можно поменять настройки и получить доступ к nvidida T4. Она имеет 16 Гб памяти на борту и вроде как специально сделана для машинного обучения.</p>
+
+<p>На практике процесс обучения на моей nvidia 2060 оказался быстрее в 2-3 раза. А ещё у бесплатного google colab есть лимиты: 40 минут неактивности и 12 часов общего времени, после чего ноутбук останавливается.</p>
+
+<p>В итоге я вообще отказался от colab: долгие задачи на нём запускать неудобно, а короткие я и локально запущу. Вдобавок “долгие задачи” для коллаба - это 40 минут, которые превращаются в локальные не такие долгие 15-20.</p>
+
+<h2 id="загрузка-картинок-с-помощью-pillow">Загрузка картинок с помощью Pillow</h2>
+
+<p>Вообще есть готовые стандартные классы и решения, но мне хотелось попробовать самому, чтобы иметь больше контроля над каждым шагом.</p>
+
+<p>Для загрузки данных я использовал Pillow, но там есть нюансы:</p>
+
+<ol>
+  <li>Фотографии с повернутого набок телефона хранятся так же, но в картинке появляется специальный тег, и картинка поворачивается уже программой для просмотра</li>
+  <li>Картинки могут быть не в RGB формате, а например RGBA, чёрно-белые или вообще YUV</li>
+  <li>Бывают картинки, которые открываются просмотрщиком фоток, но Pillow считает их испорченными и кидает исключение</li>
+  <li>Массив данных будет в формате uint8 в интервале 0-255, а для обучения хочется float в интервале 0.0-1.0. Вообще говоря в png можно сохранить картинку и задать глубину канала float 16 бит, но мне таких не попадалось.</li>
+  <li>После загрузки размерность <code class="language-plaintext highlighter-rouge">(height, width, 3)</code>, но в pytorch обычно используется порядок с каналами вначале: <code class="language-plaintext highlighter-rouge">(3, height, width)</code></li>
+</ol>
+
+<p>Так что простой код загрузки не такой уж и простой:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">load_img</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">channels_first</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="n">ndarray</span><span class="p">]:</span>
+	<span class="k">try</span><span class="p">:</span>
+		<span class="n">pil_image</span> <span class="o">=</span> <span class="n">PILImage</span><span class="p">.</span><span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+	    <span class="n">pil_image</span> <span class="o">=</span> <span class="n">PIL</span><span class="p">.</span><span class="n">ImageOps</span><span class="p">.</span><span class="n">exif_transpose</span><span class="p">(</span><span class="n">pil_image</span><span class="p">)</span>
+	    <span class="n">pil_image</span> <span class="o">=</span> <span class="n">pil_image</span><span class="p">.</span><span class="n">convert</span><span class="p">(</span><span class="s">'RGB'</span><span class="p">)</span>
+	    <span class="n">np_array</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pil_image</span><span class="p">)</span>
+	    <span class="n">np_array</span> <span class="o">=</span> <span class="n">np_array</span><span class="p">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
+	    <span class="k">if</span> <span class="n">channels_first</span><span class="p">:</span>
+		    <span class="n">np_array</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">np_array</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+	    <span class="k">return</span> <span class="n">np_array</span>
+	<span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+		<span class="n">logging</span><span class="p">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s">"error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s"> for </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+	    <span class="k">return</span> <span class="bp">None</span>
+</code></pre></div></div>
+
+<p>При желании можно заглянуть в теги и вытащить данные типа модели камеры. Например, мой телефон делает 4к снимки, но на их шумность и шакалистость без слёз не взглянешь. Именно эти фотки я заранее уменьшал в два раза. Всё-таки я хочу, чтобы нейронка училась восстанавливать настоящие детали изображения, а не рисовать правдоподобный шум матрицы.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">image_get_model</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">PIL</span><span class="p">.</span><span class="n">Image</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">model_tag</span> <span class="o">=</span> <span class="mh">0x0110</span>
+    <span class="k">return</span> <span class="n">image</span><span class="p">.</span><span class="n">getexif</span><span class="p">().</span><span class="n">get</span><span class="p">(</span><span class="n">model_tag</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="уменьшение-картинок-бывает-разным">Уменьшение картинок бывает разным</h2>
+
+<p>Может показаться, что это простая операция, но опять же есть нюансы.</p>
+
+<p>Ссылка со сравнением уменьшения картинок в Pillow, OpenCV, Tensorflow и PyTorch: https://zuru.tech/blog/the-dangers-behind-image-resizing</p>
+
+<p>Краткий вывод - я по-возможности использую Pillow. В некоторых случаях использую pyTorch для уменьшения ровно в два раза.
+Уменьшение в Pillow по-умолчанию использует бикубическую интерполяцию:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pil_image</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">new_size</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>И в pytorch:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">size</span><span class="p">()</span>
+<span class="k">return</span> <span class="n">F</span><span class="p">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">h</span> <span class="o">//</span> <span class="n">factor</span><span class="p">,</span> <span class="n">w</span> <span class="o">//</span> <span class="n">factor</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s">'bilinear'</span><span class="p">,</span> <span class="n">antialias</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Кроме того, у меня есть подозрение, что уменьшение картинки должно производиться в линейном цветовом пространстве, а не в sRGB.</p>
+
+<p>При обучении нейронки это всё важно. Если я буду использовать кривой алгоритм уменьшения картинки, то нейронка выучится именно под него. И, возможно, будет хуже работать на настоящих картинках.</p>
+
+<p>Для примера - (могу ошибаться) для нейронной сети sr-gan https://arxiv.org/abs/1609.04802 использовали уменьшение картинок в matlab и оно якобы работает тоже как-то по-своему.</p>
+
+<h2 id="почему-я-выбрал-размер-картинок-256х256">Почему я выбрал размер картинок 256х256</h2>
+
+<p>Ограничение сверху: на моей видеокарте с 8 Гб памяти с большой серьёзной нейронкой размер батча с картинками такого размера уменьшился до одной картинки. На шаге обучения хранятся все промежуточные результаты вычислений и потом считаются градиенты - видеопамяти понадобится много.</p>
+
+<p>Ограничение снизу:
+Это размер контекста, больше которого нейронная сеть не сможет захватывать.</p>
+
+<p>Для примера: в первой статье про sr-gan указывают, что большие картинки были размером 96х96. Потом их уменьшали в четыре раза (до 24х24) и потом учили нейронную сеть увеличивать их обратно.</p>
+
+<p>А теперь представьте - нейронка получает крохотный квадратик в 24х24 пикселя и пытается из него что-то восстановить. Сколько информации она способна получить?</p>
+
+<p>По-сути, больше всего информации получат центральные пиксели - у них будет реальная окрестность в целый десяток пикселей. Я считаю, что это крайне мало. Кроме того, большая часть пикселей будет расположена рядом с краями картинки и там вообще придётся играть в угадайку.</p>
+
+<p>Я хочу, чтобы нейронка при увеличении не просто дорисовывала чёткие края, а делала что-то осмысленное. Для этого область восприятия нейронки и размер обучающих примеров должны быть достаточно большими - например, чтобы в обучающие примеры целиком помещались какие-то объекты - лица людей, деревья, столбы и т.п.</p>
+
+<p>Тогда нейронка сможет отличить волосы на щеке от проводов на фоне закатного неба и дорисовать их по-разному.</p>
+
+<p>Если я беру образцы размером 256х256 пикселей, то уменьшенный в четыре раза образец не такой уж и большой - 64х64 пикслея. На мой взгляд это тоже мало, но больше я не сделаю.</p>
+
+<p>Я удивлён, но в статьях про увеличени картинок часто используют очень маленькие образцы. Зачем, почему - не знаю.</p>
+
+<h2 id="маленький-датасет-для-проверки-идей">Маленький датасет для проверки идей</h2>
+
+<p>Вначале я использовал датасет с цветами:</p>
+
+<p>https://pytorch.org/vision/main/generated/torchvision.datasets.Flowers102.html</p>
+
+<p>Уменьшил и кропнул картинки, сохранил в виде png картинок 256х256 пикселей. Получилось 10к примеров.</p>
+
+<p>Я брал простую сетку, учил её на цветах. Всё было быстро. Сетке было проще учиться, так как она видела только цветы. Я на этих самих цветах “на глаз” или по метрикам мог посмотреть, насколько удачно то или иное решение.</p>
+
+<p>Этот подход сэкономил мне очень много времени.
+Процесс обучения занимал от нескольких минут до часа. В принципе, если нет GPU с cuda, с таким датасетом можно экспериментировать и на CPU. Но дальше будет хуже.</p>
+
+<p>Я не разделял датасет на обучение/валидацию. Начальные нейронные сетки всё равно показывают очевидно слабые результаты и бороться с переобучением нет смысла.</p>
+
+<h2 id="подготовка-реального-датасета">Подготовка реального датасета</h2>
+
+<p>Допустим, есть картинка 1500х2000 размером пикселей. Я из неё могу сделать много разных образцов:</p>
+<ol>
+  <li>Можно вырезать кусочки 256х256 пикселей в произвольных местах.</li>
+  <li>Можно уменьшать картинку в 2-4-8-… раз и выбирать кусочки из неё.</li>
+</ol>
+
+<p>Таким образом, из одной большой картинки можно получить несколько десятков образцов для обучения.
+У меня хранятся все фотки с телефонов и фотоаппаратов за последний десяток лет - учить есть на чём. Не знаю как так получается, раз или два в год перекидываю все фотки на комп, а уже через несколько месяцев их на телефоне опять целая куча.</p>
+
+<p>В сумме получился датасет на примерно 400 000 кусочков картинок суммарным размером в 32 Гб. Я их сохранял в png, чтобы не было никаких артефактов.
+Шакалистые jpeg фотографии с телефонов заранее уменьшал раза в 2, чтобы убрать шум и артефакты сжатия.</p>
+
+<p>Процесс нарезки картинок и т.п. сделал один раз - он занял около восьми часов однопоточного кода на питоне.
+Поначалу у меня были мысли, что это можно как-то оптимизировать, распараллелить и делать одновременно с обучением нейронной сети, но в итоге я забил и как мне кажется правильно сделал:</p>
+
+<ol>
+  <li>Я учил нейронные сети много раз, а сконвертировал только однажды.</li>
+  <li>Легко убедиться, что с подготовленными данными всё впорядке - я могу глазами посмотреть на любую картинку.</li>
+  <li>При обучении картинок не надо заботиться о пайплайне их загрузки и обработки - всё уже готово.</li>
+  <li>Если нейронная сеть небольшая, то шаги обучения делаются очень быстро, и скорость загрузки становится узким горлышком. При обучении и загрузке готовых картинок с диска утилизация видеокарты достигала 95%.</li>
+  <li>Картинки с диска можно загружать в произвольном порядке - потому что изначально при генерации из одной фотографии (или даже серии похожих фотографий) получилалась последовательность из многих похожих по стилю кусочков.</li>
+  <li>Если бы я учил нейронку одновременно с преобразованием данных, какая-нибудь ошибка в  функции преобразования могла бы остановить обучение.</li>
+</ol>
+
+<p>Мне кажется, сохранять четыреста тысяч файлов в одну папку - не самая лучшая идея, поэтому я написал вспомогательный класс <code class="language-plaintext highlighter-rouge">ImageSaver</code>, который сохраняет картинки по тысяче штук в папку с именами-номерами типа 12/12678.png, 12/12679.png…
+Этот класс потом много где пригождался.</p>
+
+<h2 id="кастомный-датасет-для-pytorch">Кастомный датасет для pytorch</h2>
+
+<p>https://pytorch.org/docs/stable/data.html</p>
+
+<p>Всё просто: можно унаследоваться от <code class="language-plaintext highlighter-rouge">torch.utils.data.Dataset</code> и сделать методы <code class="language-plaintext highlighter-rouge">__len__</code> и `<strong>getitem</strong></p>
+
+<p>Я написал вспомогательный класс, который хранит список путей к файлам и отдаёт numpy массивы в нужном формате</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ImagesDataset</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="n">utils</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">images_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">channels_order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">'hwc'</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">channels_order</span> <span class="ow">in</span> <span class="p">{</span><span class="s">'hwc'</span><span class="p">,</span> <span class="s">'chw'</span><span class="p">}</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ImagesDataset</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">channels_order</span> <span class="o">=</span> <span class="n">channels_order</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">images_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">images_paths</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="p">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">images_paths</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="c1"># загрузка картинки здесь
+</span>
+    <span class="o">@</span><span class="nb">staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_dirs_recursive</span><span class="p">(</span><span class="n">roots</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">shuffle_seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">channels_order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">'hwc'</span><span class="p">):</span>
+        <span class="n">result_set</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">roots</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">dir_names</span><span class="p">,</span> <span class="n">file_names</span> <span class="ow">in</span> <span class="n">os</span><span class="p">.</span><span class="n">walk</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">file_names</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">is_image</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
+                        <span class="n">result_set</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">dir_path</span><span class="si">}</span><span class="s">/</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result_set</span><span class="p">)</span>
+        <span class="n">results</span><span class="p">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">shuffle_seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">Random</span><span class="p">(</span><span class="n">shuffle_seed</span><span class="p">).</span><span class="n">shuffle</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ImagesDataset</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">channels_order</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Потом свой датасет можно передавать в стандартный <code class="language-plaintext highlighter-rouge">DataLoader</code>, который умеет запрашивать данные в случайном порядке, группировать в батчи и т.п.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dataset</span> <span class="o">=</span> <span class="n">pyml</span><span class="p">.</span><span class="n">ImagesDataset</span><span class="p">.</span><span class="n">from_dirs_recursive</span><span class="p">(</span><span class="n">roots</span><span class="o">=</span><span class="p">[</span><span class="s">"datasets/flowers102processed"</span><span class="p">],</span> <span class="n">channels_order</span><span class="o">=</span><span class="s">'chw'</span><span class="p">)</span>
+<span class="n">data_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">pin_memory_device</span><span class="o">=</span><span class="s">'cuda'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="самая-простая-нейронка">Самая простая нейронка</h2>
+
+<p>Статья для вдохновения: Real-Time Single Image and Video Super-Resolution Using an Efficient Sub-Pixel Convolutional Neural Network https://arxiv.org/abs/1609.05158</p>
+
+<p>Нейронная сеть состоит из трёх свёрточных слоёв. В оригинальной статье есть странные моменты - я их попробовал, но не впечатлился:</p>
+
+<p><strong>Выбор функии активации</strong>
+В оригинальной статье используется активация tanh. Это странно, так как ещё в 2012 году появилась AlexNet и в ней использовалась активация relu. А кроме того, в ней утверждалось, что с ReLU нет затухания градиентов и обучение происходит в 5-7 раз быстрее. https://en.wikipedia.org/wiki/AlexNet
+Из-за активации tanh нейронной сети становится сложно выдать значения, близкие к минимальным -1 и максимальным 1 - для этого на входе должны быть очень большие и очень маленькие числа. Я пробовал учить нейронку и прям глазами было видно, что слишком яркие и слишком тёмные места на фотографии получаются “выгоревшими”</p>
+
+<p>Я посмотрел на реализации sr-gan и т.п. и понял, что активацию можно вообще не использовать. Да, нейронка может выдавать любые значения от минус бесконечности до плюс юесконечности. Да, мы будем учить под выходные значениями в интервале от 0 до 1. И да, это работает.</p>
+
+<p>Иногда выходы могут быть вне этого диапазона, но ничего криминального.</p>
+
+<p><strong>Параметры обучения</strong></p>
+
+<p>В оригинальной статье самый последний слой учили с learning rate, который меньше в 10 раз.
+Пример того, как это можно сделать в pytorch:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">generator_optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">optim</span><span class="p">.</span><span class="n">Adam</span><span class="p">([</span>
+    <span class="p">{</span><span class="s">'params'</span><span class="p">:</span> <span class="bp">self</span><span class="p">.</span><span class="n">generator</span><span class="p">.</span><span class="n">other_layers</span><span class="p">.</span><span class="n">parameters</span><span class="p">()},</span>
+    <span class="p">{</span><span class="s">'params'</span><span class="p">:</span> <span class="bp">self</span><span class="p">.</span><span class="n">generator</span><span class="p">.</span><span class="n">pixel_shuffle</span><span class="p">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="s">'lr'</span><span class="p">:</span> <span class="n">lr</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">}</span>
+<span class="p">],</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>После замены функции активации на relu я сравнил обучение и выяснил, что вполне можно использовать один learning rate на всю модель.
+И это отлично, код обучения стал чуточку проще.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">GeneratorESPCN</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">upscale</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GeneratorESPCN</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="p">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">upscale</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">layers</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>В принципе, такая нейронка уже работает.
+В оригинальной статье было сделано максимально просто - уменьшали картинку, отправляли в нейронку, она её увеличивала обратно. В качестве ошибки использовали mse loss между оригинальной картинкой и после нейронки.</p>
+
+<p>Результат не то чтобы сильно отличался от увеличения с помощью обычной интерполяции. Это даже не генеративная сеть. Зато она очень быстро учится.</p>
+
+<p>Это отличное базовое решение, которое я потом буду улучшать. И в конце, как в сказке про кашу из топора, заменю эту нейронку на более тяжёлую.</p>
+
+<p>В оригинале было 64 канала, я перешёл к 128 - всё равно сетка работает быстро и весит мало.</p>
+
+<p>Мой jupyter notebook, в конце есть несколько картинок: https://github.com/Kright/mySmallProjects/blob/master/2023/ml_experiments/superresolution/espcn.ipynb</p>
+
+<h2 id="learning-rate-loss-и-batch-size">learning rate, loss и batch size</h2>
+
+<p>Надо не забывать, что размер батча влияет на скорость обучения.</p>
+
+<p>Например, я в качестве ошибки использую среднеквадратичное отклонение.
+Если батч становится в два раза меньше, то влияние каждого отдельного примера на общую ошибку (и на градиент) будет в два раза больше.</p>
+
+<p>Наша базовая модель из заметки выше учится очень быстро, занимает мало памяти и я при обучении использовал размер батча 64.</p>
+
+<p>В дальнейшем архитектура сети будет усложняться, сеть - становиться больше, и раз за разом batch size придётся уменьшать
+В качестве первого приближения можно точно так же уменьшать learning_rate в столько же раз.</p>
+
+<h2 id="vgg-loss">VGG loss</h2>
+
+<p>Не все пиксели одинаково важны. Какие-то несут ключевую инфорамцию, какие-то просто фон или шум.</p>
+
+<p>Можно взять уже обученную сеть VGG, отправить в неё картинку и посмотреть, какие высокоуровневые фичи она извлечёт. В качестве функции ошибки можно брать разницу именно для этих фич.</p>
+
+<p>Нюансы:
+Не забыть, что эту сеть надо “заморозить” и не обучать.
+Есть несколько версий VGG. Во имя простоты я взял версию без батч-нормализации.
+Для фич лучше использовать сигналы до активации, а не после (Это логично, после relu часть сигналов станет нулевой)
+На вход vgg подаются данные с какими-то нужным средним и среднеквадратичным отклонением. Надо не забыть их указать.</p>
+
+<p>Мой код можно найти тут:
+https://github.com/Kright/mySmallProjects/blob/master/2023/ml_experiments/superresolution/models/features_vgg.py</p>
+
+<p>в pytroch всё уже готово, остаётся только использовать:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">FeaturesFromVGG16</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FeaturesFromVGG16</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="n">vgg</span> <span class="o">=</span> <span class="n">torchvision</span><span class="p">.</span><span class="n">models</span><span class="p">.</span><span class="n">vgg16</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">torchvision</span><span class="p">.</span><span class="n">models</span><span class="p">.</span><span class="n">VGG16_Weights</span><span class="p">.</span><span class="n">IMAGENET1K_V1</span><span class="p">)</span>
+
+        <span class="n">features</span><span class="p">:</span> <span class="n">nn</span><span class="p">.</span><span class="n">Sequential</span> <span class="o">=</span> <span class="n">vgg</span><span class="p">.</span><span class="n">features</span>
+
+        <span class="bp">self</span><span class="p">.</span><span class="n">normalize_input</span> <span class="o">=</span> <span class="n">torchvision</span><span class="p">.</span><span class="n">transforms</span><span class="p">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">(</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">),</span> <span class="n">std</span><span class="o">=</span><span class="p">(</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">))</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">ParameterList</span><span class="p">([</span><span class="n">features</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layers_count</span><span class="p">)])</span>
+        <span class="c1"># freeze network
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">normalize_input</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">):</span>
+                <span class="n">outputs</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">outputs</span>
+</code></pre></div></div>
+
+<p>Здесь мы берём певые несколько слоёв из VGG и утаскиваем их к себе. <code class="language-plaintext highlighter-rouge">self.requires_grad_(False)</code> значит, что наша модель не собирается учиться и нет смысла хранить градиенты для её обучения.</p>
+
+<p>Модель отдаёт наружу все выходные значения после каждого свёрточного слоя.</p>
+
+<p>Потом при сравнении оригинальной сетки можно просуммировать mse_loss для разных выходов:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">y_features</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">vgg</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">label_features</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">vgg</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+
+<span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">y_f</span><span class="p">,</span> <span class="n">label_f</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">y_features</span><span class="p">,</span> <span class="n">label_features</span><span class="p">):</span>
+    <span class="n">results</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">y_f</span><span class="p">,</span> <span class="n">label_f</span><span class="p">))</span>
+
+<span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="p">.</span><span class="n">weight</span>
+</code></pre></div></div>
+
+<p>Единственный момент, который мне не нравится - несмотря на нормализацию входных значений, среднеквадратичная ошибка от слоя к слою становится всё больше и больше. Возможно, у меня что-то работает некорретно.
+Или работает корректно, но наверно надо домножать ошибку на затухащие веса типа <code class="language-plaintext highlighter-rouge">1.0, 0.5, 0.25 ...</code> Потому что иначе последний слой даёт самый большой и шумный вклад в градиенты.</p>
+
+<p>В статье sr-gan советовали использовать вес 0.001, я вместо него взял 0.0001. Но у меня складываются ошибки на каждом слое vgg.</p>
+
+<p>В статье real-esr-gan упоминается, что взяли первые пять свёрток от vgg19 и ошибку после слоёв считали с весами <code class="language-plaintext highlighter-rouge">0.1, 0.1, 1.0, 1.0, 1.0</code></p>
+
+<p>Простейшая сетка из предыдущей заметки с vgg loss даёт намного более красивый результат.
+Картинки можно глянуть тут: https://github.com/Kright/mySmallProjects/blob/master/2023/ml_experiments/superresolution/espcn_vgg_gan.ipynb</p>
+
+<p>Почему-то значительная часть сетей увеличивает в четыре раза.
+VGG loss можно считать не только на картинках оригинального размера - но и на уменьшенных в два раза.</p>
+
+<p>У меня получилось, что обычно такая ошибка в пару раз меньше, чем vgg loss в оригинальном размере.</p>
+
+<p>Я использовал обе. Тем более что уменьшенное в два раза изображение имеет в четыре раза меньшую площадь и ошибка на нём заметно быстрее считается.</p>
+
+<h2 id="gan-discriminator">GAN Discriminator</h2>
+
+<p>С нейронками из одной модели я знаком давно, но учить генеративные сети попробовал впервые. Могу чего-то не знать или ошибаться.</p>
+
+<p>Увеличивающая картинку сеть будет генератором.
+Сеть, пытающася отличить реальную картинку от сгенерированной - дискриминатором.</p>
+
+<p>Эти две сети будут соревноваться.
+Шаг обучения теперь будет состоять из двух шагов - генератора и дискриминатора.</p>
+
+<p>Нужно, чтобы дискриминатор давал как можно больше информации генератору о том, чтот же в изображении кажется ненастоящим.</p>
+
+<p>Для этого я сделал так - дискриминатор на выход даёт вероятность “реальности” для каждого пикселя.
+Картинка, правда, в процессе уменьшается в 8 раз. 256 / 8  = 32. Итого на выходе генератора картинка 32х32 предсказания - насколько области выглядят реальными.</p>
+
+<p>Архитектура генератора похожа на VGG. Пара свёрточных слоёв и потом уменьшение, и так повторяется три раза.</p>
+
+<p>В качестве функции активации я использовал LeakyReLU с коэффициентом 0.1 . Честно говоря, я везде люблю использовать эту функцию активации, но конкретно в дискриминаторе она реально нужна. Градиенты должны пройти сквозь дискриминатор и максимально подробно донести информацию до генератора. Даже если какое-то значение отрицательное - это не повод его отсекать.</p>
+
+<p>Интуитивно мне почему-то казалось, что сначала можно отдельно обучить генератор на mse loss, потом отдельно обучить дискриминатор на выходах генератора, а только потом начинать учить их вместе. Так вот - это всё лишние усложнения. Можно брать и с самого начала учить обе сетки одновременно без каких-либо приготовлений.</p>
+
+<h2 id="batch-normalization">Batch normalization</h2>
+
+<p>Эта штука реально ускоряет обучение. Но есть нюанс - она приводит выходы слоя к среднему 0 и среднеквадратичному отклонению в 1. Если быть точным - внутри считается скользящее среднее входов за много шагов и входы домножнаются и складываются с поправочными коэффициентами. Оно обновляется не в шаге оптимизатора, а при применении слоя. Это привносит свои сложности - например, из-за этого в pytorch у модели есть два режима train и eval - во втором слои “заморожены” и не пытаются обновлять состояние.</p>
+
+<p>В статье ESR-GAN в генераторе отказались от нормализации. Авторы утверждают, что на одноцветном фоне нейронная сеть начинала “выдумывать” какие-то подробности.
+Я принял это утверждение на веру - оно выглядит логично, а проверить руки не дошли. В их статье есть картинки с демонстрацией. Возможно, описанные авторами “артефакты” сильно зависят от конкретной имплементации и параметров нормализации.
+В любом случае - без нормализации сеть проще и меньше факторов могут пойти “не так”.
+В дискриминаторе я использую BatchNorm2d, чтобы генератор быстрее учился. По-хорошему это утверждение тоже надо проверить.</p>
+
+<h2 id="x4-vs-x2x2">x4 vs x2x2</h2>
+
+<p>По итогам сравнений получилось, что для увеличения картинки в 4 раза лучше сделать два шага с увеличениями в 2 раза и с парой-тройкой свёрточных слоёв между увеличениями.
+Кроме того, пара свёрточных слоёв после увеличения тоже улучшают результат.</p>
+
+<p>В ESR-GAN используют такой же подход.</p>
+
+<h2 id="функция-ошибки-и-переобучение-генератора">Функция ошибки и переобучение генератора</h2>
+
+<p>Раньше в генеративных сетях использвовали простой подход - дискриминатор для “реального” примера учился выдавать 1, а для “искуственного” - 0. С активацией sigmoid, которая приводит выходы к этому интервалу.</p>
+
+\[\sigma(D(y_{real})) \rightarrow 1\]
+
+\[\sigma(D(y_{fake})) \rightarrow 0\]
+
+<p>Но можно почитать статью на википедии https://en.wikipedia.org/wiki/Generative_adversarial_network, а так же описание ошибки в ESR-GAN</p>
+
+<p>Утверждается, что лучше в качестве ошибки брать разницу предсказаний</p>
+
+\[\sigma(D(y_{real}) - D(y_{fake})) \rightarrow 1\]
+
+<p>Дискриминатор будет “тянуть одеяло” в сторону едининчки, а генератор в сторону нуля. Интуитивно это выглядит логично - если настоящий пример выглядит ненастоящим - это не повод сильно наказывать дискриминатор.</p>
+
+<p>Впрочем, как бы я не пробовал, я периодически сталкивался с проблемой переобучения генератора под дискриминтор - генератор начинал рисовать всякие несуществующие узоры, которые выглядели чёткими и красивыми, но не соответствующими оригинальной картинке.</p>
+
+<p>Чтобы с этим бороться, я изменил функцию ошибки для генератора (у дискриминатора всё по-прежнему). Перестал поощрять генератор в те моменты, когда сгенерированное изображение становилось более “настоящим”, чем оригинал.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pred_y</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">pred_label</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+<span class="n">y_more_real</span> <span class="o">=</span> <span class="n">pred_y</span> <span class="o">&gt;</span> <span class="n">pred_label</span>
+<span class="n">diff</span> <span class="o">=</span> <span class="n">y_more_real</span> <span class="o">*</span> <span class="mi">9000</span> <span class="o">+</span> <span class="o">~</span><span class="n">y_more_real</span> <span class="o">*</span> <span class="p">(</span><span class="n">pred_y</span> <span class="o">-</span> <span class="n">pred_label</span><span class="p">)</span>
+<span class="n">ones</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">ones</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">diff</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">device</span><span class="o">=</span><span class="n">diff</span><span class="p">.</span><span class="n">device</span><span class="p">)</span>
+<span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">binary_crossentropy_with_sigmoid</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">ones</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="p">.</span><span class="n">generator_weight</span>
+</code></pre></div></div>
+
+<p>В итоге получилось хорошо - например, если на картинке если расфокусированная область или однотонный участок, генератор не пытается их “улучшать” и меняет объекты только в фокусе.</p>
+
+<p>Кроме того, я пробовал бороться с переобучением генератора следующими способами:</p>
+
+<ol>
+  <li>Добавлял Dropout в дискриминатор, чтобы его предсказания были более шумными и было нереально подогнать узор (работало, но в итоге я от этого отказался)</li>
+  <li>Случайно сдвигал пару картинок входе дискриминатора на 0-7 пикслей по вертикали и горизонтали. (Дискриминатор состоит только из свёрточных слоёв, уменьшает картинку в 8 раз, поэтому сдвиг на 8 пикселей эквивалентен его отсутствию)</li>
+  <li>Делал более “умный” дискриминатор добавлением каналов и слоёв.</li>
+  <li>Подгонял отношение коэффициентов обучения между генератором и дискриминатором</li>
+  <li>На один шаг обучения генератора делал несколько шагов дискриминатора (они делаются в разы быстрее)</li>
+</ol>
+
+<h2 id="max-pooling-vs-strided-conv">max pooling vs strided conv</h2>
+
+<p>Я сравнил уменьшение двумя способами:</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">MaxPool2d(2)</code> - берёт квадратики 2х2 пикселя, для каждого канала берёт максимум</li>
+  <li><code class="language-plaintext highlighter-rouge">Conv2d(kernel=3, stride=2)</code> - вычисляет свёртку как обычно, но только для пикселей с чётными x и y, всё остальное откидывается</li>
+</ol>
+
+<p>Есть даже статья из 2015, в которой заменили все max-pooling слои на свёртки со stride</p>
+
+<p><strong>Striving for Simplicity: The All Convolutional Net:</strong> https://arxiv.org/abs/1412.6806</p>
+
+<p>Я попробовал воспроизвести их результаты и взял датасет mnist.
+Воспроизвести не получилось.
+Если я заменял max-pooling слой на ещё одну свёртку - то результаты примерно такие же: https://github.com/Kright/mySmallProjects/blob/master/2023/ml_experiments/mnist_nets/mnist_baseline_compare_maxpool_vs_strided.ipynb
+Если я выкидывал max-pooling слой и добавлял параметр strided=2 предыдущему свёрточному слою, то результаты заметно ухудшались: https://github.com/Kright/mySmallProjects/blob/master/2023/ml_experiments/mnist_nets/mnist_baseline_compare_maxpool_vs_no_layer.ipynb</p>
+
+<p>Но есть момент - max pooling вычислить проще и быстрее, чем свёртку. А ещё свёртка - это обучаемые параметры - которые вроде бы и учатся, но при этом не повышают общую результативность сети по сравнению с max pooling. На мой взгляд какое-то бесполезное изменение.</p>
+
+<p>Поэтому в дисриминаторе у меня используется именно max pool</p>
+
+<h2 id="dilated-convolution-и-perception-field">Dilated convolution и perception field</h2>
+
+<p>Для свёртки 3х3 получается, что результат зависит от самого пикселя и от соседних (-1, 0, 1)
+по х и у) Если повторить N свёрток 3х3 подряд, то информация сможет “утечь” только на N пикселей вбок. Если хочется, чтобы нейронная часть могла получать информацию о каких-то дальних участках, можно сделать совсем иначе.</p>
+
+<p><strong>dilated convolution</strong> - цвет пикселя так же зависит девяти точек, только вот эти пиксели расположены дальше. Например, для dilation=2 сдвиги пикселей будут (-2, 0, 2)</p>
+
+<p>Если хочется захватить какую-то большую область, можно сделать последовательность свёрток с dilation в виде степеней двойки - 1, 2, 4, 8, …
+Таким образом и размер картинки не меняется, и информация может “перетекать” довольно далеко.</p>
+
+<p>Статья из 2015 года. Архитектура сети предложена для семантической сегментации - нейронка для каждого пикселя предсказывала класс объекта.</p>
+
+<p>Multi-Scale Context Aggregation by Dilated Convolutions: https://arxiv.org/pdf/1511.07122.pdf</p>
+
+<p>Я использовал примерно такой же подход и в генераторе и в дискриминаторе. В дискриминаторе я не хотел уменьшать картинку больше чем в 8 раз, но хотел увеличить область, которая влияет на предсказание для каждого пикселя. В генераторе я опять же хотел увеличить область хотя бы до 10-20 пикселей вокруг, чтобы сеть при увеличении кусочка картинки могла учитывать окружающий контекст.</p>
+
+<p>Есть альтернативный способ с архитектурой типа U-net: https://en.wikipedia.org/wiki/U-Net</p>
+
+<p>В коде к Real-ESR-GAN в дискриминаторе используется U-net архитектура и спектральная нормализация. https://github.com/xinntao/Real-ESRGAN/blob/master/realesrgan/archs/discriminator_arch.py</p>
+
+<p>“Рукомахательно” я могу сказать, что там уменьшается картинка, обрабатывается в меньшей размерности и  потом “увеличивается” обратно, обогащая слой сигналами, вычисленными на других масштабах.
+Но сам я такое обучать ещё не пробовал и со своим решением не сравнивал.</p>
+
+<h2 id="финальная-архитектура-дискриминатора">Финальная архитектура дискриминатора</h2>
+
+<p>Уменьшение картинки в 8 раз, потом несколько свёрток с dilation и в конце пара слоёв с <code class="language-plaintext highlighter-rouge">kernel_size=1</code> для независимых “предсказаний” каждым пикселем.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DiscriminatorDilationNetwork</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">generator_weight</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                 <span class="n">mid_channels</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DiscriminatorDilationNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="p">.</span><span class="n">generator_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">generator_weight</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">random_crop</span> <span class="o">=</span> <span class="n">RandomShiftCrop</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="p">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">conv</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">mid_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">conv</span><span class="p">(</span><span class="n">mid_channels</span><span class="p">,</span> <span class="n">mid_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+
+            <span class="bp">self</span><span class="p">.</span><span class="n">conv</span><span class="p">(</span><span class="n">mid_channels</span><span class="p">,</span> <span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">conv</span><span class="p">(</span><span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+
+            <span class="bp">self</span><span class="p">.</span><span class="n">conv</span><span class="p">(</span><span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">conv</span><span class="p">(</span><span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+
+            <span class="bp">self</span><span class="p">.</span><span class="n">conv</span><span class="p">(</span><span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">dilated_conv3</span><span class="p">(</span><span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">dilated_conv3</span><span class="p">(</span><span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">conv</span><span class="p">(</span><span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+
+            <span class="bp">self</span><span class="p">.</span><span class="n">conv</span><span class="p">(</span><span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">16</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">conv</span><span class="p">(</span><span class="n">mid_channels</span> <span class="o">*</span> <span class="mi">16</span><span class="p">,</span> <span class="n">mid_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">mid_channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="p">.</span><span class="n">binary_crossentropy_with_sigmoid</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">nn</span><span class="p">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="p">.</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">nn</span><span class="p">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">out_ch</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">dilated_conv3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">dilation</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="p">.</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">nn</span><span class="p">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="n">dilation</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">dilation</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">out_ch</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+        <span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">loss_for_discriminator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+	                           <span class="n">y</span><span class="p">:</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">,</span>
+	                           <span class="n">label</span><span class="p">:</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">:</span>
+	    <span class="n">y</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">random_crop</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+
+	    <span class="n">diff</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+	    <span class="c1"># realness(label) should be &gt;&gt; realness(y)
+</span>	    <span class="n">zeros</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">diff</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">device</span><span class="o">=</span><span class="n">diff</span><span class="p">.</span><span class="n">device</span><span class="p">)</span>
+	    <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">binary_crossentropy_with_sigmoid</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">zeros</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+	         <span class="n">y</span><span class="p">:</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">,</span>
+	         <span class="n">label</span><span class="p">:</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">:</span>
+	    <span class="k">if</span> <span class="bp">self</span><span class="p">.</span><span class="n">generator_weight</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+	        <span class="k">return</span> <span class="n">torch</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">y</span><span class="p">.</span><span class="n">get_device</span><span class="p">())</span>
+
+	    <span class="n">y</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">random_crop</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+
+	    <span class="n">pred_y</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+	    <span class="n">pred_label</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+	    <span class="n">y_more_real</span> <span class="o">=</span> <span class="n">pred_y</span> <span class="o">&gt;</span> <span class="n">pred_label</span>
+
+	    <span class="n">diff</span> <span class="o">=</span> <span class="n">y_more_real</span> <span class="o">*</span> <span class="mi">9000</span> <span class="o">+</span> <span class="o">~</span><span class="n">y_more_real</span> <span class="o">*</span> <span class="p">(</span><span class="n">pred_y</span> <span class="o">-</span> <span class="n">pred_label</span><span class="p">)</span>
+	    <span class="n">ones</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">ones</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">diff</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">device</span><span class="o">=</span><span class="n">diff</span><span class="p">.</span><span class="n">device</span><span class="p">)</span>
+	    <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">binary_crossentropy_with_sigmoid</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">ones</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="p">.</span><span class="n">generator_weight</span>
+
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">:</span>
+	    <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">layers</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+	    <span class="k">return</span> <span class="n">y</span>
+</code></pre></div></div>
+
+<h2 id="генератор-от-esr-gan-и-что-я-в-нём-поменял">Генератор от ESR-GAN и что я в нём поменял</h2>
+
+<p>Вместо тысячи слов: https://github.com/xinntao/ESRGAN/blob/master/RRDBNet_arch.py
+Это код от автора статьи ESR-GAN.</p>
+
+<p>А если серьёзно - у меня есть сомнения в оптимальности выбранной архитектуры и я её модифицировал, чтобы сеть училась побыстрее и требовала меньше памяти.</p>
+
+<p>Итак, общая структура сети:</p>
+<ol>
+  <li>свёртка для увеличения размерности до <code class="language-plaintext highlighter-rouge">nf=64</code> каналов, и активации нет (это важно)</li>
+  <li>большой блок с кучей RRDB блоков, которые я опишу позже. Вычислительно самая сложная часть</li>
+  <li>увеличение в 4 раза сделано как два увеличения в два раза. В каждом свёртка и странный код F.interpolate(fea, scale_factor=2, mode=’nearest’). Странное место, nearest я не пробовал.</li>
+  <li>после увеличений пара свёрток. Что тоже странно - количество каналов не меняется. Хотя после увеличения изображения будет в <code class="language-plaintext highlighter-rouge">4**2 = 16</code>  раз больше пикселей одна <code class="language-plaintext highlighter-rouge">HRconv</code> будет вычисляться в 16 раз дольше, чем <code class="language-plaintext highlighter-rouge">trunk_conv</code></li>
+</ol>
+
+<p>Теперь про основные (и очень вычислительно тяжёлые) блоки.
+Основная их идея: https://en.wikipedia.org/wiki/Residual_neural_network
+есть “основной путь” в картинке с 64 каналами, каждый блок чуть-чуть улучшает данные - складывает входные данные с поправками, умноженными на 0.2</p>
+
+<p>Основной блок называется (сюрприз) Residual Dense Block:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ResidualDenseBlock_5C</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nf</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">gc</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ResidualDenseBlock_5C</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="c1"># gc: growth channel, i.e. intermediate channels
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">nf</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">nf</span> <span class="o">+</span> <span class="n">gc</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">conv3</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">nf</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gc</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">conv4</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">nf</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">gc</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">conv5</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">nf</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">gc</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">lrelu</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+        <span class="c1"># initialization
+</span>        <span class="c1"># mutil.initialize_weights([self.conv1, self.conv2, self.conv3, self.conv4, self.conv5], 0.1)
+</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">lrelu</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">lrelu</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="n">cat</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="mi">1</span><span class="p">)))</span>
+        <span class="n">x3</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">lrelu</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">conv3</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="n">cat</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span> <span class="mi">1</span><span class="p">)))</span>
+        <span class="n">x4</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">lrelu</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">conv4</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="n">cat</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">),</span> <span class="mi">1</span><span class="p">)))</span>
+        <span class="n">x5</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">conv5</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="n">cat</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">x4</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">x5</span> <span class="o">*</span> <span class="mf">0.2</span> <span class="o">+</span> <span class="n">x</span>
+</code></pre></div></div>
+
+<p>После того, как авторы отказались от батч-нормализации, они решили сделать максимально короткие пути внутри модели. Поэтому внутри dense блока каждый следующий слой получает выходы всех предыдущих. Последний слой в блоке без активации.</p>
+
+<p>В отличие от простой последовательности Residual блоков авторы решили устроить их иерархию: из трёх последовательных residual блоков собирается один Residual In Residual Dense Block (RRDB), который тоже домножает свой выход на 0.2 и прибавляет ко входу.</p>
+
+<p>И вот этих RRDB блоков берётся 16 штук и они последовательно улучшают картинку.</p>
+
+<p>Ещё деталь, которую я не очень понял и не пробовал делать: в оригинальной статье на входе той же самой сетки меняли первый слой на свёртку с уменьшением, так что вход уменьшался в 2 или 4 раза, а на выходе получались картинки, увеличенные в 2 или 1 раз. Возможно, это как-то ускоряло обучение.</p>
+
+<p>У меня была забавная мысль, что можно попробовать переиспользовать RRDB блоки - например, взять один блок и применить его 16 раз. Тогда процесс получится чем-то похожим на diffusion модели, когда картинка потихоньку улучшается раз за разом, но я этого не пробовал.</p>
+
+<p>Что мне не понравилось в Redisual Dense Block: каждая свёртка получается всё тяжелее, последняя свёртка из <code class="language-plaintext highlighter-rouge">64 * 5 = 320</code> каналов в <code class="language-plaintext highlighter-rouge">64</code> - и вычисляется в пять раз дольше, чем обычная свёртка из <code class="language-plaintext highlighter-rouge">64</code> каналов в <code class="language-plaintext highlighter-rouge">64</code>.</p>
+
+<p>Например, для RDB сложноть вычислений (и количество параметров) растёт как <code class="language-plaintext highlighter-rouge">1 + 2 + 3 + 4 + 5 = 15</code>. Если бы вместо этого была бы просто последовательность пяти свёрток, то сложность была бы <code class="language-plaintext highlighter-rouge">1 * 5 = 5</code> - в три раза меньше по сложности вычислений и количеству обучаемых параметров. Возможно, такой блок работал бы заметно хуже, но никто не мешает увеличить количество каналов или блоков.</p>
+
+<p>И моя вторая претензия - базовый Residual Dense Block при вычислении цвета пикселя не может далеко заглянуть - не дальше пяти пикселей в сторону. Мне кажется, это принципиальная проблема. Конечно, таких блоков много, и при использовании всех блоков информация потихоньку может уползти довольно далеко, но базовый блок сам по себе способен только на очень локальные улучшения.</p>
+
+<p>Я попробовал переделать - в RDB оставил только три свёртки (сложность <code class="language-plaintext highlighter-rouge">1 + 2 + 3 = 6</code> - меньше в два с половиной раза). Но для дальних связей добавил свои блоки - три свёртки с dilation <code class="language-plaintext highlighter-rouge">1,2,4</code> и одну поточечную.
+Таким образом, на пиксель начинают влиять все пиксели с расстоянияем до 7
+Сложность вычисления примерно <code class="language-plaintext highlighter-rouge">3</code> , в сумме с RDB блоком получается 9 вместо бывших 15.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyDilatedBlock</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">res_scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyDilatedBlock</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="p">.</span><span class="n">res_scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">res_scale</span>
+
+        <span class="bp">self</span><span class="p">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+            <span class="n">nn</span><span class="p">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">layers</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="p">.</span><span class="n">res_scale</span>
+
+<span class="k">class</span> <span class="nc">MyResidualInResidualDenseBlock</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">res_scale</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">dr_layers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyResidualInResidualDenseBlock</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">res_scale</span> <span class="o">=</span> <span class="n">res_scale</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">dense_blocks</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">MyDilatedBlock</span><span class="p">(</span><span class="n">filters</span><span class="p">),</span>
+            <span class="n">DenseResidualBlock</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">dr_layers</span><span class="p">),</span>
+            <span class="n">MyDilatedBlock</span><span class="p">(</span><span class="n">filters</span><span class="p">),</span>
+            <span class="n">DenseResidualBlock</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">dr_layers</span><span class="p">),</span>
+            <span class="n">MyDilatedBlock</span><span class="p">(</span><span class="n">filters</span><span class="p">),</span>
+            <span class="n">DenseResidualBlock</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">dr_layers</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">dense_blocks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="p">.</span><span class="n">res_scale</span>
+</code></pre></div></div>
+
+<p>Эта сетка одну эпоху проходила трое суток. Долго. Желание менять всякие мелочи и сравнивать результаты куда-то пропало.</p>
+
+<p>Пока сетки были небольшие, я простро сохранял все ошибки в список и строил график через <code class="language-plaintext highlighter-rouge">pyplot</code> после обучения. К сожалению, этот подход не масштабируется. Я собирался добраться до tensorboard и в реальном времени смотреть графики обучения там, но что-то так и не попробовал. Наверно, освою позже.</p>
+
+<h2 id="артефакты-сжатия-jpeg">Артефакты сжатия jpeg</h2>
+
+<p>В третьей статье (Real-ESRGAN) авторы очень круто занялись добавлением шума, размытия, артефактов сжатия и т.п., которые нейронка училась убирать.</p>
+
+<p>Я об этом не задумывался, пока не попробовал запускать свою нейронку на реальных картинках. Модель все эти артефакты сжатия принимала за какие-то важные детали, усиливала-дорисовывала и результат выглядел ужасно.</p>
+
+<p>Я от всего этого оставил только генерацию артефактов jpeg. Для этого есть библиотека https://github.com/mlomnitz/DiffJPEG С её помощью в реалтайме можно быстро сжимать картинки до произвольной степени шакалистости. Главное не передавать <code class="language-plaintext highlighter-rouge">quality = 100</code> - кажется, где-то внутри происходит деление на ноль и вместо несжатой картинки получается фиаско.</p>
+
+<p>По ощущениям после этого нейронка стала работать хуже на “качественных” картинках, но зато вполне нормально смогла увеличивать сжатые.</p>
+
+<h2 id="как-я-пробовал-увеличить-производительность">Как я пробовал увеличить производительность</h2>
+
+<p>Реально работающим решением оказалось</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="p">...</span>
+</code></pre></div></div>
+
+<p>Но правда в процессе обучения эти самые градиенты нам нужны.</p>
+
+<p>Эта фича очень пригодилась, когда я захотел запускать сетку на реальных больших картинках и смотреть результат.
+Да, я знаю про <code class="language-plaintext highlighter-rouge">tensor.requires_grad = False и model.eval()</code>, но с <code class="language-plaintext highlighter-rouge">no_grad</code> происходящее более очевидно.
+Если не хранить все промежуточные вычисления, то видеокарта вполне нормально вмещает картинки размерами около тысячи пикселей.</p>
+
+<p>Теоретически, можно использовать</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LeakyRelu</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Тогда будет храниться только один слой, а при обратном распространении ошибки при необходимости активация будет вычисляться заново. Теоретически это снижает потребление памяти на хранение промежуточных результатов (в идеале раза в два, если каждый второй слой - активация), но добавляет чуть-чуть дополнительной работы. Я толком не распробовал.</p>
+
+<p>Можно использовать autocast https://pytorch.org/docs/stable/notes/amp_examples.html</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">with</span> <span class="k">with</span> <span class="n">autocast</span><span class="p">(</span><span class="n">device_type</span><span class="o">=</span><span class="s">'cuda'</span><span class="p">):</span>
+    <span class="p">...</span>
+</code></pre></div></div>
+
+<p>Производительность улучшилась в полтора-два раза, потребление памяти уменьшилось, только вот вот моя нейронка с какого-то момента переставала обучаться. А без autocast улучшалась дальше. Скорее всего, градиенты где-то становились слишком маленькими. Полезная штука, но экспериментировать лучше без неё.</p>
+
+<h2 id="увеличение-в-4-или-2-раза">Увеличение в 4 или 2 раза.</h2>
+
+<p>Самое забавное - вначале, как и в остальных статьях, я планировал увеличивать картинки сразу в четыре раза. А потом посмотрел, как мыльненькая картинка шириной тысячу пикселей превращается в огромное полотнище в 4к пикселей и задумался - а надо ли так сильно увеличивать?</p>
+
+<p>Для моих хотелок типа “сделать картинку покрасивее” вполне подходит увеличение в два раза. А ещё - для нейросетки это намного более простая задача - и учить проще, и результат красивее.</p>
+
+<p>Теоретически, если нейронка увеличивает в два раза и её применить дважды, то картинка будет увеличена в четыре раза. Практически результат получается не очень красивый появляются артефакты. Особенно они заметны, если увеличить раз в 8 или 16.</p>
+
+<p>Наверно, чтобы такое работало хорошо, надо при шаге обучения тоже уменьшать картинку в четыре раза, дважды увеличивать и сравнивать.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>y = generator(generator(x))
+</code></pre></div></div>
+
+<h2 id="результаты">Результаты</h2>
+
+<p>Jupyter ноутбук с финальной неронкой, которую я учил трое суток: https://github.com/Kright/mySmallProjects/blob/master/2023/ml_experiments/superresolution/rrdb_x2_vgg_gan.ipynb</p>
+
+<p>Количество весов в генераторе: 16 293 763
+Файл с весами генератора занимает 65 мегабайт, с весами дискриминатора - 10.
+Такие небольшие файлы можно даже на гитхаб залить, что я и сделал: https://github.com/Kright/mySmallProjects/tree/master/2023/ml_experiments/superresolution/models/espcn</p>
+
+<p>Нейронка увеличивает картинки в два раза. Если применить её несколько раз, то появляются не очень красивые артефакты.</p>
+
+<p>Если хочется красиво увеличивать фотки - наверно, не надо смотреть на мою нейронку. Есть более тяжеловесные нейронки, дающие красивые результаты.</p>
+
+<p>Кроме того, в софт типа фотошопа активно добавляют нейронки и они там работают очень круто.</p>
+
+<p>Итак, если кто хотел увидеть классическую Лену в 1024x1024 вместо 512х512:</p>
+
+<p><img src="/assets/images/2023/superresolutionNotes/1.png" alt="" /></p>
+
+<p>Для примера оригинал:</p>
+
+<p><img src="/assets/images/2023/superresolutionNotes/src_0.png" alt="" /></p>
+
+<p>Для наглядности я собрал анимацию в 1024х1024 в webp. Одна картинка увеличена нейронкой, вторая - бикубической интерполяцией:</p>
+
+<p><img src="imgs/animation.webp" alt="" /></p>
+
+<p>Если она вдруг не показана, вот ссылка: https://github.com/Kright/my-articles/blob/master/2023/superresolutionNotes/imgs/animation01.webp</p>
+
+<p>Вообще тут забавный момент. Если фотографию, увеличенную интерполяцией с фотографией, сравнить с увеличенной нейронкой - вторая выглядит на порядок лучше.
+Но если сравнивать оригинальную фотографию с уменьшенной и увеличенной нейронкой, то результат не такой красивый.</p>
+
+<p>Для примера в одной картинке, слева направо:</p>
+<ol>
+  <li>оригинал,</li>
+  <li>оригинал, уменьшенные в два раза и увеличенный интерполяцией</li>
+  <li>оригинал, уменьшенный в два раза и увеличенный нейронкой.</li>
+</ol>
+
+<p><img src="/assets/images/2023/superresolutionNotes/3.png" alt="" /></p>
+
+<p>Что интересно, нейронка дорисовывает какие-то детали типа глаз или контуров, но не трогает объекты, которые не в фокусе.</p>
+
+<h2 id="историческая-справка">Историческая справка</h2>
+
+<p>Меня удивляет, как позавчерашние вирусологи и вчерашние военные эксперты вдруг резко стали знатоками в области ИИ. Нейронки - не магия. Они постепенно появлялись в нашей жизни, становясь всё сложнее и совершеннее. Это просто инструмент. Вот несколько примеров:</p>
+
+<ul>
+  <li>2001 год, появиласть идея использовать простую нейронную сеть для предсказания переходов в процессоре. https://en.wikipedia.org/wiki/Branch_predictor#Neural_branch_prediction. Идея - это ещё не готовое решение, но и оно тоже появилось. Пресс релиз AMD в 2016 году: упоминается “neural net prediction” и “smart prefetch”: https://www.amd.com/en/press-releases/amd-takes-computing-2016dec13 Я откуда-то помню, что в процессорах Интела есть что-то похожее, но лень искать пруфы.</li>
+  <li>2012 год, статья про блок управления автомобильного двигателя: https://habr.com/ru/articles/141095/ Там это явно не написано, но электроника не только “управляет” двигателем, она получает обратную связь в виде лямбда зонда, датчиков детонации, температуры, положения коленвала и т.п. Блок управления двигателем в каких-то пределах подстраивается под внешние условия и обеспечивает оптимальную работу на разном бензине, при разной температуре и давлении воздуха и даже подстраивается под водителя. Да, “обучаемая модель” там простая и недалеко ушла от табличек с наборами коэффициентов, но технически модель с сотней подгоняемых параметров не сильно отличается от модели с сотней тысяч параметров.</li>
+  <li>2016 год, в поиске Яндекса появились DSSM: https://habr.com/ru/companies/yandex/articles/314222/</li>
+  <li>2016 год - в Тесле появился автопилот и в дальнейшем он улучшался: https://en.wikipedia.org/wiki/Tesla_Autopilot Так же можно отметить, что большинство автопроизводителей, хоть и не утверждают про “автопилот”, потихоньку добавляют возможности типа автоматической парковки, удержания полосы и дистанции до автомобиля впереди и т.п.</li>
+  <li>2020 год, в поиске Яндекса появился BERT: https://habr.com/ru/companies/yandex/articles/529658/</li>
+</ul>
+
+<h2 id="выводы">Выводы</h2>
+
+<p>Моя нейронка работает! Учить модели - не сложно. Вполне реально взять обычный ПК и сделать что-нибудь интересное.</p>
+
+<p>Можно читать статьи и иметь общее представление о происходящем, но для получения глубоких знаний надо пробовать делать самому. Это примеры “как можно сделать”, но для нейронок нет единственного правильного пути.</p>
+
+<p>Мир не ограничивается простейшими сетками и state-of-the-art решениями. Между ними целая куча градаций - можно менять размер и архитектуру сети, вписывая её в текущие ограничения по железу, времени обучения и размеру датасета. Эти промежуточные решения тоже могут работать хорошо.</p>
+
+<p>Очень удобно для экспериментов сузить обучаемый датасет. Например, я учил на десятке тысяч фотографий цветов - можно было брать сеть с небольшим количеством параметров и быстро учить. Результаты легкой сетки на цветах были вполне сравнимы с тяжёлой сеткой, долго учившейся на всём многообразии фоток.</p>
+
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Kright/kright.github.io">kright.github.io</a> is maintained by <a href="https://github.com/Kright">Kright</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Моё домашнее сетевое хранилище из raspberry pi 4b | kright.github.io</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Моё домашнее сетевое хранилище из raspberry pi 4b" />
+<meta name="author" content="kright" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="https://teletype.in/@kright/raspberry-pi-4b-nas" />
+<meta property="og:description" content="https://teletype.in/@kright/raspberry-pi-4b-nas" />
+<link rel="canonical" href="http://localhost:4000/2022/01/01/%D0%BC%D0%BE%D1%91-%D0%B4%D0%BE%D0%BC%D0%B0%D1%88%D0%BD%D0%B5%D0%B5-%D1%81%D0%B5%D1%82%D0%B5%D0%B2%D0%BE%D0%B5-%D1%85%D1%80%D0%B0%D0%BD%D0%B8%D0%BB%D0%B8%D1%89%D0%B5-%D0%B8%D0%B7-raspberry-pi-4b.html" />
+<meta property="og:url" content="http://localhost:4000/2022/01/01/%D0%BC%D0%BE%D1%91-%D0%B4%D0%BE%D0%BC%D0%B0%D1%88%D0%BD%D0%B5%D0%B5-%D1%81%D0%B5%D1%82%D0%B5%D0%B2%D0%BE%D0%B5-%D1%85%D1%80%D0%B0%D0%BD%D0%B8%D0%BB%D0%B8%D1%89%D0%B5-%D0%B8%D0%B7-raspberry-pi-4b.html" />
+<meta property="og:site_name" content="kright.github.io" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-01T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Моё домашнее сетевое хранилище из raspberry pi 4b" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"kright"},"dateModified":"2022-01-01T00:00:00+01:00","datePublished":"2022-01-01T00:00:00+01:00","description":"https://teletype.in/@kright/raspberry-pi-4b-nas","headline":"Моё домашнее сетевое хранилище из raspberry pi 4b","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2022/01/01/%D0%BC%D0%BE%D1%91-%D0%B4%D0%BE%D0%BC%D0%B0%D1%88%D0%BD%D0%B5%D0%B5-%D1%81%D0%B5%D1%82%D0%B5%D0%B2%D0%BE%D0%B5-%D1%85%D1%80%D0%B0%D0%BD%D0%B8%D0%BB%D0%B8%D1%89%D0%B5-%D0%B8%D0%B7-raspberry-pi-4b.html"},"url":"http://localhost:4000/2022/01/01/%D0%BC%D0%BE%D1%91-%D0%B4%D0%BE%D0%BC%D0%B0%D1%88%D0%BD%D0%B5%D0%B5-%D1%81%D0%B5%D1%82%D0%B5%D0%B2%D0%BE%D0%B5-%D1%85%D1%80%D0%B0%D0%BD%D0%B8%D0%BB%D0%B8%D1%89%D0%B5-%D0%B8%D0%B7-raspberry-pi-4b.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=04936c4141575b8269035838047e98a4dd849258">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Моё домашнее сетевое хранилище из raspberry pi 4b</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="https://github.com/Kright/kright.github.io" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<nav>
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+</nav>
+
+
+<p>01 Jan 2022</p>
+
+<p>https://teletype.in/@kright/raspberry-pi-4b-nas</p>
+
+<p>2022 January 24</p>
+
+<h1 id="моё-домашнее-сетевое-хранилище-из-raspberry-pi-4b">Моё домашнее сетевое хранилище из raspberry pi 4b</h1>
+
+<p>Не уверен, что мой способ оптимальный по надёжности или расходам, но для истории запишу его здесь, включая особенности и подводные камни.</p>
+
+<p>P.S. Время от времени пробую сделать с малинкой что-нибудь новое и дополняю статью.</p>
+
+<h3 id="установка-ос">Установка ОС</h3>
+
+<p>Есть готовая штука - raspberry pi imager, в которой можно выбрать желаемую ОС и залить её на sd-карту. В случае с малинкой на 8 гб оперативной памяти стоит обратить внимание на битность ОС. Якобы видеодрайвера в 64битной ОС работают плохо, но в дальнейшем мне они и не нужны. Я выбрал 64-битную версию Ubuntu server.</p>
+
+<p>Можно установить ОС, не подключая монитор/клавиатуру/мышь. Чтобы она подключилась к сети, где-то в файлике на sd-карточке с ОС придётся прописать имя и пароль от wifi сети. Но ещё лучше (и на мой взгляд проще) подключить сеть через кабель к роутеру. В малинке гигабитный порт, для нужд домашнего хранилища самое то. Вышеописанные шаги с паролем не нужны, зато неплохо бы иметь доступ на роутер, чтобы узнать, по какому адресу доступна малинка.</p>
+
+<p>Либо можно просканировать локальную сеть и так узнать адрес:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo nmap -sn 192.168.1.0/24
+</code></pre></div></div>
+
+<p>При самом первом запуске ОС грузится несколько минут, а я поначалу думал что что-то делаю не так. Вся дальнейшая работа и настройка делается через ssh</p>
+
+<h3 id="внешний-жёсткий-диск">Внешний жёсткий диск</h3>
+
+<p>Я купил внешний жёсткий диск на 4Тб: HDD WD Elements Desktop WDBWLG0040HBK-EESN. Из особенностей - у него есть отдельный провод для питания от розетки и он не должен тащить энергию из малинки. Из минусов - в розетку придётся втыкать два девайса. У малинки синие разъёмы - usb 3.0, диск лучше втыкать в них.</p>
+
+<p>Дальше начинаются приключения: raspberry pi imager при установке ОС размечает сд-карточку в MBR. Можно вместо карточки подключить жёсткий диск, но MBR позволит использовать только первые 2 Тб диска. А ещё хочется отказаться от sd карточки. Почему-то полностью переселить ОС на диск c GPT разметкой у меня не получилось, ОС не грузилась. В качестве полумеры я оставил загрузочный раздел на sd карточке и раздел с ОС перенёс на диск. Количество записей на карточку будет минимальным, и в случае потери я смогу вставить новую карточку памяти с загрузчиком и работать дальше.</p>
+
+<p>Самое странное, что в сдругим жёстким диском toshiba на 2 гб с gpt внезапно загрузиться получилось. Я потратил около дня, но так и не понял, почему с одного диска грузится, а с другого - нет.</p>
+
+<p>Можно взять раздел с ОС прямо с сд карточки (зря что ли на неё ОС ставили и настраивали) и скопировать на диск. Дальше понадобится узнать айдишники для разделов.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo blkid
+</code></pre></div></div>
+
+<p>Примерное описание тут: <a href="https://linuxtut.com/en/7af17f1272ca0c558d47/">https://linuxtut.com/en/7af17f1272ca0c558d47/</a></p>
+
+<p>Эти айдишники надо будет обновить в двух местах:</p>
+
+<ol>
+  <li>В загрузчике boot/cmdline.txt указывает, откуда грузить ОС.</li>
+  <li>В самой ОС в еtc/fstab монтируются и загрузчик, и раздел с ОС</li>
+</ol>
+
+<p>Как я потом узнал - не обязательно использовать PARTUUID, можно вместо него указать PARTLABEL. Название раздела можно сделать любое, и мне это показалось более удобным. Но надо проследить, чтобы не было двух разделов с одинаковым названием.</p>
+
+<p>В малинке целых 2 usb порта, поэтому можно включить рядышком второй диск и сделать софтовый RAID1. На двух дисках будут лежать идентичные копии данных, чтение теоретически может ускориться в два раза, запись будет со скоростью самого медленного и некоторыми приколами дисков с черепичной записью. К сожалению, о современных дисках производители эту информацию не особо публикуют, в одной “модели” может оказаться как одно, так и другое, и я RAID делать не стал. В планах организовать резервное копирование с домашнего ПК на малинку - тогда отказ одного из дисков или устройств не будет фатальным.</p>
+
+<h2 id="применение">Применение</h2>
+
+<ol>
+  <li>sshfs для доступа из Линукса для тех, кто не осилил нормальную настройку самбы. (это я)</li>
+  <li>Написать и хостить игрушечный веб-сервер для доступа к файлам из локальной сети.</li>
+  <li>Samba для доступа к папкам из локальной сети не только из линукса</li>
+  <li>QBittorrent с возможностью управлять им из браузера</li>
+  <li>24/7 крутить своего телеграм бота. (это тоже я)</li>
+  <li>Хранить git-репозитории</li>
+  <li>Подключить второй массив и организовать raid</li>
+  <li>Настроить резервное копирование с помощью rsync и cron</li>
+  <li>Раздобыть вторую малинку и организовать загрузку по сети, вообще без sd- карты</li>
+  <li>Добавить пассивное охлаждение</li>
+  <li>Настроить LUKS шифрование для дисков</li>
+</ol>
+
+<p>Скорость копирования по проводу через sshfs получилась 44-47 мегабайт в секунду. Почти полгигабита! У меня есть подозрение, что сеть на малинке быстрее, а это тормозит жёсткий диск или роутер, но пруфов не будет.</p>
+
+<h3 id="автозапуск-бота-и-торрентов">Автозапуск бота и торрентов</h3>
+
+<p>Ниже будет упрощённый пересказ того, что я узнал по этой ссылке: <a href="https://obu4alka.ru/ustanovka-qbittorrent-na-ubuntu-server-20-04-lts.html">https://obu4alka.ru/ustanovka-qbittorrent-na-ubuntu-server-20-04-lts.html</a> Ещё можно посмотреть тут: <a href="https://www.shubhamdipt.com/blog/how-to-create-a-systemd-service-in-linux/">https://www.shubhamdipt.com/blog/how-to-create-a-systemd-service-in-linux/</a></p>
+
+<p>Кстати, qbittorrent в браузере выглядит практически так же, как и приложение. И ещё он качает/раздаёт круглые сутки, так что можно оживить полузабытые раздачи.</p>
+
+<p>В ubuntu есть systemd, которая запускает сервисы при старте ОС. Чтобы бот и торрент тоже запускались, сделаем текстовые файлики:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>etc/systemd/system/qbittorrent-nox.service
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Unit]
+Description=qBittorrent Command Line Client
+After=network.target
+
+[Service]
+Type=forking
+User=qbittorrent-nox
+Group=qbittorrent-nox
+UMask=007
+ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=8080
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+</code></pre></div></div>
+
+<p>и ещё один для моего бота:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Unit]
+Description = Runs my bot
+
+Wants=network-online.target
+After=network-online.target nss-lookup.target
+
+[Service]
+Type=simple
+ExecStart=/home/ubuntu/bot/run.sh
+
+[Install]
+WantedBy=multi-user.target
+</code></pre></div></div>
+
+<p>В случае qbittorrent я создал отдельного пользователя, но если честно не особо понял смысл. Ну да, так вроде безопаснее. А потом самба не cможет открыть файл, т.к. у неё нет прав на чтение и вас ждут красота и изучение того как в линуксе работают пользователи, группы и разрешения.</p>
+
+<p>дальше есть набор команд</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo systemctl daemon-reload // чтобы увидело наши изменения в файле
+sudo systemctl start qbittorrent-nox.service // запуск
+sudo systemctl status example.service // посмотреть статус если вдруг не работает
+sudo systemctl enable example.service // добавить в автозагрузку
+</code></pre></div></div>
+
+<p>В настройках qbittorrent (прямо в веб-интерфейсе) есть смысл поменять дефолтную папку для хранения торрентов, а так же залезть во вкладку webUI и убрать там галочку “Use UPnP / NAT-PMP to forward the port from my router”, чтобы запретить вход в веб-интерфейс из сети снаружи роутера. Ещё там есть опция “Bypass authentication for clients on localhost”, её наоборот удобнее включить для доступа из локальной сети без пароля.</p>
+
+<p><strong>Самба</strong></p>
+
+<p>В windows 10 отключили старую версию протокола smb, который позволял заходить без авторизации. Но с самбой всё как-то криво складывается, я сделал readonly шару и забил, потому что из линукса достаточно sshfs.</p>
+
+<p>Для того, чтобы самба переходила по символьным ссылкам, придётся ещё какие-то опции указывать. Их тут нет. /etc/samba/smb.conf</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[share]
+  path = /mnt/data/share/
+  read only = yes
+  guest ok = yes
+  guest only = yes
+</code></pre></div></div>
+
+<h3 id="sshfs">sshfs</h3>
+
+<p>Очень удобный вариант, можно удалённую папку примонтировать как папку у себя. Я даже alias завёл:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alias mount-pi8="sshfs -o reconnect,ServerAliveInterval=15,ServerAliveCountMax=3 ubuntu@192.168.1.120:/ /home/me/Desktop/pi8"
+alias umount-pi8="umount /home/me/Desktop/pi8"
+</code></pre></div></div>
+
+<p>Единственное - несмотря на параметры, оно как-то криво работает при покидании домашней сети. Ноутбук был не рад, пришлось перезагружать. По тем же причинам в автозапуск такое ставить не надо. Руками каждый раз монтировать - чуточку лень. Возможно, я всё-таки донастрою самбу или ещё что-то.</p>
+
+<p>В остальном - шикарно, скорость работы близка к скорости жёсткого диска (возможно, не современного, а десятилетней давности, но всё же).</p>
+
+<h3 id="игрушечный-веб-сервер-для-доступа-к-файлам-из-локальной-сети">Игрушечный веб-сервер для доступа к файлам из локальной сети</h3>
+
+<p>Сделал просто потому, что мне хотелось написать свой сервер. Код тут: <a href="https://github.com/Kright/files-web-server">https://github.com/Kright/files-web-server</a>. Не важно что за устройство - ПК, айфон, телефон с андроидом - лишь бы они были подключены к локальной сети и умели запускать браузер. Сервер отображает какие-то папки в какие-то пути в браузере, например, по 192.168.0.xx:/photo открывается папка с фотками.
+Что забавно, некоторые файлы типа mp4 можно воспроизводить прямо на лету - они прямо в браузере открываются как видео с проигрывателем.</p>
+
+<p>Я не знаток веб-технологий, генерирую максимально простые html-странички:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;${currentDir.getName}&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div&gt;
+    $parentLink
+    $links
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div></div>
+
+<h3 id="хранение-git-репозиториев">Хранение git-репозиториев</h3>
+
+<p>Я не стал использовать что-то типа gitlab и пошёл по максимально простому пути. В git сервер и клиент равноправны, на клиенте хранится своя копия данных. Между ними нет большой разницы, и я под сервером подразумеваю круглосуточно работающий ПК, и предполагаю что клиент запускается время от времени и закидывает на сервер свои изменения.</p>
+
+<p>Адресов для скачивания/заливания репозитория может быть несколько. Обычно он один и называется origin. Но никто не запретит добавить несколько адресов, выкачать ветку с одного и потом её влить по другому адресу. И даже в совершенно другой репозиторий так можно, лишь бы имена веток не пересекались. Гибкость впечатляет, хоть про неё и не все знают.</p>
+
+<p>Если есть ssh доступ к серверу, то добавить туда репозиторий очень просто:</p>
+
+<p>На сервере: создать папку, в ней вызвать</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git init --bare
+</code></pre></div></div>
+
+<p>На клиенте:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git remote add pi8 ssh://user@ip/path-to-repo
+git push pi8 master
+</code></pre></div></div>
+
+<p>В идеале ещё можно создать отдельного пользователя для git и т.п., но для локального домашнего применения не вижу смысла.</p>
+
+<p>Подробнее можно прочитать тут: <a href="https://git-scm.com/book/en/v2/Git-on-the-Server-Setting-Up-the-Server">https://git-scm.com/book/en/v2/Git-on-the-Server-Setting-Up-the-Server</a></p>
+
+<h3 id="raid-массив">RAID массив</h3>
+
+<p>В итоге я отказался от этой идеи.
+С помощью mdadm можно сделать raid1 массив, в котором данные будут лежать в двух копиях. Одна на одном диске и другая на другом. Т.к. диски обычно неравных размеров, лучше вместо указания дисков (типа /dev/sda) использовать разделы: например /dev/sda1. Само собой, разделы должны быть на разных дисках. В случае отказа одного из дисков массив с данными продолжит работать как ни в чём ни бывало, пока не откажет второй диск. В общем, за статусом raid массива надо будет следить (и мне кажется, это неудобно).</p>
+
+<p>Вдобавок, я сделал раздел с raid только для важных данных, и при отказе основного диска ОС похерится и малинка всё равно не запустится. Я подумал над этим безобразием и решил вместо этого сделать бэкапы.</p>
+
+<h3 id="бэкапы">Бэкапы</h3>
+
+<p>В отличие от raid массива, у бэкапов есть очень полезное свойство - при случайном удалении файлов их можно будет восстановить.</p>
+
+<p>Я подумал над возможными вариантами:</p>
+
+<ul>
+  <li>есть специальное ПО типа <a href="https://ru.wikipedia.org/wiki/Bacula">https://ru.wikipedia.org/wiki/Bacula</a>. Инкрементальные бэкапы хранятся в каком-то бинарном формате, само ПО надо ставить и настраивать.</li>
+  <li>rsync + cron. Внезапно, rsync умеет делать инкрементальные бэкапы. Чтобы не хранить один файл по многу раз, используюся жёсткие ссылки. С точки зрения меня как пользователя получатся папки типа backup1, backup2, и т.д, в каждой из которых лежат все файлы на момент копирования.</li>
+</ul>
+
+<p>На мой взгляд, с rsync самый удобный вариант - я смогу вставить диск с бэкапами в любой комп и вытащить данные обратно.</p>
+
+<p>Я вдохновлялся вот этой статьёй: <a href="https://linuxconfig.org/how-to-create-incremental-backups-using-rsync-on-linux">https://linuxconfig.org/how-to-create-incremental-backups-using-rsync-on-linux</a>, но сделал немножко по-другому:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>readonly DATETIME="$(date '+%Y-%m-%d_%H:%M:%S')"
+readonly LOG_FILE="/mnt/backup/logs/backup_safedata_${DATETIME}.txt"
+
+printf "\n\nstart at ${DATETIME}\n" &gt;&gt; $LOG_FILE
+
+rsync -av --delete /mnt/safedata --link-dest ../latest --exclude "lost+found" /mnt/backup/safedata/${DATETIME} &gt;&gt; $LOG_FILE
+
+df &gt;&gt; $LOG_FILE
+echo "finished at $(date '+%Y-%m-%d_%H:%M:%S')" &gt;&gt; $LOG_FILE
+
+cd /mnt/backup/safedata
+rm latest
+ln -s ${DATETIME} latest
+
+python3 -c '
+import os
+import shutil
+listdir = os.listdir(".")
+files = sorted([f for f in listdir if f.startswith("20")])
+to_preserve = set(files[-31:])
+monthly = {f[:7]: f for f in reversed(files)}
+to_preserve.update(monthly.values())
+for f in sorted(to_preserve):
+	print(f"keep '{f}'")
+for f in set(files) - to_preserve:
+    print(f"remove '{f}'")
+    shutil.rmtree(f)
+' &gt;&gt; $LOG_FILE
+</code></pre></div></div>
+
+<p>latest - мягкая ссылка на последний бэкап. В –link-dest путь должен быть абсолютный или относительный для папки с бэкапом, поэтому надо выскочить на директорию вверх: ../latest</p>
+
+<p>если ссылки нет, то rsync всё ещё работает.</p>
+
+<p>Логи я решил каждый раз писать в отдельный файл, так как иначе при добавлении большого количества файлов он превращается в многомегабайтный лог и в нём сложно найти, что в какой день происходило. Папка для логов сама не создастся, надо добавить её вручную</p>
+
+<p>скрипт на питоне хранит последние 30 версий бэкапа и первую версию каждого месяца, остальные удаляет.</p>
+
+<p>Для отладки есть полезные опции –dry-run для запуска без реальных изменений, а так же можно опцию –verbose указать дважды и получить более подробный вывод: -vv</p>
+
+<p>Опция -a раскрывается в кучу настроек, которые пытаются перетащить время, пользователя файла, права доступа и т.п. Я попробовал запускать rsync между компом и малинкой и несмотря на –link-dest создавались копии файлов. Я потратил кучу времени на то, чтобы понять, что все эти опции мешают и в итоге между машинами копировал с опциями -rl –size-only</p>
+
+<p>В этом случае время игнорируется, а файл с тем же размером считается не требующим копирования. Можно ещё указать –checksum, но тогда и передающая и принимающая стороны будут считать md5 чексуммы для файлов, что потребует их полного прочтения. Я решил забить и ограничиться проверкой размера.</p>
+
+<p>C помощью cron можно будет настроить бэкапы на каждый день или каждую неделю:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>crontab -e
+</code></pre></div></div>
+
+<p>и там написать</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>20 4 * * * /mnt/backup/backup.sh
+</code></pre></div></div>
+
+<p>Чтобы каждую ночь в 4:20 делать бэкап.</p>
+
+<h2 id="загрузка-по-сети">Загрузка по сети*</h2>
+
+<p>*Задание со звёздочкой, будут приключения.</p>
+
+<p>Заливать образ на флешку, вставлять в малинку, ждать пока загрузится - не самое весёлое занятие. После того, как перевая малинка стала работающим 24/7 полноценным сервером, я раздобыл вторую и решил попробовать загрузку по сети.</p>
+
+<p>Глобально это состоит из двух шагов:</p>
+
+<ol>
+  <li>включить на клиентской малинке загрузку по сети</li>
+  <li>настроить на сервере dhcp и nfs, чтобы они работали</li>
+</ol>
+
+<p>Из принципиальных ограничений - клиентская малинка должна быть подключена к сети по проводу, а не через wifi.</p>
+
+<p>Список команд и т.п. несложный, но в процессе я нашёл кучу подводных камней, и настройка заняла у меня целый вечер.</p>
+
+<p><a href="https://www.raspberrypi.com/documentation/computers/remote-access.html#network-boot-your-raspberry-pi">https://www.raspberrypi.com/documentation/computers/remote-access.html#network-boot-your-raspberry-pi</a></p>
+
+<p>Вот ссылка на документацию, но делать надо далеко не всё, что в ней написано.</p>
+
+<h3 id="настройка-клиента">Настройка клиента</h3>
+
+<p>На 4B, загрузку включать надо, причём процесс отличается от предыдущих версий.</p>
+
+<p>Во-первых, понадобится поставить именно raspbian os. В принципе, можно обойтись и без подключения мышки-клавиатуры, если в rpi Imager нажать ctrl+shift+x (или какое-то ещё неочевидное сочетание клавиш), оказаться в настройках и там указать ключ для ssh. Экран я советую всё-таки подключить, он потом пригодится.</p>
+
+<p>Запускаем штуку для настройки (прям из консоли)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo raspi-config
+</code></pre></div></div>
+
+<p>В ней в менюшках надо выбрать <code class="language-plaintext highlighter-rouge">Advanced Options</code>, <code class="language-plaintext highlighter-rouge">Boot Order</code>, <code class="language-plaintext highlighter-rouge">Network Boot</code>  и в ней выбрать загрузку по сети (что странно - с загрузкой по сети вариант ровно один - малинка попытается загрузиться с sd карты, если не получится - то по сети).</p>
+
+<p>Чтобы изменения применились, придётся перезагрузиться.</p>
+
+<p>И потом командой</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vcgencmd bootloader_config
+</code></pre></div></div>
+
+<p>можно посмотреть, что в BOOT_ORDER. В идеале там должно быть 0xf21. Тут можно посмотреть подробнее, что же число значит:</p>
+
+<p><a href="https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#raspberry-pi-4-bootloader-configuration">https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#raspberry-pi-4-bootloader-configuration</a></p>
+
+<p>Я так понял, они справа налево идут.</p>
+
+<p>После этого малинку можно выключить, выдернуть из неё sd-карту и снова включить. Выше я советовал включить экран - малинка на нём покажет текстом свой ip адрес и потихоньку растущее количество неудачных попыток загрузки по сети.</p>
+
+<h3 id="настройка-сервера">Настройка сервера</h3>
+
+<p>Дальше инструкции с официального сайта следовать не обязательно.</p>
+
+<p>Во-первых, можно просто взять и на на домашнем роутере во вкладочке с настройками DHCP указать статические ip адреса для сервера (давно уже так сделал) и для клиента (сделал сейчас).</p>
+
+<p>Во вторых, у меня клиент - raspbian os, а сервер ubuntu. На сайте происходит кунг-фу по включению той же самой sd-карты в сервер, загрузке с неё и дальнейшей модификации для того, чтобы клиент и сервер различались. Спасибо, но я воздержусь.</p>
+
+<p>Итак, можно смело листать сайт до инструкции</p>
+
+<p>sudo apt install tcpdump dnsmasq
+sudo systemctl enable dnsmasq
+sudo tcpdump -i eth0 port bootpc</p>
+
+<p>Но dnsmasq ставить пока не надо.</p>
+
+<p>С помощью tcpdump можно убедиться, что малинка при загрузке действительно посылает запросы всем в локальной сети.</p>
+
+<p>С dnsmasq меня ждал сюрприз. Это в одном лице и dns сервер, и нужные нам dhcp и tftp сервера. В ubuntu уже есть свой dns-резолвер, systemd-resolved, и он, как нетрудно догадаться, тоже dns сервер, который слушает порт 53 и не даёт слушать его другим.</p>
+
+<p>После установки dnsmasq полезет на 53 порт и не сможет - тот уже занят. Всё что надо сделать - залезть в /etc/dnsmasq.conf и указать там port=0, чтобы dns-составляющая не запускалась и не мешалась.</p>
+
+<p><a href="https://askubuntu.com/questions/191226/dnsmasq-failed-to-create-listening-socket-for-port-53-address-already-in-use">https://askubuntu.com/questions/191226/dnsmasq-failed-to-create-listening-socket-for-port-53-address-already-in-use</a></p>
+
+<p>Я вместо этого воспользовался первым нагугленным советом и отключил systemd-resolved. В итоге dns работать перестал, я узнал, что команде sudo без dns работается плохо и потом возвращал всё обратно.</p>
+
+<p>так вот, в dnsmasq.conf должно в итоге быть</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>port=0
+dhcp-range=192.168.1.255,proxy
+log-dhcp
+enable-tftp
+tftp-root=/tftpboot
+pxe-service=0,"Raspberry Pi Boot"
+</code></pre></div></div>
+
+<p>tftp-root - путь к папке с загрузчиком на сервере</p>
+
+<h3 id="как-скопировать-системный-раздел-на-сервер">как скопировать системный раздел на сервер</h3>
+
+<p>В оригинальной статье они обходятся одной sd-картой, но я по понятным причинам включил sd-карту в ноутбук и задумался, как же скопировать её на сервер. Суть проблемы в том, что</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rsync from to
+</code></pre></div></div>
+
+<p>не может скопировать файлы, принадлежащие root и запрещённые другим для чтения. А поскольку мы копируем системный раздел, там такие файлы будут.</p>
+
+<p>Можно написать так:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo rsync from to
+</code></pre></div></div>
+
+<p>Тогда получится скопировать файлы с владельцем root, но не получится их записать по двум причинам:</p>
+
+<ol>
+  <li>у рута своя папка .ssh и там может не быть ключа для ssh</li>
+  <li>на системе, куда копируем, rsync работает не из под-рута</li>
+</ol>
+
+<p>Красота и удобство. Указать root@ip:/path у меня тоже не получилось. Первая проблема решается копированием ~/.ssh/id_rsa, вторая - хитрой опцией. Для хитрой опции требуется, чтобы на другой машине команда sudo не спрашивала пароль. Рабочая команда выглядит так:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo rsync --progress -ax -e "ssh" --rsync-path="sudo rsync" rootfs/ ubuntu@192.168.1.142:/nfs/client1
+</code></pre></div></div>
+
+<p>Таким незамысловатым образом можно скопировать загрузчик в /nfs/nfsboot, а системный раздел в /nfs/client1</p>
+
+<p>Идею и команду взял отсюда: <a href="https://superuser.com/questions/605425/rsync-root-files-between-systems-without-specifying-password">https://superuser.com/questions/605425/rsync-root-files-between-systems-without-specifying-password</a></p>
+
+<p>После этого надо будет в nfsboot/cmdline.txt заменить указание на root: у меня получилось так:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>console=serial0,115200 console=tty1 root=/dev/nfs nfsroot=192.168.1.142:/nfs/client1,vers=4.1,proto=tcp rw ip=dhcp rootwait
+</code></pre></div></div>
+<p>и поправить etc/fstab</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>192.168.1.142:/nfs/tftpboot	/boot	nfs	defaults,vers=4.1,proto=tcp 0 0
+</code></pre></div></div>
+<p>То, что есть только boot без корневой системы - нормально, так и должно быть</p>
+
+<p>Кроме того, надо ещё включить rpcbind, настроить nfs-kernel-server и в /etc/exports указать пути для nfs:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/nfs/client1 *(rw,sync,no_subtree_check,no_root_squash)
+/nfs/tftpboot *(rw,sync,no_subtree_check,no_root_squash)
+</code></pre></div></div>
+<p>В результате малинка без SD-карты загружается по сети из файлов в папке. При желании ту папку можно будет копировать, хранить несколько разных версий ОС и т.п.</p>
+
+<h3 id="пассивное-охлаждение">Пассивное охлаждение</h3>
+
+<p>Температуру можно узнать так:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vcgencmd measure_temp
+</code></pre></div></div>
+<p>У меня она была 64 градуса (с нагрузкой из описанного выше софта), после - 57. Я купил корпус Qumo Aluminum RS001, который заодно является радиатором. Охлаждение пассивное, вентилятора нет и ломаться нечему. И шуметь тоже. Сам корпус, кажется, сделан из аллюминия. Смотрится красиво и солидно. В комплекте шли два маленьких кусочка термопрокладки, болтики и шестигранный ключик - в общём, всё необходимое.</p>
+
+<p>Эффектом немного разочарован, думал будет градусов 10-15 разницы, а получилось около 7. Сам корпус ощутимо горячий во всех местах</p>
+
+<h3 id="luks-шифрование-раздела">LUKS шифрование раздела</h3>
+
+<p>Опциональная часть, надо чётко понимать, нужно ли шифрование. Цель - чтобы содержимое диска было невозможно прочитать при включении в посторонний пк.</p>
+
+<p>Если пароль от раздела будет храниться где-то на малинке, то затея бессмысленная. Я планирую заходить на малинку по ssh и руками подключать зашифрованный раздел. Кроме того - для самой малинки, пока она работает, пароль известен. Если сама малинка скомпроментирована - то злоумышленник и имеет доступ к диску, и может утащить к себе пароль.</p>
+
+<p>Шифрование спасает только от сценария, когда постороний забирает диск и пытается прочитать с него данные. Всё, ничего больше.</p>
+
+<p>Я где-то видел, чтобы на малине как-то хитро шифровали прям диск с системой, но я так извращаться не буду. В малинке негде хранить пароль, и я хочу, чтобы она могла сама включиться без моего участия. Шифрую только отдельный раздел с данными.</p>
+
+<p>Итак, если шифрование всё-таки нужно, начнём:</p>
+
+<p>Скорее всего, cryptsetup уже установлен, если нет, ставим:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt install cryptsetup
+</code></pre></div></div>
+<p>Особенности малинки - нет хардварной поддержки aes, скорость шифровки и дешифровки будет медленная, советуют вместо него использовать adiantum.</p>
+
+<p>Проверить скорость шифрования (без записи на диск, всё в RAM):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cryptsetup benchmark
+# Tests are approximate using memory only (no storage IO).
+PBKDF2-sha1       386643 iterations per second for 256-bit key
+PBKDF2-sha256     630912 iterations per second for 256-bit key
+PBKDF2-sha512     510007 iterations per second for 256-bit key
+PBKDF2-ripemd160  324034 iterations per second for 256-bit key
+PBKDF2-whirlpool  142935 iterations per second for 256-bit key
+argon2i       4 iterations, 333516 memory, 4 parallel threads (CPUs) for 256-bit key (requested 2000 ms time)
+argon2id      4 iterations, 335222 memory, 4 parallel threads (CPUs) for 256-bit key (requested 2000 ms time)
+#     Algorithm |       Key |      Encryption |      Decryption
+        aes-cbc        128b        85.6 MiB/s        98.5 MiB/s
+    serpent-cbc        128b        42.7 MiB/s        44.4 MiB/s
+    twofish-cbc        128b        63.3 MiB/s        69.1 MiB/s
+        aes-cbc        256b        76.0 MiB/s        77.5 MiB/s
+    serpent-cbc        256b        43.8 MiB/s        44.4 MiB/s
+    twofish-cbc        256b        68.1 MiB/s        69.2 MiB/s
+        aes-xts        256b        84.4 MiB/s       101.8 MiB/s
+    serpent-xts        256b        43.1 MiB/s        44.8 MiB/s
+    twofish-xts        256b        67.9 MiB/s        70.7 MiB/s
+        aes-xts        512b        78.6 MiB/s        79.8 MiB/s
+    serpent-xts        512b        44.9 MiB/s        44.7 MiB/s
+    twofish-xts        512b        70.5 MiB/s        70.6 MiB/s
+</code></pre></div></div>
+<p>И померять aes-adiantum, который должен быть быстрее</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cryptsetup benchmark -c xchacha12,aes-adiantum
+# Tests are approximate using memory only (no storage IO).
+#            Algorithm |       Key |      Encryption |      Decryption
+xchacha12,aes-adiantum        256b       188.1 MiB/s       189.2 MiB/s
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cryptsetup benchmark -c xchacha20,aes-adiantum
+# Tests are approximate using memory only (no storage IO).
+#            Algorithm |       Key |      Encryption |      Decryption
+xchacha20,aes-adiantum        256b       161.0 MiB/s       162.2 MiB/s
+</code></pre></div></div>
+<p>Ссылки, которыми я руководствовался:</p>
+
+<p><a href="https://gist.github.com/palopezv/792b9f0100484186c3f74cbee7b07630">https://gist.github.com/palopezv/792b9f0100484186c3f74cbee7b07630</a></p>
+
+<p><a href="https://wiki.davidl.me/index.php?title=LUKS&amp;mobileaction=toggle_view_desktop">https://wiki.davidl.me/index.php?title=LUKS&amp;mobileaction=toggle_view_desktop</a></p>
+
+<p>Я выбрал xchacha20, т.к. разница в скорости не критичная, а оно вроде как надёжнее.</p>
+
+<p>xchacha20 отличается в xchacha12 количеством раундов шифрования - 20 вместо 12.</p>
+
+<p>Где почитать: <a href="https://www.reddit.com/r/cryptography/comments/p3dflu/fulldiskencryption_xchacha12_vs_xchacha20/">https://www.reddit.com/r/cryptography/comments/p3dflu/fulldiskencryption_xchacha12_vs_xchacha20/</a></p>
+
+<p>Создадим раздел:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo cryptsetup luksFormat --type=luks2 --sector-size=4096 -c xchacha20,aes-adiantum-plain64 -s 256 -h sha512 --use-urandom /dev/sdXX
+</code></pre></div></div>
+<p>Тут вместо sdXX написать реальный раздел как он показывается в lsblk</p>
+
+<p>Дальше был забавный момент - после всего программа требует написать YES большими буковками. Просто чтобы убедиться, что человек внимательно посмотрел на команду и случайно не похерит нужный раздел.</p>
+
+<p>Дальше надо подключить раздел и отформатировать</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo cryptsetup open /dev/sdXX NAME
+sudo mkfs.ext4 /dev/mapper/NAME
+</code></pre></div></div>
+<p>Примонтировать раздел:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Open the encrypted drive
+sudo cryptsetup open /dev/sdXX NAME
+# Mount your partition
+mount -t ext4 /dev/mapper/NAME MOUNT_LOCATION
+</code></pre></div></div>
+<p>Размонтировать:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Unmount your partition
+umount MOUNT_LOCATION
+# Close the decrypted drive
+cryptsetup close NAME
+</code></pre></div></div>
+<h2 id="выводы">Выводы</h2>
+
+<p>Если хочется только домашнее хранилище - проще и дешевле подключить диск напрямую к роутеру (некоторые роутеры так умеют). Но мне хотелось иметь полноценный сервер, хоть и маленький. Своей цели я достиг и очень доволен.</p>
+
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Kright/kright.github.io">kright.github.io</a> is maintained by <a href="https://github.com/Kright">Kright</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

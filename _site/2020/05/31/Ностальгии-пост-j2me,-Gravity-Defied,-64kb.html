@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Ностальгии пост: j2me, gravity defied, 64kb | kright.github.io</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Ностальгии пост: j2me, gravity defied, 64kb" />
+<meta name="author" content="kright" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Ностальгии пост: j2me, Gravity Defied, 64kb" />
+<meta property="og:description" content="Ностальгии пост: j2me, Gravity Defied, 64kb" />
+<link rel="canonical" href="http://localhost:4000/2020/05/31/%D0%9D%D0%BE%D1%81%D1%82%D0%B0%D0%BB%D1%8C%D0%B3%D0%B8%D0%B8-%D0%BF%D0%BE%D1%81%D1%82-j2me,-Gravity-Defied,-64kb.html" />
+<meta property="og:url" content="http://localhost:4000/2020/05/31/%D0%9D%D0%BE%D1%81%D1%82%D0%B0%D0%BB%D1%8C%D0%B3%D0%B8%D0%B8-%D0%BF%D0%BE%D1%81%D1%82-j2me,-Gravity-Defied,-64kb.html" />
+<meta property="og:site_name" content="kright.github.io" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-31T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Ностальгии пост: j2me, gravity defied, 64kb" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"kright"},"dateModified":"2020-05-31T00:00:00+02:00","datePublished":"2020-05-31T00:00:00+02:00","description":"Ностальгии пост: j2me, Gravity Defied, 64kb","headline":"Ностальгии пост: j2me, gravity defied, 64kb","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020/05/31/%D0%9D%D0%BE%D1%81%D1%82%D0%B0%D0%BB%D1%8C%D0%B3%D0%B8%D0%B8-%D0%BF%D0%BE%D1%81%D1%82-j2me,-Gravity-Defied,-64kb.html"},"url":"http://localhost:4000/2020/05/31/%D0%9D%D0%BE%D1%81%D1%82%D0%B0%D0%BB%D1%8C%D0%B3%D0%B8%D0%B8-%D0%BF%D0%BE%D1%81%D1%82-j2me,-Gravity-Defied,-64kb.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=04936c4141575b8269035838047e98a4dd849258">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Ностальгии пост: j2me, gravity defied, 64kb</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="https://github.com/Kright/kright.github.io" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<nav>
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+</nav>
+
+
+<p>31 May 2020</p>
+
+<h1 id="ностальгии-пост-j2me-gravity-defied-64kb">Ностальгии пост: j2me, Gravity Defied, 64kb</h1>
+
+<p>Эта статья не преследует никаких практических целей - просто мне стало интересно, как лет 15 назад разработчикам удавалось делать вполне функциональные приложения и игры для слабых телефонов того времени.</p>
+
+<p><img src="/assets/images/2020/gravity defied/game.png" alt="" /></p>
+
+<ul>
+  <li>Если что, я не имею к этой игре никакого отношения.</li>
+</ul>
+
+<p>Например, игра с картинки выше не использовала floating-point числа, так как не все телефоны их поддерживали. “3д” и физика - полностью самописные на fixed-point вычислениях поверх целых чисел. Но мне кажется, перечисление особенностей одного приложения будет не сильно информативным. Для полноты картины я немного затрону возможности телефонов, j2me платформу и заодно сравню это с современной разработкой под Android.</p>
+
+<p>Кроме того, j2me - это полноценная java старой версии (кажется, 1.3), я дописал некоторые недостающие классы и смог запустить .jar файлик с игрой на своём PC. Скриншот выше - оттуда. Не скажу, что от этого есть какая-то польза - просто API для j2me было очень простым и мне захотелось попробовать.</p>
+
+<cut />
+
+<h2 id="телефоны-того-времени">Телефоны того времени.</h2>
+
+<p>В техническом плане современные телефоны ушли очень далеко, но в плане функциональности, на мой взгляд, даже старые телефоны позволяли делать всякие интересные вещи.</p>
+
+<p>Моим первым телефоном была <a href="https://allnokia.ru/catalog/nokia-5200/">Nokia 5200</a>, и я вместо “абстрактного смартфона в вакууме” лучше опишу его особенности:</p>
+
+<ul>
+  <li>появился в 2006 году</li>
+  <li>дисплей 128x160 пискелей размером в целых 1.8 дюйма</li>
+  <li>Дисплей поддерживал аж 262 тысяч цветов. (если я понимаю, это по 6 бит на R, G, B составляющие).</li>
+  <li>Ик-порт и bluetooth для передачи файлов на другие телефоны.</li>
+  <li>несколько мегабайт долговременной внутренней памяти (точно не помню, в интернете пишут про 7 Мб)</li>
+  <li>слот для microSd карточки, у меня, кажется, была на 256 Мб.</li>
+  <li>уже тогда были какие-то примитивные браузеры и opera mini (которая, кстати, тоже весила буквально сотню килобайт)</li>
+  <li>камера 640x480 пикселей.</li>
+  <li>поддержка MIDP 2.0 (<a href="https://en.wikipedia.org/wiki/Mobile_Information_Device_Profile">wiki</a>)</li>
+  <li>телефон умел притворяться флешкой при подключении через usb</li>
+  <li>но заряжался через какой-то свой разъём</li>
+  <li>Я не нашёл, какая производительность была у процессоров, но она явно была очень скромной - не больше 100Мгц частоты и, возможно, очень медленная или отсутствующая реализация floating-point чисел. К сожалению, телефон давно умер и запустить какие-либо бенчмарки на нём я не смогу.</li>
+</ul>
+
+<p>Не буду перечислять мобильные игры, в которые играл на нём - просто скажу, что они все весили 50-200кб и при этом обладали достаточно глубоким геймплеем.</p>
+
+<h2 id="write-once-run-everywhere">Write once, run everywhere</h2>
+
+<p>Изначально java позиционировалась именно для всяких маломощных бытовых устройств. И она очень удачно прописалась на телефонах того времени, позволяя запускать одну и ту же игру на телефонах различных производителей. Конечно, существовали platform-специфичные особенности, но чисто теоретически код должен был одинаково работать везде.</p>
+
+<p>Язык был простым, байткод - тоже. В нём команды длиной в байт для виртуальной стековой машины - написать наивный интерпретатор не так уж и сложно. А ещё по этой причине байткод занимал мало места. Что интересно, внутри .jar у j2me приложения лежат самые настоящие .class файлы от полноценной java. Разница была лишь в том, что мобильное приложение для взаимодействия с внешним миром использовало классы Canvas, MIDlet и прочие из пакета javax.microedition.</p>
+
+<p>На мой взгляд, это гениально просто. Android по сравнению с этим кажется набором костылей: код компилируется в .class файлы, потом конвертируется в .dex (или несколько, т.к. один dex файл не поддерживает больше 65к методов), пакуется в apk, а потом мобильное устройство перекомпилирует это под <a href="https://en.wikipedia.org/wiki/Android_Runtime">ART</a>.</p>
+
+<p>Кроме того, мобильная джава поддерживала многопоточность. Как мы увидим дальше, при написании приложений без неё было не обойтись. Что интересно, взгляд на многопоточность тогда был немного иной. Например, у стандартного класса Vector все методы были synchronized. Сейчас Vector считается устаревшим, и предлагается использовать обычный ArrayList в однопоточном коде и тот же самый ArrayList в многопоточном, но явно захватывать блокировку на нём.</p>
+
+<p>Ещё интересная особенность - в старой java не было дженериков. Система типов состояла из примитивов (int, boolean, …) и объектов. Тот же класс Vector хранил внутри себя объекты и возвращал их как Object, а программист после этого кастовал полученное к нужному типу.</p>
+
+<p>Кстати, когда я вижу go и ручные касты к нужным типам, я вспоминаю java 1.3. Только go почему-то застрял в развитии, а в случае в java уже в 2004 году вышла версия 1.5 с поддержкой дженериков. Но в мобильной разработке всё ещё использовалась 1.3.</p>
+
+<p>Так как мобильное j2me приложение - это самый обычный .jar с нормальными .class файлами внутри (пусть и в формате 1.3, которому уже 20 лет), можно этим воспользоваться и запустить Gravity defied прямо на PC. В “большой” java классов из javax.microedition нет, но их можно написать самому. Задача даже проще, так как есть классы с почти таким же набором методов: например, <code class="language-plaintext highlighter-rouge">java.awt.Image</code> и <code class="language-plaintext highlighter-rouge">javax.microedition.lcdui.Image</code>.</p>
+
+<h2 id="архитектура-j2me-приложений">Архитектура J2ME приложений</h2>
+
+<p><img src="/assets/images/2020/gravity defied/vietnam.jpeg" alt="" /></p>
+
+<p>Для взаимодействия с внешним миром использовались классы из <code class="language-plaintext highlighter-rouge">javax.microedition</code>. Возможно, из-за ограниченных возможностей телефонов, а может, просто из-за чувства прекрасного у разработчиков, набор классов очень маленький, а сами они - максимально простые. Для примера можно посмотреть классы в <a href="https://docs.oracle.com/javame/config/cldc/ref-impl/midp2.0/jsr118/javax/microedition/lcdui/package-tree.html">javax.microedition.lcdui</a>.</p>
+
+<p>Для создания приложения надо было унаследоваться от класса <a href="https://docs.oracle.com/javame/config/cldc/ref-impl/midp1.0/jsr037/javax/microedition/midlet/package-summary.html">MIDlet</a>.</p>
+
+<p>При старте приложения у него вызывался метод <code class="language-plaintext highlighter-rouge">startApp()</code>.
+Если приложение сворачивалось - вызывался <code class="language-plaintext highlighter-rouge">pauseApp()</code> и снова <code class="language-plaintext highlighter-rouge">startApp()</code> при повторном открытии. При полноценном закрытии вызывалось <code class="language-plaintext highlighter-rouge">destroyApp()</code>.</p>
+
+<p>Кроме того, приложение могло само вызвать методы <code class="language-plaintext highlighter-rouge">notifyPaused()</code> и <code class="language-plaintext highlighter-rouge">notifyDestroyed()</code> - чтобы сообщить о том, что оно поставилось на паузу или завершилось.
+Кроме того, приложение могло попроситься “выйти из паузы” методом <code class="language-plaintext highlighter-rouge">resumeRequest()</code></p>
+
+<p>Честно говоря, я не очень понимаю смысл <code class="language-plaintext highlighter-rouge">notifyPaused()</code>, так как и без него приложения нормально работали, никто их не убивал.</p>
+
+<p>Мне кажется, именно таким и должен быть lifecycle приложения здорового человека.</p>
+
+<p>На практике обычно получалось, что класс приложения наследовался от Runnable и реализация выглядела как-то так:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Thread</span> <span class="n">thread</span><span class="o">;</span>
+<span class="kt">boolean</span> <span class="n">isRunning</span><span class="o">;</span>
+<span class="kt">boolean</span> <span class="n">needToDestroy</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">startApp</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">isRunning</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">thread</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">thread</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="n">thread</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">pauseApp</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">isRunning</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroyApp</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">unconditional</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">needToDestroy</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>И всё, дальше приложение жило в своём потоке.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">run</span><span class="o">(){</span>
+    <span class="k">while</span><span class="o">(!</span><span class="n">needToDestroy</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// игровой цикл здесь</span>
+        <span class="c1">// и если на паузе - спим.</span>
+        <span class="k">while</span> <span class="o">(!</span><span class="n">isRunning</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="n">notifyDestroyed</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>Мне кажется, будить поток каждые 100 миллисекунд - не страшно, и такой подход вполне мог бы существовать и на современных телефонах. Вдобавок, никто не запрещает остановить поток после вызова <code class="language-plaintext highlighter-rouge">pauseApp()</code> и снова запустить в <code class="language-plaintext highlighter-rouge">startApp()</code></p>
+
+<h3 id="canvas">Canvas</h3>
+
+<p>Для рисования на экране использовался ещё один класс - <a href="https://docs.oracle.com/javame/config/cldc/ref-impl/midp2.0/jsr118/javax/microedition/lcdui/Canvas.html">Canvas</a>. Он похож на десктопный Canvas в java.</p>
+
+<p>Можно в любом потоке вызывать метод <code class="language-plaintext highlighter-rouge">repaint()</code>, который намекнёт системе, что надо бы обновить изображение. После этого в UI-потоке система вызовет <code class="language-plaintext highlighter-rouge">paint(Graphics g)</code>. Возможно, у кого-то снова возникнут вьетнамские флешбеки, но при сворачивании приложения с Canvas ничего страшного не происходило - объект оставался валидным на всём протяжении жизни программы. Единственное отличие - у приложения в фоне вызовы <code class="language-plaintext highlighter-rouge">repaint()</code> игнорировались и метод <code class="language-plaintext highlighter-rouge">paint(...)</code> не вызывался.</p>
+
+<p>Что примечательно, уже тогда поддерживалсь сенсорные дисплеи: были методы
+<code class="language-plaintext highlighter-rouge">haspointerevents(), haspointermotionevents(), hasrepeatevents()</code>, которые на сенсорном телефоне возвращали true. при нажатиях вызывались методы типа <code class="language-plaintext highlighter-rouge">pointerdragged(int x, int y)</code> (перемещение указателя), а так же версии для <code class="language-plaintext highlighter-rouge">pressed</code>(начало нажатия) и <code class="language-plaintext highlighter-rouge">released</code>(нажатие завершилось).
+Поддержки мультитача нет - ну и ладно, тогда и подходящих дисплеев не было.</p>
+
+<h3 id="шрифты-и-меню">Шрифты и меню</h3>
+
+<p>Что забавно, тогда существовало аж три размера шрифта - малый, средний и большой. Конкретные размеры зависели от телефона. Но, если учесть размеры дисплеев, то это выглядит нормально. Я не думаю, что даже дисплею 240х360 нужно сильно много размеров шрифтов. Самое важное - жирные и курсивные шрифты - поддерживались.</p>
+
+<p>Сейчас это как-то унифицировалось, но раньше кнопка “назад” на смартфонах могла располагаться как слева, так и справа. В j2me существовал какой-то механизм создания менюшек, чтобы система сама рисовала пункты меню, поддерживала скроллинг  и т.п., а приложение просто узнавало номер выбранного пункта. Например, на nokia 5800 такие менюшки можно было перематывать пальцем, даже если разработчики приложения об этом и не подозревали.</p>
+
+<h2 id="midlet-pascal">MIDlet Pascal</h2>
+
+<p>Когда-то я учился в школе, там освоил паскаль и других языков не знал. С нуля въехать в java2me разработку у меня не получилось, но на моё счастье, я узнал про существование <a href="https://ru.wikipedia.org/wiki/MIDletPascal">MIDlet pascal</a> и свои первые приложения на телефон я писал именно на нём. В дальнейшем на j2me я перешёл довольно забавным способом - делал приложение на мидлет паскале, декомпилировал и смотрел, что получалось в java.</p>
+
+<h2 id="что-же-внутри">Что же внутри?</h2>
+
+<p>Ну ладно, хватит ностальгии, лучше посмотрим, как сделана Gravity Defied и как это уместилось в 64 килобайта.</p>
+
+<p>Во-первых, .jar - это zip архив, содержимое которого весит 122.1 kB</p>
+
+<ul>
+  <li>В папке META-INF лежит MANIFEST.MF на 3.8 kB, в котором перечислены файлики игры и SHA-1 и MD5 хеши для них. А так же название главного класса и файла с иконкой приложения.</li>
+  <li>файл levels.mrg на 5.1 kB в довольно компактном виде содержит информацию о всех 30 игровых уровнях. В среднем 170 байт на игровой уровень. Подробнее про столь компактный формат хранения я расскажу позже.</li>
+  <li>11 картинок. В сумме около 10.8 kB. Некоторые из них являются атласами с кучкой спрайтов</li>
+  <li>.class файлы, в сумме 98.3 kB, 15 штук. Самый маленький - 127 байт, самый большой 24.3 kB. Их по размеру можно разделить на группы:
+    <ul>
+      <li>два интерфейса, (4 метода в каждом), 127 и 174 байт.</li>
+      <li>простой класс с шестью полями и парой методов - 470 байт.</li>
+      <li>9 классов разумного размера - от 1.6 до 6 kB.</li>
+      <li>god-like классы:
+        <ul>
+          <li>m (я его потом переименовал в <a href="https://gitlab.com/Kright/pc-j2me-emulator/-/blob/master/app-from-sources/src/main/java/MenuManager.java">MenuManager</a>) - 24.3kB, в нём захардкожены все возможные меню и сообщения игры. Никаких layout.xml и strings.txt :). Игра не подразумевала поддержку нескольких языков.</li>
+          <li>i (<a href="https://gitlab.com/Kright/pc-j2me-emulator/-/blob/master/app-from-sources/src/main/java/GameCanvas.java">GameCanvas</a>) 15.2 kB: много кода, связанного с рисованием, но, как ни странно, не весь.</li>
+          <li>b (<a href="https://gitlab.com/Kright/pc-j2me-emulator/-/blob/master/app-from-sources/src/main/java/GamePhysics.java">GamePhysics</a>) 20.6 kB: расчёт игровой физики и почему-то много кода, связанного с рисованием.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="декомпиляция">Декомпиляция</h2>
+
+<p>Нам понадобится декомпилятор. Я взял fernflower - это тот, который встроен в intelliJ IDEA. Он вроде нормально работает - на выходе получился код, который вполне реально скомпилировать обратно. Несколько лет назад я пробовал другими декомпиляторами и они не справлялись.</p>
+
+<p>Репозиторий с IDEA весит больше гигабайта и клонировать его долго - вместо этого можно воспользоваться <a href="https://github.com/fesh0r/fernflower">зеркалом</a>, в котором лежит только декомпилятор.</p>
+
+<p>Сборка декомпилятора тривиальна: <code class="language-plaintext highlighter-rouge">/gradlew jar</code>, в папке build появится нужный .jar
+Декомпиляция чуть сложнее: <code class="language-plaintext highlighter-rouge">mkdir decompiled &amp;&amp; java -jar fernflower.jar -ren=1 GravityDefied_java decompiled</code></p>
+
+<p>По дефолту опция <code class="language-plaintext highlighter-rouge">ren</code> не включена и без неё получится код, в котором переменные и методы могут иметь забавные имена типа <code class="language-plaintext highlighter-rouge">if</code> или <code class="language-plaintext highlighter-rouge">for</code>. Байткод такие имена не запрещает, но компилятору java такое не понравится. С <code class="language-plaintext highlighter-rouge">ren=1</code> декомпилятор приведёт поля к виду типа <code class="language-plaintext highlighter-rouge">field_42</code> или <code class="language-plaintext highlighter-rouge">method_135</code> - хуже уже не станет, зато код станет валидным.</p>
+
+<p>Игра вышла ещё в 2004 году - и, что примечательно, уже тогда использовалась обфускация:</p>
+
+<ul>
+  <li>Байткод в каком-то виде хранит имена классов, методов и полей. И имена в одну или две буквы позволяли уменьшить размер .class файлов.</li>
+  <li>Есть сюрпизы в виде невалидных имён типа <code class="language-plaintext highlighter-rouge">else</code>, <code class="language-plaintext highlighter-rouge">int</code> и т.п.</li>
+  <li>Можно было вырезать неиспользуемые методы и опять же делать код компактнее. В игре “переименованиям” не подвёргся только класс Micro, и только в нём я нашёл неиспользуемые методы.</li>
+  <li>возможно, для fixed-point вычислений использовались методы, которые были заинлайнены. Я сомневаюсь, что разработчики вручную писали код типа <code class="language-plaintext highlighter-rouge">(int)((long)a * b &gt;&gt; 16)</code></li>
+  <li>я не знаю, вручную были склеены несколько классов в один или с помощью обфускатора, но в игре можно найти такой класс Шрёдингера.</li>
+</ul>
+
+<h2 id="собираем-обратно">Собираем обратно</h2>
+
+<p>Смотреть на код - это хорошо, но неинформативно. Хочется его запускать и, возможно, добавлять отладочный вывод или ещё что-то. А ещё хочется восстановить нормальные имена переменных, методов и классов.</p>
+
+<p>Много-много лет назад я писал код на Netbeans, и для сборки j2me приложений надо было скачивать специальное SDK. Для сборки, кажется, использовался ant. Подробнее можно <a href="https://www.oracle.com/java/technologies/java-me-sdk-3-0-5-downloads.html">посмотреть здесь.</a></p>
+
+<p>Но старенькая нокия уже не работала, а я хотел собрать и запустить код прямо на своём компе и желательно в Linux. Так что я подготовил gradle проект и попробовал собрать код. Код не собирался - не хватало классов из <code class="language-plaintext highlighter-rouge">javax.microedition.*</code>.  Логично - их же нет в PC-версии java. Я решил заняться велосипедостроением и просто механически добавил все несуществующие классы и методы. Игра использует маленькое подмножество из доступных методов и классов, так что это заняло не больше часа времени.</p>
+
+<p>Для удобства я вывел в терминал <code class="language-plaintext highlighter-rouge">watch ./gradlew run</code> и в реальном времени смотрел на список ошибок. После добавления каждого нового метода по <code class="language-plaintext highlighter-rouge">ctrl+S</code> сохранял изменения.</p>
+
+<p>Реализованные классы можно посмотреть <a href="https://gitlab.com/Kright/pc-j2me-emulator/-/tree/master/emulator/src/main/java/javax/microedition">здесь</a>.
+Их всего лишь 19 штук:</p>
+
+<ul>
+  <li>8 для сохранений в javax.microedition.rms.</li>
+  <li>10 в .lcdui, которые отвечают за картинки, шрифты, Canvas и т.п.).</li>
+  <li>MIDlet - главный класс, от которого приложение должно наследоваться.</li>
+</ul>
+
+<p>После того как проект компилируется без ошибок, можно попробовать привести его к красивому виду.</p>
+
+<p>В приложении есть класс Micro, в котором имена методов не обфусцированы. В общем-то логично, методы типа startApp унаследованы от MIDlet и переименовать их невозможно.</p>
+
+<p>Пример кода:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protected</span> <span class="kt">void</span> <span class="nf">pauseApp</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="k">if</span> <span class="o">(!</span><span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">gameToMenu</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">gc</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Вполне можно догадаться, что переменная <code class="language-plaintext highlighter-rouge">c</code> могла бы называться <code class="language-plaintext highlighter-rouge">isPaused</code>.</p>
+
+<p>Для “простых” методов тоже довольно часто можно понять происходящее:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">a</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">recordStore</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">e</span><span class="o">.</span><span class="na">closeRecordStore</span><span class="o">();</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">RecordStoreException</span> <span class="n">var1</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>и переименовать во что-то типа <code class="language-plaintext highlighter-rouge">closeMethodStore</code>.</p>
+
+<p>Кроме того, в intelliJ IDEA можно посмотреть все вызовы каких-то методов. Особенно - тех, заглушки для которых мы написали, типа <code class="language-plaintext highlighter-rouge">Image.loadImage(name)</code>:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="o">.</span><span class="na">p</span> <span class="o">=</span> <span class="nc">Image</span><span class="o">.</span><span class="na">createImage</span><span class="o">(</span><span class="s">"/splash.png"</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p>Вполне очевидно, что p можно переименовать в splashImage.</p>
+
+<p>С какой-то точки зрения это похоже на разгадывание судоку - находишь очевидные моменты, даёшь значащие названия переменным и методам. Это упрощает понимание остальных методов, даёшь названия им… Огромный респект разработчикам Jetbrains - я как минимум часов десять лазил по коду, переименовывая переменные с методами - и ни разу код не поломался. Впрочем, я всё равно время от времени компилировал код и убеждался, что он остался рабочим.</p>
+
+<p>В какой-то момент мне это надоело. Я попробовал запустить код и он упал - потому что все мои заглушки типа loadImage()… возвращали null и ничего не делали. Настало время писать реализацию для заглушек.</p>
+
+<p>Большая часть из них делалась тривиально: например, класс Image:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Image</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">final</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">Image</span> <span class="n">image</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nf">Image</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">at</span><span class="o">.</span><span class="na">Image</span> <span class="n">image</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Graphics</span> <span class="nf">getGraphics</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getWidth</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="na">getWidth</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Image</span> <span class="nf">createImage</span><span class="o">(</span><span class="kt">int</span> <span class="n">w</span><span class="o">,</span> <span class="kt">int</span> <span class="n">h</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">Image</span><span class="o">(</span><span class="k">new</span> <span class="nc">BufferedImage</span><span class="o">(</span><span class="n">w</span><span class="o">,</span> <span class="n">h</span><span class="o">,</span> <span class="nc">BufferedImage</span><span class="o">.</span><span class="na">TYPE_INT_ARGB</span><span class="o">));</span>
+    <span class="o">}</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Конечно, API местами не совпадает, но оно всё равно очень похоже.</p>
+
+<p>Для рисования я сделал класс CanvasImpl, который наследуется от JPanel. Он обрабатывал нажатия кнопок и вызовы отрисовки и превращал их в вызовы нашего игрового Canvas.
+Я даже вошёл во вкус и сделал апскейлинг картинки, чтобы не приходилось всматриватьcя в крохотное окошко:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">paintComponent</span><span class="o">(</span><span class="nc">Graphics</span> <span class="n">g</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">upscale</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">canvas</span><span class="o">.</span><span class="na">paint</span><span class="o">(</span><span class="k">new</span> <span class="n">javax</span><span class="o">.</span><span class="na">microedition</span><span class="o">.</span><span class="na">lcdui</span><span class="o">.</span><span class="na">Graphics</span><span class="o">(</span><span class="n">g</span><span class="o">));</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">canvas</span><span class="o">.</span><span class="na">paint</span><span class="o">(</span><span class="k">new</span> <span class="n">javax</span><span class="o">.</span><span class="na">microedition</span><span class="o">.</span><span class="na">lcdui</span><span class="o">.</span><span class="na">Graphics</span><span class="o">(</span><span class="n">screen</span><span class="o">.</span><span class="na">getGraphics</span><span class="o">()));</span>
+        <span class="n">g</span><span class="o">.</span><span class="na">drawImage</span><span class="o">(</span><span class="n">screen</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">width</span> <span class="o">*</span> <span class="n">upscale</span><span class="o">,</span> <span class="n">height</span> <span class="o">*</span> <span class="n">upscale</span><span class="o">,</span> <span class="nc">Color</span><span class="o">.</span><span class="na">WHITE</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">javax.microedition.lcdui.graphics(g)</code> - это моя обёртка над awt.graphics, транслирующая вызовы рисования.</p>
+
+<p>Раз за разом я запускал код, смотрел как он падает в разных местах и дописывал реализации для своих заглушек. Некоторые исключения игра “безболезненно” проглатывала, но потом работала некорректно.</p>
+
+<p>Например, если в игре не работает загрука картинок, то игра работает, рисует мотоциклиста простыми линияим, колёса - палочками. Но тормозит на PC. А почему? Зачем-то в игре фон замащивается картинками <code class="language-plaintext highlighter-rouge">64 * 64</code>, и если картинка не грузится, подставляется пустая картина размером <code class="language-plaintext highlighter-rouge">1 * 1</code> пиксель, и при замащивании дисплея она нарисуется <code class="language-plaintext highlighter-rouge">240 * 320</code> раз или типа того. Видимо, игра изначально работала и без картинок с графикой из палочек и кружочков, потом разработчики добавили картинки, но не тестировали, как же работает без них.</p>
+
+<p>Кроме того, есть забавные баги с сохранением. Возможно, я сам его некорректно реализовал, но суть в том, что игра в некоторых моментах пытается писать в невалидное место, потом ловит исключение, проглатывает и спокойно работает дальше.</p>
+
+<p>Честно говоря, я не гуглил, какие есть готовые эмуляторы j2me для PC. Скорее всего есть - году эдак в 2010 я пользовался каким-то, когда только-только осваивал программирование и пробовал писать игры. Если в существующих эмуляторах не хватает каких-то возможностей и захочется доработать мой для поддержки ещё каких-то игр - пишите в личку.</p>
+
+<h2 id="заработало">Заработало!</h2>
+
+<p>В итоге мне удалось собрать декомпилированный код вместе со своими заглушками, запустить и поиграть.</p>
+
+<p>После этого я попробовал к заглушкам подключить оригинальный .jar с игрой. Появилось несолько ошибок. Оказывается, важно не только чтобы метод назывался как надо, а чтобы он ещё и был у правильного родительского класса. Из-за этого пришлось унаследовать Alert и Canvas от Displayable и разместить там абстрактные методы, которые я изначально объявил в Canvas. Ну и ладно, исправлений не так уж и много понадобилось.</p>
+
+<p>Сейчас в <a href="https://gitlab.com/Kright/pc-j2me-emulator/-/tree/master/">gradle проекте</a> такая структура:</p>
+
+<ul>
+  <li>Модуль emulator с кодом, собственно, моего самописного эмулятора. Многих методов не хватает, я реализовал только тот минимум, который был необходим для работы  игры.</li>
+  <li>Модуль app-original, который в зависимостях содержит оригинальный .jar и позволяет его запускать</li>
+  <li>Модуль app-from-sources с декомпилированными и приведёнными к более-менее приличному виду исходниками. Тоже запускается.</li>
+</ul>
+
+<h2 id="приводим-код-к-красивому-виду">Приводим код к красивому виду</h2>
+
+<p>После того, как декомпилированный код стало можно компилировать и запускать, разбираться в нём стало проще. Можно добавлять отладочный вывод или “выключать” отдельные методы, чтобы понять, что же они делают.</p>
+
+<p>Думаю, теперь можно более подробно обсудить особенности реализации.</p>
+
+<h2 id="fixed-point-physics">Fixed-point physics</h2>
+
+<p>Для рассчётов используются обычные целые числа. Хранятся в виде обычных интов и считается, что младшие 16 бит - это дробная часть. Таким образом, получаются числа, которые принимают значения от <code class="language-plaintext highlighter-rouge">-32768.0</code> до <code class="language-plaintext highlighter-rouge">32767.999984</code> c шагом в <code class="language-plaintext highlighter-rouge">1.0 / 65536</code>.</p>
+
+<p>Мне это решение показалось очень красивым - приличная фиксированная точность сочетается со вполне большим диапазоном используемых значений.</p>
+
+<p>Сложение и вычитание таких чисел ничем не отличается от аналогичных операций с int.</p>
+
+<p>Умножение: если перемножить просто int, то мы получим дробную часть, а целая “переполнится”. Для умножения числа сначала преобразовывались в long. При перемножении получалось число на 64 бита с дробной частью из 32 бит. После побитовым сдвигом вправо на 16 можно вернуться обратно к дробным 16-ти битам и обрезать число обратно к int.</p>
+
+<p>Деление: при простом делении дробная часть потеряется. Вместо этого опять нужно преобразование в long, сдвинуть делимое на 16 бит влево и поделить. В игре почему-то сделали иначе, сдвиг влево на 32 и после - вправо на 16.</p>
+
+<p>В игре есть <a href="https://gitlab.com/Kright/pc-j2me-emulator/-/blob/master/app-from-sources/src/main/java/MathF16.java">реализация</a> для <code class="language-plaintext highlighter-rouge">sin</code>, <code class="language-plaintext highlighter-rouge">cos</code> и <code class="language-plaintext highlighter-rouge">atan2</code>.</p>
+
+<p>Сделано довольно просто - есть захардкоженный массив на 64 значения - угол от 0 до 90 градусов. При вычислении синуса или косинуса угол приводится к этому диапазону, потом вычисляется индекс - и по нему читается значение из массива. Получается значение с точностью до полутора градусов. Видимо, для игры этого достаточно.</p>
+
+<h2 id="сенсорный-ввод">Сенсорный ввод</h2>
+
+<p><img src="/assets/images/2020/gravity defied/sensors.png" alt="" /></p>
+
+<p>Что забавно, эта игра уже в две тысячи четвёртом году его поддерживала. Если метод <code class="language-plaintext highlighter-rouge">Canvas.hasPointerEvents()</code> возвращает <code class="language-plaintext highlighter-rouge">true</code>, то в игре рисуется дополнительный кружочек для управления, в который можно тыкать. Режим сделан скорее для галочки - всё равно вводимые значения квантуются в “полный газ”, “полный наклон”, “полный тормоз” и сделать что-либо “наполовинку” не получится. Но, как бы то ни было, поддержка сенсорного ввода в игре есть.</p>
+
+<h2 id="level-format">Level format</h2>
+
+<p>Выше я упоминал, что в среднем размер игрового уровня - 170 байт. Как так получилось? Очень просто - для хранения каждой точки используется всего пара байт.</p>
+
+<p>Вернее, сделано чуть хитрее - сначала хранится всякая информация типа позиции старта/финиша т.п., а так же количество точек. Для хранения точек сделано два режима. Если первый байт 0xff, то дальше в качестве координат идёт пара int с абсолютными координатами, а вот если байт отличается, что этот байт - смещение dx относительно предыдущей точки, и за ним байт со смещением dy.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">pointsCount</span><span class="o">;</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">byte</span> <span class="n">modeOrDx</span><span class="o">;</span>
+    <span class="k">if</span> <span class="o">((</span><span class="n">modeOrDx</span> <span class="o">=</span> <span class="n">var1</span><span class="o">.</span><span class="na">readByte</span><span class="o">())</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">offsetY</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="n">offsetX</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="n">pointX</span> <span class="o">=</span> <span class="n">var1</span><span class="o">.</span><span class="na">readInt</span><span class="o">();</span>
+        <span class="n">pointY</span> <span class="o">=</span> <span class="n">var1</span><span class="o">.</span><span class="na">readInt</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">pointX</span> <span class="o">=</span> <span class="n">modeOrDx</span><span class="o">;</span>
+        <span class="n">pointY</span> <span class="o">=</span> <span class="n">var1</span><span class="o">.</span><span class="na">readByte</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="n">offsetX</span> <span class="o">+=</span> <span class="n">pointX</span><span class="o">;</span>
+    <span class="n">offsetY</span> <span class="o">+=</span> <span class="n">pointY</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">addPointSimple</span><span class="o">(</span><span class="n">offsetX</span><span class="o">,</span> <span class="n">offsetY</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><a href="https://gitlab.com/Kright/pc-j2me-emulator/-/blob/master/app-from-sources/src/main/java/GameLevel.java#L302">Код целиком</a></p>
+
+<p>Просто и эффективно.</p>
+
+<h2 id="текстурные-атласы">Текстурные атласы</h2>
+
+<p>В отличие от современных телефонов с GPU и full hd экранами, в старых телефончиках стояли весьма скромные дисплеи типа (<code class="language-plaintext highlighter-rouge">128*160</code> или <code class="language-plaintext highlighter-rouge">240*320</code>). Необходимости крутить изображения и рисовать 3д объекты как-то не возникало, и в api для картинок такой возможности даже и нет. Единственное, что было можно при рисовании картинки - повернуть её на 90-180-270 градусов и зеркально отразить.</p>
+
+<p>Мне кажется, для того времени это не было проблемой - спрайт размером в десяток пикселей имеет не так уж и много видимых вариантов поворота.
+Конкретно в этой игре для корпуса мотоцикла, частей тела и шлема мотоциклиста использовалось по 32 или по 16 спрайтов. Для спрайтов шлема потребовалась картинка размером аж 48*48 пикселей и весом в 1091 байт.</p>
+
+<p>Впрочем, надо отметить, что в то время уже существовало какое-то очень примитивное API для 3д графики с фиксированным 3д пайплайном и я даже играл во что-то 3д-шное. Текстуры были с огромными различимыми пикселями, а восьмиугольные колёса машинок воспринимались как что-то нормальное и высокодетализованное.</p>
+
+<p>Как мне кажется - размеры дисплеев и возможности телефонов очень хорошо подходили для спрайтовой 2д графики и не тянули 3д.</p>
+
+<h2 id="кеширование-строк">Кеширование строк</h2>
+
+<p>Во время игры в нижем правом углу экрана рисуется время. Что забавно - разработчики решили не создавать по новой строчке каждый кадр и <a href="https://gitlab.com/Kright/pc-j2me-emulator/-/blob/master/app-from-sources/src/main/java/GameCanvas.java#L134">сделали лениво заполняемый кеш</a> на 100 строчек вида “23” и “64”.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="o">(</span><span class="n">time10MsToStringCache</span><span class="o">[</span><span class="n">time10MsPart</span><span class="o">]</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">zeroPadding</span><span class="o">;</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">time10MsPart</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">zeroPadding</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">zeroPadding</span> <span class="o">=</span> <span class="s">"0"</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="n">time10MsToStringCache</span><span class="o">[</span><span class="n">time10MsPart</span><span class="o">]</span> <span class="o">=</span> <span class="n">zeroPadding</span> <span class="o">+</span> <span class="n">time10Ms</span> <span class="o">%</span> <span class="mi">100L</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Честно говоря, я не знаю, был ли смысл так заморачиваться ради двух цифр. Возможно, было бы проще рисовать цифры по-отдельности.</p>
+
+<h2 id="no-mvp-архитектура">No-MVP архитектура</h2>
+
+<p>Класс <a href="https://gitlab.com/Kright/pc-j2me-emulator/-/blob/master/app-from-sources/src/main/java/MenuManager.java">MenuManager</a> в виде хардкода содержит в себе все менюшки (они все создаются один раз при инициализации класса) и при необходимости рисует их. Если какому-то компоненту игры надо узнать, какой сейчас текущий уровень - он просто идёт к объекту-менюшке с выбором уровня и спрашивает, какая позиция активна.</p>
+
+<p>Возможно, кто-нибудь скажет, что надо отделять модель от её представления и применять всякие паттерны для абстракции. Но с другой стороны: посмотрите как подобная задача может быть сделана в Android:</p>
+
+<ul>
+  <li>Есть layout файл с расположением кнопок. Отдельный для каждой менюшки.</li>
+  <li>Строчки типа названий кнопок выносятся в отдельный файл stings.txt.</li>
+  <li>Есть Activity, которая пересоздаётся по каждому чиху.</li>
+  <li>Есть LifecycleObserver, который даёт возможность биндить текстовое поле к Adapter так, чтобы при смерти Activity та могла уже умереть и не занимать память.</li>
+  <li>Adapter преобразует данные из DataSource.</li>
+  <li>Просто так передавать классы между потоками “не ок”, поэтому ещё будем паковать их в Bundle и после получения из DataSource распаковывать обратно.</li>
+  <li>В DataSouce данные закидываются из разных потоков или вообще синхронизуются с SQLite базой данных.</li>
+</ul>
+
+<p>Вопрос: а это всё точно нужно, чтобы обработать перемещение пользователя по внутриигровому меню? Я могу ошибаться в деталях, но суть проблемы должна быть очевидна.</p>
+
+<h2 id="несколько-классов-склеены-в-один">Несколько классов склеены в один</h2>
+
+<p>Я долго гадал, для чего нужен класс <a href="https://gitlab.com/Kright/pc-j2me-emulator/-/blob/master/app-from-sources/src/main/java/TimerOrMotoPartOrMenuElem.java">TimerOrMotoPartOrMenuElem</a> и назвал его так неспроста.
+Не знаю, постарался ли так обфускатор или это сделали вручную, но этот класс одновременно используется для представления как минимум трёх различных сущностей:</p>
+
+<ul>
+  <li>кусочка мотоцикла с координатами и прочим</li>
+  <li>элемента меню с каким-то текстом</li>
+  <li>таймера, который можно завести на “через секунду” или типа того</li>
+</ul>
+
+<p>Соответсвенно, если класс используется как элемент меню, испрользуются одни поля в классе, если как элемент мотоцикла - другие.</p>
+
+<p>Скорее всего, это сделано для того, чтобы уменьшить размер приложения и уместить его в 64 килобайта. Видимо, классы по-отдельности весили заметно больше, чем вот так “собранные” в один.</p>
+
+<h2 id="долгая-загрузка">Долгая загрузка</h2>
+
+<p>Я обнаружил, что игра, которая собирается с нуля быстрее, чем за секунду, при этом долго грузится. “Хм, подозрительно” - подумал я и полез искать источник тормозов.</p>
+
+<p><a href="https://gitlab.com/Kright/pc-j2me-emulator/-/blob/master/app-from-sources/src/main/java/Micro.java#L110">Что же я нашёл</a>:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kt">long</span> <span class="n">timeToLoading</span> <span class="o">=</span> <span class="mi">3000L</span><span class="o">;</span>
+    <span class="nc">Thread</span><span class="o">.</span><span class="na">yield</span><span class="o">();</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">gameCanvas</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GameCanvas</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+    <span class="nc">Display</span><span class="o">.</span><span class="na">getDisplay</span><span class="o">(</span><span class="k">this</span><span class="o">).</span><span class="na">setCurrent</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">gameCanvas</span><span class="o">);</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">gameCanvas</span><span class="o">.</span><span class="na">requestRepaint</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+
+    <span class="k">while</span> <span class="o">(!</span><span class="k">this</span><span class="o">.</span><span class="na">gameCanvas</span><span class="o">.</span><span class="na">isShown</span><span class="o">())</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">goLoadingStep</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kt">long</span> <span class="n">deltaTimeMs</span><span class="o">;</span>
+    <span class="k">while</span> <span class="o">(</span><span class="n">timeToLoading</span> <span class="o">&gt;</span> <span class="mi">0L</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">deltaTimeMs</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">goLoadingStep</span><span class="o">();</span>
+        <span class="n">timeToLoading</span> <span class="o">-=</span> <span class="n">deltaTimeMs</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="k">this</span><span class="o">.</span><span class="na">gameCanvas</span><span class="o">.</span><span class="na">requestRepaint</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+
+    <span class="k">for</span> <span class="o">(</span><span class="n">timeToLoading</span> <span class="o">=</span> <span class="mi">3000L</span><span class="o">;</span> <span class="n">timeToLoading</span> <span class="o">&gt;</span> <span class="mi">0L</span><span class="o">;</span> <span class="n">timeToLoading</span> <span class="o">-=</span> <span class="n">deltaTimeMs</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">deltaTimeMs</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">goLoadingStep</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="k">while</span> <span class="o">(</span><span class="n">gameLoadingStateStage</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">goLoadingStep</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="k">this</span><span class="o">.</span><span class="na">gameCanvas</span><span class="o">.</span><span class="na">requestRepaint</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">isInited</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Игра вызывает обновление экрана и потом вызывает <code class="language-plaintext highlighter-rouge">goLoadingStep()</code> раз за разом на протяжении трёх секунд. Потом вызывает снова обновление экрана с переключением картинки на другую и снова три секунды вызывает <code class="language-plaintext highlighter-rouge">goLoadingStep()</code>. И после этого вызывает <code class="language-plaintext highlighter-rouge">goLoadingStep</code> до тех пор, пока они не завершатся.</p>
+
+<p>Сам <code class="language-plaintext highlighter-rouge">goLoadingStep()</code> <a href="https://gitlab.com/Kright/pc-j2me-emulator/-/blob/master/app-from-sources/src/main/java/Micro.java#L59">сделан тоже довольно забавно</a>:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kt">long</span> <span class="nf">goLoadingStep</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">++</span><span class="n">gameLoadingStateStage</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">gameCanvas</span><span class="o">.</span><span class="na">repaint</span><span class="o">();</span>
+    <span class="kt">long</span> <span class="n">startTimeMillis</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+    <span class="k">switch</span> <span class="o">(</span><span class="n">gameLoadingStateStage</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">levelLoader</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LevelLoader</span><span class="o">();</span>
+            <span class="k">break</span><span class="o">;</span>
+        <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">gamePhysics</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GamePhysics</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">levelLoader</span><span class="o">);</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">gameCanvas</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">gamePhysics</span><span class="o">);</span>
+            <span class="k">break</span><span class="o">;</span>
+        <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">menuManager</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MenuManager</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">menuManager</span><span class="o">.</span><span class="na">initPart</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+            <span class="k">break</span><span class="o">;</span>
+            <span class="o">....</span> <span class="c1">///аналогичный код для 5-8</span>
+        <span class="k">case</span> <span class="mi">9</span><span class="o">:</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">menuManager</span><span class="o">.</span><span class="na">initPart</span><span class="o">(</span><span class="mi">7</span><span class="o">);</span>
+            <span class="k">break</span><span class="o">;</span>
+        <span class="k">case</span> <span class="mi">10</span><span class="o">:</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">gameCanvas</span><span class="o">.</span><span class="na">setMenuManager</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">menuManager</span><span class="o">);</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">gameCanvas</span><span class="o">.</span><span class="na">setViewPosition</span><span class="o">(-</span><span class="mi">50</span><span class="o">,</span> <span class="mi">150</span><span class="o">);</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">setMode</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+            <span class="k">break</span><span class="o">;</span>
+        <span class="k">default</span><span class="o">:</span>
+            <span class="o">--</span><span class="n">gameLoadingStateStage</span><span class="o">;</span>
+
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">100L</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">InterruptedException</span> <span class="n">var3</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="k">return</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">-</span> <span class="n">startTimeMillis</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>А в <a href="https://gitlab.com/Kright/pc-j2me-emulator/-/blob/master/app-from-sources/src/main/java/MenuManager.java#L228">MenuManager.initPart()</a> тоже содержится огромный <code class="language-plaintext highlighter-rouge">switch case</code> блок с шагами загрузки.</p>
+
+<p>Честно говоря, я не знаю, почему сделано именно так. Можно было бы просто в отдельном потоке показывать лого и потом через три секунды переключить картинку на другую, а в основном потоке спокойно загружать всё необходимое.</p>
+
+<h2 id="история-создания">История создания</h2>
+
+<p><a href="https://ru.wikipedia.org/wiki/Gravity_Defied:_Trial_Racing">Оригинальная игра</a> изначально появилась в 2004 году. Она была написана для конкурса Excitera Mobile Awards 2004 (EMA04) и выиграла в номинации best-in-show. В компании Codebrew Software было три шведских разработчика:</p>
+
+<ul>
+  <li>Tors Björn Henrik Johansson - system/game logic/interface, testing, levels design</li>
+  <li>Set Elis Norman - graphics/physics/mathematics/system/tools programming, levels design</li>
+  <li>Per David Jacobsson - physics programming, game graphics, levels design</li>
+</ul>
+
+<p>Кроме того, есть <a href="https://github.com/evgenyzinoviev/gravitydefied">порт этой игры под андроид</a>, сделаный нашими соотечественниками, но в нём просто используется декомпилированный код.</p>
+
+<p>Поскольку к тому коду уже пять лет нет никаких претензий, я думаю, и моя попытка декомпилировать оригинальное приложение и разобраться в нём не принесёт никакого вреда. Сейчас игра представляет разве что исторический интерес и позволяет поближе взглянуть на эпоху маленьких смартфонов, которые смогли.</p>
+
+<p><a href="https://habr.com/ru/post/504682/">Статья на хабре</a></p>
+
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Kright/kright.github.io">kright.github.io</a> is maintained by <a href="https://github.com/Kright">Kright</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

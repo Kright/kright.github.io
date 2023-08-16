@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Шпаргалка по gradle | kright.github.io</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Шпаргалка по gradle" />
+<meta name="author" content="kright" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Как мне кажется, большинство людей начинают разбираться с gradle только тогда, когда в проекте что-то надо добавить или что-то внезапно ломается - и после решения проблемы “нажитый непосильным трудом” опыт благополучно забывается. Причём многие примеры в интернете похожи на ускоспециализированные заклинания, не добавляющие понимания происходящего: android { compileSdkVersion 28 defaultConfig { applicationId &quot;com.habr.hello&quot; minSdkVersion 20 targetSdkVersion 28 } buildTypes { release { minifyEnabled false } } } Я не собираюсь подробно описывать, для чего нужна каждая строчка выше - это частные детали реализации андроид-плагина. Есть кое-что более ценное - понимание того, как всё организовано. Информация раскидана по различным сайтам/официальной документации/исходникам градла и плагинов к нему - в общем, это чуть более универсальное знание, которое не хочется забывать." />
+<meta property="og:description" content="Как мне кажется, большинство людей начинают разбираться с gradle только тогда, когда в проекте что-то надо добавить или что-то внезапно ломается - и после решения проблемы “нажитый непосильным трудом” опыт благополучно забывается. Причём многие примеры в интернете похожи на ускоспециализированные заклинания, не добавляющие понимания происходящего: android { compileSdkVersion 28 defaultConfig { applicationId &quot;com.habr.hello&quot; minSdkVersion 20 targetSdkVersion 28 } buildTypes { release { minifyEnabled false } } } Я не собираюсь подробно описывать, для чего нужна каждая строчка выше - это частные детали реализации андроид-плагина. Есть кое-что более ценное - понимание того, как всё организовано. Информация раскидана по различным сайтам/официальной документации/исходникам градла и плагинов к нему - в общем, это чуть более универсальное знание, которое не хочется забывать." />
+<link rel="canonical" href="http://localhost:4000/2019/06/28/%D0%A8%D0%BF%D0%B0%D1%80%D0%B3%D0%B0%D0%BB%D0%BA%D0%B0-%D0%BF%D0%BE-Gradle.html" />
+<meta property="og:url" content="http://localhost:4000/2019/06/28/%D0%A8%D0%BF%D0%B0%D1%80%D0%B3%D0%B0%D0%BB%D0%BA%D0%B0-%D0%BF%D0%BE-Gradle.html" />
+<meta property="og:site_name" content="kright.github.io" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-06-28T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Шпаргалка по gradle" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"kright"},"dateModified":"2019-06-28T00:00:00+02:00","datePublished":"2019-06-28T00:00:00+02:00","description":"Как мне кажется, большинство людей начинают разбираться с gradle только тогда, когда в проекте что-то надо добавить или что-то внезапно ломается - и после решения проблемы “нажитый непосильным трудом” опыт благополучно забывается. Причём многие примеры в интернете похожи на ускоспециализированные заклинания, не добавляющие понимания происходящего: android { compileSdkVersion 28 defaultConfig { applicationId &quot;com.habr.hello&quot; minSdkVersion 20 targetSdkVersion 28 } buildTypes { release { minifyEnabled false } } } Я не собираюсь подробно описывать, для чего нужна каждая строчка выше - это частные детали реализации андроид-плагина. Есть кое-что более ценное - понимание того, как всё организовано. Информация раскидана по различным сайтам/официальной документации/исходникам градла и плагинов к нему - в общем, это чуть более универсальное знание, которое не хочется забывать.","headline":"Шпаргалка по gradle","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2019/06/28/%D0%A8%D0%BF%D0%B0%D1%80%D0%B3%D0%B0%D0%BB%D0%BA%D0%B0-%D0%BF%D0%BE-Gradle.html"},"url":"http://localhost:4000/2019/06/28/%D0%A8%D0%BF%D0%B0%D1%80%D0%B3%D0%B0%D0%BB%D0%BA%D0%B0-%D0%BF%D0%BE-Gradle.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=04936c4141575b8269035838047e98a4dd849258">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Шпаргалка по gradle</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="https://github.com/Kright/kright.github.io" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<nav>
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+</nav>
+
+
+<p>28 Jun 2019</p>
+
+<p>Как мне кажется, большинство людей начинают разбираться с gradle только тогда, когда в проекте что-то надо добавить или что-то внезапно ломается - и после решения проблемы “нажитый непосильным трудом” опыт благополучно забывается. Причём многие примеры в интернете похожи на ускоспециализированные заклинания, не добавляющие понимания происходящего:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">android</span> <span class="o">{</span>
+    <span class="n">compileSdkVersion</span> <span class="mi">28</span>
+    <span class="n">defaultConfig</span> <span class="o">{</span>
+        <span class="n">applicationId</span> <span class="s">"com.habr.hello"</span>
+        <span class="n">minSdkVersion</span> <span class="mi">20</span>
+        <span class="n">targetSdkVersion</span> <span class="mi">28</span>
+    <span class="o">}</span>
+    <span class="n">buildTypes</span> <span class="o">{</span>
+        <span class="n">release</span> <span class="o">{</span>
+            <span class="n">minifyEnabled</span> <span class="kc">false</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>Я не собираюсь подробно описывать, для чего нужна каждая строчка выше - это частные детали реализации андроид-плагина. Есть кое-что более ценное - понимание того, как всё организовано. Информация раскидана по различным сайтам/официальной документации/исходникам градла и плагинов к нему - в общем, это чуть более универсальное знание, которое не хочется забывать.</p>
+
+<p>Дальнейший текст можно рассматривать как шпаргалку для тех, кто только осваивает gradle или уже забыл.</p>
+
+<cut />
+
+<h2 id="полезные-ссылки">Полезные ссылки</h2>
+
+<ul>
+  <li><a href="https://docs.gradle.org/current/userguide/getting_started.html">Официальная документация</a> Довольно объёмная, но местами может не хватать подробностей.</li>
+  <li><a href="https://github.com/gradle/gradle">исходники на github</a>, <a href="https://docs.gradle.org/current/javadoc/">javadoc</a> - из-за динамической типизации в groovy среда разработки далеко не всегда может выдать список доступных полей/методов, а по коротким названиям методов и типам аргументов (Closure closure) не всегда можно понять, зачем они нужны.</li>
+  <li><a href="https://habr.com/en/post/167227/">статья на хабре с кучей примеров</a> - это перевод второй главы книги “Building and testing with gradle”. Книжку тоже можно почитать, она находится в свободном доступе.</li>
+  <li><a href="https://habr.com/en/company/jugru/blog/342914/">ещё одна статья - про buildSrc</a></li>
+</ul>
+
+<h1 id="консоль">Консоль</h1>
+
+<p>Android studio/IDEA старательно прячет команды gradle от разработчика, а ещё при изменении build.gradle файликов начинает тупить или перезагружать проект.</p>
+
+<p>В таких случаях вызывать gradle из консоли оказывается намного проще и быстрее. Враппер для gradle обычно идёт вместе с проектом и прекрасно работает в linux/macos/windows, разве что в последнем надо вызывать bat-файлик вместо враппера.</p>
+
+<h2 id="вызов-задач">Вызов задач</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./gradlew tasks
+</code></pre></div></div>
+<p>пишет доступные задачи.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./gradlew subprojectName:tasks --all
+</code></pre></div></div>
+<p>Можно вывести задачи отдельного подпроекта, а ещё с опцией <code class="language-plaintext highlighter-rouge">--all</code> будут выведены все задачи, включая второстепенные.</p>
+
+<p>Можно вызвать любую задачу, при этом будут вызваны все задачи, от которых она зависит.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./gradlew app:assembleDevelopDebug
+</code></pre></div></div>
+<p>Если лень писать название целиком, можно выкинуть маленькие буковки:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./gradlew app:assembleDD
+</code></pre></div></div>
+<p>Если градл не сможет однозначно угадать, какую именно задачу имели ввиду, то выведет список подходящих вариантов.</p>
+
+<h2 id="логгинг">Логгинг</h2>
+
+<p>Количество выводимой в консоль информации при запуске задачи сильно зависит от уровня логгинга.
+Кроме дефолтного есть <code class="language-plaintext highlighter-rouge">-q, -w, -i, -d</code>, ну или <code class="language-plaintext highlighter-rouge">--quiet, --warn, --info, --debug</code> по возрастанию количества информации. На сложных проектах вывод с -d может занимать больше мегабайта, а поэтому его лучше сразу сохранять в файл и там уже смотреть поиском по ключевым словам:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./gradlew app:build <span class="nt">-d</span> <span class="o">&gt;</span> myLog.txt
+</code></pre></div></div>
+
+<p>Если где-то кидается исключение, для stacktrace опция <code class="language-plaintext highlighter-rouge">-s</code>.</p>
+
+<p>Можно и самому писать в лог:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">logger</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="err">'</span><span class="no">A</span> <span class="n">warning</span> <span class="n">log</span> <span class="n">message</span><span class="o">.</span><span class="err">'</span><span class="o">)</span>
+</code></pre></div></div>
+<p>логгер является имплементацией SLF4J.</p>
+
+<p>##Groovy</p>
+
+<p>Происходящее в <code class="language-plaintext highlighter-rouge">build.gradle</code> файликах - просто код на groovy.</p>
+
+<p>Groovy как язык программирования почему-то не очень популярен, хотя, как мне кажется, он сам по себе достоин хотя бы небольшого изучения. Язык появился на свет ещё в 2003 году и потихоньку развивался. Интересные особенности:</p>
+
+<ul>
+  <li>Практически любой java код является валидным кодом на groovy. Это очень помогает интуитивно писать работающий код.</li>
+  <li>Одновременно вместе со статической, в груви поддерживается динамическая типизация, вместо <code class="language-plaintext highlighter-rouge">String a = "a"</code> можно смело писать <code class="language-plaintext highlighter-rouge">def a = "a"</code> или даже <code class="language-plaintext highlighter-rouge">def map = ['one':1, 'two':2, 'list' = [1,false]]</code></li>
+  <li>Есть замыкания, для которых можно динамически определить контекст исполнения. Те самые блоки <code class="language-plaintext highlighter-rouge">android {...}</code> принимают замыкания и потом исполняют их для какого-то объекта.</li>
+  <li>Есть интерполяция строк <code class="language-plaintext highlighter-rouge">"$a, ${b}"</code>, multiline-строки <code class="language-plaintext highlighter-rouge">"""yep, ${c}"""</code>, а обычные java-строки обрамляются одинарными кавычками: <code class="language-plaintext highlighter-rouge">'text'</code></li>
+  <li>Есть подобие extension-методов. В стандартной коллекции языка уже есть методы типа any, every, each, findAll. Лично мне названия методов кажутся непривычными, но главное что <a href="http://docs.groovy-lang.org/next/html/documentation/working-with-collections.html">они есть</a>.</li>
+  <li>Вкусный синтаксический сахар, код становится намного короче и проще. Можно не писать скобки вокруг аргументов функции, для объявления списков и хеш-табличек приятный синтаксис: <code class="language-plaintext highlighter-rouge">[a,b,c], [key1: value1, key2: value2]</code></li>
+</ul>
+
+<p>В общем, почему языки типа Python/Javascript взлетели, а Groovy нет - для меня загадка. Для своего времени, когда в java даже лямбд не было, а альтернативы типа kotlin/scala только-только появлялись или ещё не существовали, Groovy должен был выглядеть реально интересным языком.</p>
+
+<p>Именно гибкость синтаксиса groovy и динамическая типизация позволила в gradle создавать лаконичные DSL.</p>
+
+<p>Сейчас в официальной документации Gradle примеры продублированы на Kotlin, и вроде как планируется переходить на него, но код уже не выглядит таким простым и становится больше похожим на обычный код:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="n">hello</span> <span class="o">{</span>
+    <span class="n">doLast</span> <span class="o">{</span>
+        <span class="n">println</span> <span class="s">"hello"</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>vs</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tasks</span><span class="p">.</span><span class="nf">register</span><span class="p">(</span><span class="s">"hello"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">doLast</span> <span class="p">{</span>
+        <span class="nf">println</span><span class="p">(</span><span class="s">"hello"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Впрочем, переименование в Kradle пока не планируется.</p>
+
+<h2 id="стадии-сборки">Стадии сборки</h2>
+
+<p>Их делят на инициализацию, конфигурацию и выполнение.</p>
+
+<p>Идея состоит в том, что gradle собирает ациклический граф зависимостей и вызывает только необходимый минимум их них. Если я правильно понял, стадия инициализации происходит в тот момент, когда исполняется код из build.gradle.</p>
+
+<p>Например, такой:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">copy</span> <span class="o">{</span>
+   <span class="n">from</span> <span class="n">source</span>
+   <span class="n">to</span> <span class="n">dest</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>Или такой:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="n">epicFail</span> <span class="o">{</span>
+   <span class="n">copy</span><span class="o">{</span>
+      <span class="n">from</span> <span class="n">source</span>
+      <span class="n">to</span> <span class="n">dest</span>
+   <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>Возможно, это неочевидно, но вышеуказанное будет тормозить инициализацию. Чтобы не заниматься копированием файлов при каждой инициализации, нужно в задаче использоваль блок <code class="language-plaintext highlighter-rouge">doLast{...}</code> или <code class="language-plaintext highlighter-rouge">doFirst{...}</code> - тогда код завернётся в замыкание и его позовут в момент выполнения задачи.</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="n">properCopy</span> <span class="o">{</span>
+    <span class="n">doLast</span> <span class="o">{</span>
+        <span class="n">copy</span> <span class="o">{</span>
+            <span class="n">from</span> <span class="n">dest</span>
+            <span class="n">to</span> <span class="n">source</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>или так</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="nf">properCopy</span><span class="o">(</span><span class="nl">type:</span> <span class="nc">Copy</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">from</span> <span class="n">dest</span>
+    <span class="n">to</span> <span class="n">source</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>В старых примерах вместо <code class="language-plaintext highlighter-rouge">doLast</code> можно встретить оператор <code class="language-plaintext highlighter-rouge">&lt;&lt;</code>, но от него потом отказались из-за неочевидности поведения.</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="n">properCopy</span> <span class="o">&lt;&lt;</span> <span class="o">{</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"files copied"</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="tasksall">tasks.all</h2>
+
+<p>Что забавно, с помощью <code class="language-plaintext highlighter-rouge">doLast</code> и <code class="language-plaintext highlighter-rouge">doFirst</code> можно навешивать какие-то действия на любые задачи:</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tasks</span><span class="p">.</span><span class="nf">all</span> <span class="p">{</span>
+    <span class="nf">doFirst</span> <span class="p">{</span>
+        <span class="nf">println</span><span class="p">(</span><span class="s">"task $name started"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>IDE подсказывает, что у <code class="language-plaintext highlighter-rouge">tasks</code> есть метод <code class="language-plaintext highlighter-rouge">whenTaskAdded(Closure ...)</code>, но метод <code class="language-plaintext highlighter-rouge">all(Closure ...)</code> работает намного интереснее - замыкание вызывается для всех существующих задач, а так же на новых задачах при их добавлении.</p>
+
+<p>Создадим задачу, которая распечатает зависимости всех задач:</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="nf">printDependencies</span> <span class="p">{</span>
+    <span class="nf">doLast</span> <span class="p">{</span>
+        <span class="n">tasks</span><span class="p">.</span><span class="nf">all</span> <span class="p">{</span>
+            <span class="nf">println</span><span class="p">(</span><span class="s">"$name dependsOn $dependsOn"</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>или так:</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="nf">printDependencies</span> <span class="p">{</span>
+    <span class="nf">doLast</span> <span class="p">{</span>
+        <span class="n">tasks</span><span class="p">.</span><span class="nf">all</span> <span class="p">{</span> <span class="nc">Task</span> <span class="n">task</span> <span class="p">-&gt;</span>
+            <span class="nf">println</span><span class="p">(</span><span class="s">"${task.name} dependsOn ${task.dependsOn}"</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Если <code class="language-plaintext highlighter-rouge">tasks.all{}</code> вызвать во время выполнения (в блоке <code class="language-plaintext highlighter-rouge">doLast</code>), то мы увидим все задачи и зависимости.
+Если сделать то же самое без <code class="language-plaintext highlighter-rouge">doLast</code> (т.е., во время инициализации), то у распечатанных задач может не хватать зависимостей, так как они ещё не были добавлены.</p>
+
+<p>Ах да, зависимости! Если другая задача должна зависеть от результатов выполнения нашей, то стоит добавить зависимость:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">anotherTask</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">properCopy</span>
+</code></pre></div></div>
+<p>Или даже так:</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tasks</span><span class="p">.</span><span class="nf">all</span><span class="p">{</span>  <span class="n">task</span> <span class="p">-&gt;</span>
+   <span class="k">if</span> <span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="nf">toLowerCase</span><span class="p">().</span><span class="nf">contains</span><span class="p">(</span><span class="s">"debug"</span><span class="p">))</span> <span class="p">{</span>
+       <span class="n">task</span><span class="p">.</span><span class="n">dependsOn</span> <span class="n">properCopy</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="inputs-outputs-и-инкрементальная-сборка">inputs, outputs и инкрементальная сборка</h2>
+
+<p>Обычная задача будет вызываться каждый раз. Если указать, что задача на основе файла А генерирует файл Б, то gradle будет пропускать задачу, если эти файлы не изменились. Причём gradle проверяет не дату изменения файла, а именно его содержимое.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="nf">generateCode</span><span class="p">(</span><span class="n">type</span><span class="p">:</span> <span class="nc">Exec</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">commandLine</span> <span class="s">"generateCode.sh"</span><span class="p">,</span> <span class="s">"input.txt"</span><span class="p">,</span> <span class="s">"output.java"</span>
+    <span class="n">inputs</span><span class="p">.</span><span class="n">file</span> <span class="s">"input.txt"</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">file</span> <span class="s">"output.java"</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Аналогично можно указать папки, а так же какие-то значения: <code class="language-plaintext highlighter-rouge">inputs.property(name, value)</code>.</p>
+
+<h2 id="task-description">task description</h2>
+
+<p>При вызове <code class="language-plaintext highlighter-rouge">./gradlew tasks --all</code> стандартные задачи имеют красивое описание и как-то сгруппированы. Для своих задач это добавляется очень просто:</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="nf">hello</span> <span class="p">{</span>
+    <span class="n">group</span> <span class="s">"MyCustomGroup"</span>
+    <span class="n">description</span> <span class="s">"Prints 'hello'"</span>
+    <span class="nf">doLast</span><span class="p">{</span>
+        <span class="n">print</span> <span class="err">'</span><span class="n">hello</span><span class="err">'</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="taskenabled">task.enabled</h3>
+
+<p>можно “выключить” задачу - тогда её зависимости будут всё равно вызваны, а она сама - нет.</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">taskName</span><span class="o">.</span><span class="na">enabled</span> <span class="kc">false</span>
+</code></pre></div></div>
+
+<h2 id="несколько-проектов-модулей">несколько проектов (модулей)</h2>
+
+<p><a href="https://guides.gradle.org/creating-multi-project-builds/">multi-project builds в документации</a></p>
+
+<p>В основном проекте можно расположить ещё несколько модулей. Например, такое используется в андроид проектах - в рутовом проекте почти ничего нет, в подпроекте включается android плагин. Если захочется добавить новый модуль - можно добавить ещё один, и там, например, тоже подключить android плагин, но использовать другие настройки для него.</p>
+
+<p>Ещё пример: при публикации проекта с помощью jitpack в рутовом проекте описывается, с какими настройками публиковать дочерний модуль, который про факт публикации может даже не подозревать.</p>
+
+<p>Дочерние модули указываются в settings.gradle:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">include</span> <span class="err">'</span><span class="n">name</span><span class="err">'</span>
+</code></pre></div></div>
+
+<p>Подробнее про зависимости между проектами можно почитать <a href="https://docs.gradle.org/current/userguide/multi_project_builds.html">здесь</a></p>
+
+<h2 id="buildsrc">buildSrc</h2>
+
+<p>Если кода в <code class="language-plaintext highlighter-rouge">build.gradle</code> много или он дублируется, его можно вынести в отдельный модуль. Нужна папка с магическим именем <code class="language-plaintext highlighter-rouge">buildSrc</code>, в которой можно расположить код на groovy или java. (ну, вернее, в <code class="language-plaintext highlighter-rouge">buildSrc/src/main/java/com/smth/</code> код, тесты можно добавить в <code class="language-plaintext highlighter-rouge">buildSrc/src/test</code>). Если хочется что-то ещё, например, написать свою задачу на scala или использовать какие-то зависимости, то прямо в <code class="language-plaintext highlighter-rouge">buildSrc</code> надо создать <code class="language-plaintext highlighter-rouge">build.gradle</code> и в нём указать нужные зависимости/включить плагины.</p>
+
+<p>К сожалению, с проектом в <code class="language-plaintext highlighter-rouge">buildSrc</code> IDE может тупить c подсказками, там придётся писать импорты и классы/задачи оттуда в обычный <code class="language-plaintext highlighter-rouge">build.gradle</code> тоже придётся импортировать. Написать <code class="language-plaintext highlighter-rouge">import com.smth.Taskname</code> - не сложно, просто надо это помнить и не ломать голову, почему задача из <code class="language-plaintext highlighter-rouge">buildSrc</code> не найдена).</p>
+
+<p>По этой причине удобно сначала написать что-то работающее прямо в <code class="language-plaintext highlighter-rouge">build.gradle</code>, и только потом переносить код в <code class="language-plaintext highlighter-rouge">buildSrc</code>.</p>
+
+<h2 id="свой-тип-задачи">Свой тип задачи</h2>
+
+<p>Задача наследуется от <code class="language-plaintext highlighter-rouge">DefaultTask</code>, в которой есть много-много полей, методов и прочего. <a href="https://github.com/gradle/gradle/blob/master/subprojects/core/src/main/java/org/gradle/api/internal/AbstractTask.java">Код AbstractTask, от которой унаследована DefaultTask.</a></p>
+
+<p>Полезные моменты:</p>
+
+<ul>
+  <li>вместо ручного добавления <code class="language-plaintext highlighter-rouge">inputs</code> и <code class="language-plaintext highlighter-rouge">outputs</code> можно использовать поля и аннотации к ним: <code class="language-plaintext highlighter-rouge">@Input, @OutputFile</code> и т.п.</li>
+  <li>метод, который будут запускать при выполнении задачи: <code class="language-plaintext highlighter-rouge">@TaskAction</code>.</li>
+  <li>удобные методы типа <code class="language-plaintext highlighter-rouge">copy{from ... , into... }</code> всё ещё можно вызвать, но придётся их явно вызывать для проекта: <code class="language-plaintext highlighter-rouge">project.copy{...}</code></li>
+</ul>
+
+<p>Когда для нашей задачи кто-то в <code class="language-plaintext highlighter-rouge">build.gradle</code> пишет</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">taskName</span> <span class="o">{</span>
+    <span class="o">...</span> <span class="c1">//some code</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>у задачи вызывается метод <code class="language-plaintext highlighter-rouge">configure(Closure)</code>.</p>
+
+<p>Я не уверен, что это правильных подход, но если у задачи есть несколько полей, взаимное состояние которых сложно контролировать геттерами-сеттерами, то кажется вполне удобным переопределить метод следующим образом:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">override</span> <span class="n">def</span> <span class="nf">configure</span><span class="o">(</span><span class="nc">Closure</span> <span class="n">closure</span><span class="o">){</span>
+    <span class="n">def</span> <span class="n">result</span> <span class="o">=</span> <span class="kd">super</span><span class="o">().</span><span class="na">configure</span><span class="o">(</span><span class="n">closure</span><span class="o">)</span>
+    <span class="c1">// здесь проверить состояние полей/установить что-нибудь</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>Причём даже если написать</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">taskName</span><span class="o">.</span><span class="na">fieldName</span> <span class="n">value</span>
+</code></pre></div></div>
+<p>то метод <code class="language-plaintext highlighter-rouge">configure</code> всё равно будет вызван.</p>
+
+<h2 id="свой-плагин">Свой плагин</h2>
+
+<p>Подобно задаче, можно написать свой плагин, который будет что-то настраивать или создавать задачи. Например, происходящее в <code class="language-plaintext highlighter-rouge">android{...}</code> - полностью заслуга <del>тёмной магии</del> андроид плагина, который вдобавок создаёт целую кучу задач типа app:assembleDevelopDebug на все возможные сочетания flavor/build type/dimenstion. Ничего сложного в написании своего плагина нет, для лучшего понимания можно посмотреть код других плагинов.</p>
+
+<p>Есть ещё третья ступенька - можно код расположить не в <code class="language-plaintext highlighter-rouge">buildSrc</code>, а сделать его отдельным проектом. Потом с помощью <a href="https://jitpack.io">https://jitpack.io</a> или ещё чего-то опубликовать плагин и подключать его аналогично остальным.</p>
+
+<h2 id="the-end">The end</h2>
+
+<p>В примерах выше могут быть опечатки и неточности. Пишите в личку или отмечайте с <code class="language-plaintext highlighter-rouge">ctrl+enter</code>- исправлю. Конкретные примеры лучше брать из документации, а на эту статью смотреть как на списочек того “как можно делать”.</p>
+
+<p><a href="https://habr.com/ru/post/458046/">Пост на хабре</a></p>
+
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Kright/kright.github.io">kright.github.io</a> is maintained by <a href="https://github.com/Kright">Kright</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

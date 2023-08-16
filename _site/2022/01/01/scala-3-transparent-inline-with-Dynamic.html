@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Scala 3: transparent inline with dynamic | kright.github.io</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Scala 3: transparent inline with dynamic" />
+<meta name="author" content="kright" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Scala 3: transparent inline with Dynamic" />
+<meta property="og:description" content="Scala 3: transparent inline with Dynamic" />
+<link rel="canonical" href="http://localhost:4000/2022/01/01/scala-3-transparent-inline-with-Dynamic.html" />
+<meta property="og:url" content="http://localhost:4000/2022/01/01/scala-3-transparent-inline-with-Dynamic.html" />
+<meta property="og:site_name" content="kright.github.io" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-01T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Scala 3: transparent inline with dynamic" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"kright"},"dateModified":"2022-01-01T00:00:00+01:00","datePublished":"2022-01-01T00:00:00+01:00","description":"Scala 3: transparent inline with Dynamic","headline":"Scala 3: transparent inline with dynamic","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2022/01/01/scala-3-transparent-inline-with-Dynamic.html"},"url":"http://localhost:4000/2022/01/01/scala-3-transparent-inline-with-Dynamic.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=04936c4141575b8269035838047e98a4dd849258">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Scala 3: transparent inline with dynamic</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="https://github.com/Kright/kright.github.io" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<nav>
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+</nav>
+
+
+<p>01 Jan 2022</p>
+
+<h1 id="scala-3-transparent-inline-with-dynamic">Scala 3: transparent inline with Dynamic</h1>
+
+<h2 id="динамическая-типизация-внутри-статической">динамическая типизация внутри статической</h2>
+
+<p>В скале есть интерфейс Dynamic. От него можно унаследоваться и получить динамическую типизацию - при отсутствии поля в классе компилятор подставит вызов специального метода.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">scala</span>
+<span class="k">import</span> <span class="nn">scala.language.dynamics</span>
+
+<span class="k">class</span> <span class="nc">MyClass</span> <span class="k">extends</span> <span class="nc">Dynamic</span>
+
+<span class="k">val</span> <span class="nv">a</span> <span class="k">=</span> <span class="nc">MyClass</span>
+<span class="nv">a</span><span class="o">.</span><span class="py">x</span>
+<span class="c1">// a.selectDynamic("x")</span>
+<span class="nv">a</span><span class="o">.</span><span class="py">x</span> <span class="k">=</span> <span class="mi">2</span>
+<span class="c1">// a.updateDynamic("x")(2)</span>
+</code></pre></div></div>
+
+<p>Класс MyClass может быть любым, например таким:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyClass</span> <span class="k">extends</span> <span class="nc">Dynamic</span> <span class="o">{</span>
+  <span class="k">private</span> <span class="k">var</span> <span class="n">x</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+	
+  <span class="k">def</span> <span class="nf">selectDynamic</span><span class="o">(</span><span class="n">fieldName</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="o">{</span>
+	<span class="n">fieldName</span> <span class="k">match</span> 
+	  <span class="k">case</span> <span class="s">"x"</span> <span class="k">=&gt;</span> <span class="k">return</span> <span class="n">x</span> 
+  <span class="o">}</span>
+	
+  <span class="k">def</span> <span class="nf">updateDynamic</span><span class="o">(</span><span class="n">fieldName</span><span class="k">:</span> <span class="kt">String</span><span class="o">)(</span><span class="n">value</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+	<span class="n">fieldName</span> <span class="k">match</span> 
+	  <span class="k">case</span> <span class="s">"x"</span> <span class="k">=&gt;</span> <span class="n">x</span> <span class="k">=</span> <span class="n">value</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Конкретно такой класс получился не особо полезным - по поведению он похож на</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyClass</span><span class="o">(){</span><span class="k">var</span> <span class="n">x</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="o">}</span>
+</code></pre></div></div>
+
+<p>только хуже - во время компиляции мы не увидим ошибок, если обратимся к несуществующему полю, и код упадёт в рантайме. Впрочем, этот код нужен для иллюстрации возожностей языка.</p>
+
+<p>Что, если нам захочется сделать класс с полями разных типов?</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyClass</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">var</span> <span class="n">x</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span> 
+	<span class="k">var</span> <span class="n">b</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Если попробуем написать альтернативу этому классу с помощью Dynamic, в качестве принимаемых и возвращаемых типов придётся указывать Any и кастовать к какому-то типу.
+Впрочем, у нас тут Scala 3, в которой появились Union types, можно указать в качестве типа поля Int | Boolean и что-то иное типа строки компилятор не даст присвоить.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyClass</span> <span class="k">extends</span> <span class="nc">Dynamic</span> <span class="o">{</span>  
+  <span class="k">private</span> <span class="k">var</span> <span class="n">x</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>  
+  <span class="k">private</span> <span class="k">var</span> <span class="n">b</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">false</span>  
+  
+  <span class="k">def</span> <span class="nf">selectDynamic</span><span class="o">(</span><span class="n">field</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="kt">|</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="o">{</span>  
+    <span class="n">field</span> <span class="k">match</span>  
+      <span class="k">case</span> <span class="s">"x"</span> <span class="k">=&gt;</span> <span class="n">x</span>  
+      <span class="k">case</span> <span class="s">"b"</span> <span class="k">=&gt;</span> <span class="n">b</span>  
+  <span class="o">}</span>  
+  
+  <span class="k">def</span> <span class="nf">updateDynamic</span><span class="o">(</span><span class="n">field</span><span class="k">:</span> <span class="kt">String</span><span class="o">)(</span><span class="n">value</span><span class="k">:</span> <span class="kt">Int</span> <span class="kt">|</span> <span class="kt">Boolean</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>  
+    <span class="n">field</span> <span class="k">match</span>  
+      <span class="k">case</span> <span class="s">"x"</span> <span class="k">=&gt;</span>  
+        <span class="n">value</span> <span class="k">match</span>  
+          <span class="k">case</span> <span class="n">v</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="n">x</span> <span class="k">=</span> <span class="n">v</span>  
+      <span class="k">case</span> <span class="s">"y"</span> <span class="k">=&gt;</span>  
+        <span class="n">value</span> <span class="k">match</span>  
+          <span class="k">case</span> <span class="n">v</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=&gt;</span> <span class="n">b</span> <span class="k">=</span> <span class="n">v</span>  
+  <span class="o">}</span>  
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Но появилась ещё проблема - мы всё равно можем попробовать присвоить Boolean в x или Int в b, а потом упадём в рантайме. Такова участь динамической типизации, ничего не поделать.</p>
+
+<p>И тут c ноги врывается transparent inline! Перепишем метод selectDynamic:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">scala.compiletime.error</span>
+
+<span class="nc">MyClass</span> <span class="o">{</span> 
+    <span class="o">...</span>
+	<span class="n">transparent</span> <span class="n">inline</span> <span class="k">def</span> <span class="nf">selectDynamic</span><span class="o">(</span><span class="n">inline</span> <span class="n">field</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="kt">|</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="o">{</span>  
+	  <span class="n">inline</span> <span class="n">field</span> <span class="k">match</span>  
+		<span class="k">case</span> <span class="s">"x"</span> <span class="k">=&gt;</span> <span class="n">x</span>
+		<span class="k">case</span> <span class="s">"b"</span> <span class="k">=&gt;</span> <span class="n">b</span>
+		<span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nf">error</span><span class="o">(</span><span class="s">"unknown field in MyClass"</span><span class="o">)</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Что будет дальше? В месте вызова <code class="language-plaintext highlighter-rouge">a.x</code> компилятор подставит вызов функции selectDynamic, пойдёт внутрь, в inline match, найдёт там подходящую строку “x” и заменит всё-всё-всё на простое обращение к полю x с типом Int.</p>
+
+<p>Если быть точным и посмотреть байткод - у MyClass появится метод - геттер <code class="language-plaintext highlighter-rouge">def inline$x(): Int</code>, который будет вызываться напрямую.</p>
+
+<p>Ну либо на это можно смотреть так:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">x</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="nv">a</span><span class="o">.</span><span class="py">selectDynamic</span><span class="o">(</span><span class="s">"x"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">b</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="nv">a</span><span class="o">.</span><span class="py">selectDynamic</span><span class="o">(</span><span class="s">"b"</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Возвращаемый тип зависит от аргумента!</p>
+
+<p>Кроме того, если обратиться к несуществующему полю, прямо во время компиляции подставится compiletime.error и компилятор покажет ошибку.</p>
+
+<p>Поздравляю, мы снова вернулись к статической типизации. Какие выводы можно сделать?</p>
+
+<ul>
+  <li>transparent inline - очень мощный инструмент, позволяющий гибко работать с типами. В scala 2.0 такое невозможно.</li>
+  <li>Нет строго дуализма между runtime и compiletime преобразованиями, гибкость scala позволяет в какой-то мере заменить первое на второе. В С++ похожая ситуация.</li>
+</ul>
+
+<p>Для полноты картины покажу, как можно переписать второй метод:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">transparent</span> <span class="n">inline</span> <span class="k">def</span> <span class="nf">updateDynamic</span><span class="o">(</span><span class="n">inline</span> <span class="n">field</span><span class="k">:</span> <span class="kt">String</span><span class="o">)(</span><span class="n">inline</span> <span class="n">value</span><span class="k">:</span> <span class="kt">Int</span> <span class="kt">|</span> <span class="kt">Boolean</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span> 
+  <span class="n">inline</span> <span class="n">field</span> <span class="k">match</span>  
+    <span class="k">case</span> <span class="s">"x"</span> <span class="k">=&gt;</span>  
+      <span class="n">inline</span> <span class="n">value</span> <span class="k">match</span>  
+        <span class="k">case</span> <span class="n">v</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="n">x</span> <span class="k">=</span> <span class="n">v</span>  
+        <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nf">error</span><span class="o">(</span><span class="s">"should be int"</span><span class="o">)</span>  
+    <span class="k">case</span> <span class="s">"y"</span> <span class="k">=&gt;</span>  
+      <span class="n">inline</span> <span class="n">value</span> <span class="k">match</span>  
+        <span class="k">case</span> <span class="n">v</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=&gt;</span> <span class="n">b</span> <span class="k">=</span> <span class="n">v</span>  
+        <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nf">error</span><span class="o">(</span><span class="s">"should be boolean"</span><span class="o">)</span>  
+    <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nf">error</span><span class="o">(</span><span class="s">"unknown field"</span><span class="o">)</span>  
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Посмотрите на переход от динамической типизации обратно к статической при помощи более “умного” компилятора! Что-то подобное можно попробовать в динамических языках типа Python, чтобы ловить ошибки как можно раньше. Не все, но какую-то часть.</p>
+
+<p>Пример кода выше не очень практичен - можно сделать обычный класс с полями x: Int, b:Boolean и он будет прекрасно работать. В классе c Dynamic уже известные поля можно заменить на реальные поля и это тоже будет прекрасно работать, компилятор будет обращаться напрямую к ним вместо вызова selectDynamic:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyDynamic</span> <span class="k">extends</span> <span class="nc">Dynamic</span><span class="o">{</span>
+    <span class="k">var</span> <span class="n">x</span><span class="k">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="k">var</span> <span class="n">b</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="k">def</span> <span class="nf">selectDynamic</span><span class="o">(...)</span> <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>В общем, код выше дублирует базовые возможности языка, бесполезен сам по себе, но, надеюсь, полезен для иллюстрации.</p>
+
+<p>Для чего использовать transparent inline в реальном коде - не знаю. Люди как-то жили без этой возможности и прекрасно решали свои задачи. Но я точно уверен, что часть этих задач теперь можно решить более гибко и красиво.</p>
+
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Kright/kright.github.io">kright.github.io</a> is maintained by <a href="https://github.com/Kright">Kright</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

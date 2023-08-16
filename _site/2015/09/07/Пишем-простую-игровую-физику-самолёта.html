@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Пишем простую* игровую физику самолёта | kright.github.io</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Пишем простую* игровую физику самолёта" />
+<meta name="author" content="kright" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Пишем простую* игровую физику самолёта" />
+<meta property="og:description" content="Пишем простую* игровую физику самолёта" />
+<link rel="canonical" href="http://localhost:4000/2015/09/07/%D0%9F%D0%B8%D1%88%D0%B5%D0%BC-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%83%D1%8E-%D0%B8%D0%B3%D1%80%D0%BE%D0%B2%D1%83%D1%8E-%D1%84%D0%B8%D0%B7%D0%B8%D0%BA%D1%83-%D1%81%D0%B0%D0%BC%D0%BE%D0%BB%D1%91%D1%82%D0%B0.html" />
+<meta property="og:url" content="http://localhost:4000/2015/09/07/%D0%9F%D0%B8%D1%88%D0%B5%D0%BC-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%83%D1%8E-%D0%B8%D0%B3%D1%80%D0%BE%D0%B2%D1%83%D1%8E-%D1%84%D0%B8%D0%B7%D0%B8%D0%BA%D1%83-%D1%81%D0%B0%D0%BC%D0%BE%D0%BB%D1%91%D1%82%D0%B0.html" />
+<meta property="og:site_name" content="kright.github.io" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-09-07T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Пишем простую* игровую физику самолёта" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"kright"},"dateModified":"2015-09-07T00:00:00+02:00","datePublished":"2015-09-07T00:00:00+02:00","description":"Пишем простую* игровую физику самолёта","headline":"Пишем простую* игровую физику самолёта","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2015/09/07/%D0%9F%D0%B8%D1%88%D0%B5%D0%BC-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%83%D1%8E-%D0%B8%D0%B3%D1%80%D0%BE%D0%B2%D1%83%D1%8E-%D1%84%D0%B8%D0%B7%D0%B8%D0%BA%D1%83-%D1%81%D0%B0%D0%BC%D0%BE%D0%BB%D1%91%D1%82%D0%B0.html"},"url":"http://localhost:4000/2015/09/07/%D0%9F%D0%B8%D1%88%D0%B5%D0%BC-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%83%D1%8E-%D0%B8%D0%B3%D1%80%D0%BE%D0%B2%D1%83%D1%8E-%D1%84%D0%B8%D0%B7%D0%B8%D0%BA%D1%83-%D1%81%D0%B0%D0%BC%D0%BE%D0%BB%D1%91%D1%82%D0%B0.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=04936c4141575b8269035838047e98a4dd849258">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Пишем простую* игровую физику самолёта</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="https://github.com/Kright/kright.github.io" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<nav>
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+</nav>
+
+
+<p>07 Sep 2015</p>
+
+<h1 id="пишем-простую-игровую-физику-самолёта">Пишем простую* игровую физику самолёта</h1>
+
+<p>* — в трёх измерениях.</p>
+
+<p><img src="/assets/images/2015 физика самолёта в 3д/airplane.jpg" alt="" /></p>
+
+<p><em>Предупреждение: дальнейшие рассуждения вполне могут быть ошибочными, мой опыт ограничивается игрой в авиасимуляторы и курсом теоретической механики. Знания в аэродинамике и игровых физических движках весьма скудные. Картинка для привлечения внимания — фотография, а не скриншот.</em></p>
+
+<p>«Что может быть проще самолёта? Подъёмная сила пропорциональна квадрату скорости, двигатель тянет вперёд, всё просто» — такая мысль пришла в мою голову летом, и я сел писать игру. Лето прошло, было собрано несколько граблей, а списочек того, что я планировал добавить в проект, очень сильно вырос.</p>
+
+<p>В данной статье я попробую написать именно о физической составляющей, не отвлекаясь на графику и прочие штуки. Надеюсь, кому-то это поможет — в интернете не очень много информации на эту тему.</p>
+
+<p>Примеры рабочего и не очень кода будут на Scala (для понимания сути язык знать не обязательно). Кроме того, я использую классы для векторов, матриц и кватернионов из libgdx. Если у кого-то будут вопросы по особенностям их реализации — код движка открыт. Для удобства векторам добавлены методы типа +=, *=, а так же +, -, благо в scala так можно. Ещё оказалось удобным добавить методы := для присваивания по значению.</p>
+
+<p>Код:</p>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">v</span> <span class="o">:=</span> <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span>
+<span class="n">v2</span> <span class="o">:=</span> <span class="n">v</span>
+</code></pre></div></div>
+
+<p>Эквивалентен</p>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">v</span><span class="o">.</span><span class="py">set</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span>
+<span class="nv">v2</span><span class="o">.</span><span class="py">set</span><span class="o">(</span><span class="n">v</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>За исключением кватернионов:</p>
+
+<p><code class="language-plaintext highlighter-rouge">set(x,y,z,w)</code>, но <code class="language-plaintext highlighter-rouge">:=(w,x,y,z)</code></p>
+
+<p>Второй вариант мне намного привычнее, а set я никогда не использую. Свой код выкладывать пока что никуда не буду, там немножко треш, который время от времени переписывается до неузнаваемости.</p>
+
+<h2 id="итак-начнём">Итак, начнём.</h2>
+
+<p>Напишем класс для позиции модели:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Position</span><span class="o">(</span><span class="k">val</span> <span class="nv">pos</span><span class="k">:</span><span class="kt">Vector3f</span><span class="o">,</span> <span class="k">val</span> <span class="nv">rot</span><span class="k">:</span><span class="kt">Quaternion</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Как нетрудно догадаться, у класса будет два final поля, описывающие положение центра масс модели и её ориентацию относительно мира.
+Получить матрицу в libgdx можно так:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">matrix</span><span class="o">.</span><span class="py">idt</span><span class="o">().</span><span class="py">translate</span><span class="o">(</span><span class="nv">position</span><span class="o">.</span><span class="py">pos</span><span class="o">).</span><span class="py">rotate</span><span class="o">(</span><span class="nv">position</span><span class="o">.</span><span class="py">rot</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Введём класс для производной:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Derivative</span><span class="o">(</span><span class="k">val</span> <span class="nv">linear</span><span class="k">:</span> <span class="kt">Vector3f</span><span class="o">,</span> <span class="k">val</span> <span class="nv">angular</span><span class="k">:</span> <span class="kt">Vector3f</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Этот класс окажется удобным не только для описания скорости (первой производной), но и для ускорений и сил.</p>
+
+<p>Стоп. Как кватернион превратился в вектор? Действительно, угловые скорость, ускорение и момент принято описывать векторами. Существенная разница между угловой скоростью и ориентацией в том, что ориентации «закольцованы», поворот на два пи эквивалентен «нулевому» повороту. Напротив, угловая скорость в принципе не ограничена.</p>
+
+<p>Можно ввести операцию логарифма кватерниона q- вектор v, который направлен по направлению оси вращения, и его длина равна углу поворота в радианах. Экспонента — обратная операция. q == exp(v*2) == exp(v) * exp(v)</p>
+
+<p>Отображение вектор-&gt;кватернион однозначно, а обратное — нет. Повороту на угол alpha за время dt может соответствовать угловая скорость (alpha + 2 * pi * n)/dt, где n — любое целое число.</p>
+
+<p>Очевидно, что за время dt при угловой скорости w поворот q = exp(w*dt).</p>
+
+<p>Код:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">QuaternionS</span> <span class="k">extends</span> <span class="nc">Quaternion</span><span class="o">{</span>
+
+<span class="o">...</span>
+
+  <span class="k">def</span> <span class="nf">:=</span><span class="o">(</span><span class="n">log</span><span class="k">:</span> <span class="kt">Vector3</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="nv">len</span> <span class="k">=</span> <span class="nv">log</span><span class="o">.</span><span class="py">len</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="n">len</span> <span class="o">&gt;</span> <span class="mf">0.0001f</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="nv">a</span> <span class="k">=</span> <span class="n">len</span> <span class="o">/</span> <span class="mi">2</span>
+      <span class="k">val</span> <span class="nv">m</span> <span class="k">=</span> <span class="nv">Math</span><span class="o">.</span><span class="py">sin</span><span class="o">(</span><span class="n">a</span><span class="o">).</span><span class="py">toFloat</span> <span class="o">/</span> <span class="n">len</span>
+      <span class="k">this</span> <span class="o">:=(</span><span class="nv">Math</span><span class="o">.</span><span class="py">cos</span><span class="o">(</span><span class="n">a</span><span class="o">).</span><span class="py">toFloat</span><span class="o">,</span> <span class="nv">log</span><span class="o">.</span><span class="py">x</span> <span class="o">*</span> <span class="n">m</span><span class="o">,</span> <span class="nv">log</span><span class="o">.</span><span class="py">y</span> <span class="o">*</span> <span class="n">m</span><span class="o">,</span> <span class="nv">log</span><span class="o">.</span><span class="py">z</span> <span class="o">*</span> <span class="n">m</span><span class="o">)</span>
+    <span class="o">}</span> <span class="k">else</span>
+      <span class="k">this</span> <span class="o">:=(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">)</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="nf">log</span><span class="o">(</span><span class="n">result</span><span class="k">:</span> <span class="kt">Vector3</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="nv">xyz</span> <span class="k">=</span> <span class="nv">Math</span><span class="o">.</span><span class="py">sqrt</span><span class="o">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="n">y</span> <span class="o">+</span> <span class="n">z</span><span class="o">*</span><span class="n">z</span><span class="o">)</span> <span class="c1">// равно синусу половины угла поворота</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="n">xyz</span> <span class="o">&gt;</span> <span class="mf">0.0001f</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="nv">m</span> <span class="k">=</span> <span class="o">(</span><span class="nv">Math</span><span class="o">.</span><span class="py">acos</span><span class="o">(</span><span class="n">w</span><span class="o">).</span><span class="py">toFloat</span> <span class="o">*</span> <span class="mf">2f</span><span class="o">)</span> <span class="o">/</span> <span class="n">xyz</span>
+      <span class="nv">result</span><span class="o">.</span><span class="py">set</span><span class="o">(</span><span class="n">m</span> <span class="o">*</span> <span class="n">x</span><span class="o">,</span> <span class="n">m</span> <span class="o">*</span> <span class="n">y</span><span class="o">,</span> <span class="n">m</span> <span class="o">*</span> <span class="n">z</span><span class="o">)</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="nv">result</span><span class="o">.</span><span class="py">set</span><span class="o">(</span><span class="mf">0f</span><span class="o">,</span> <span class="mf">0f</span><span class="o">,</span> <span class="mf">0f</span><span class="o">)</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Чем же является полёт самолёта с абстрактной точки зрения? Решением системы дифференциальных уравнений второго порядка! Зададим состояние самолёта:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">TimeStamp</span><span class="o">{</span>
+  <span class="k">def</span> <span class="nf">time</span><span class="k">:</span> <span class="kt">Long</span> <span class="c1">//время в миллисекундах</span>
+<span class="o">}</span>
+
+<span class="k">trait</span> <span class="nc">VisibleState</span> <span class="k">extends</span> <span class="nc">TimeStamp</span><span class="o">{</span>
+
+  <span class="k">def</span> <span class="nf">position</span><span class="k">:</span> <span class="kt">Position</span>
+
+  <span class="k">def</span> <span class="nf">speed</span><span class="k">:</span> <span class="kt">Derivative</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Класс для реального состояния самолёта зависит от особенностей модели и степени её физической проработки, но он будет реализовывать этот интерфейс, необходимый для рисования самолёта на экране.</p>
+
+<h2 id="задачу-можно-разбить-на-две-независимых-части">Задачу можно разбить на две независимых части</h2>
+
+<ol>
+  <li>вычисление сил, действующих на самолёт в заданном состоянии</li>
+  <li>численное решение диффура</li>
+</ol>
+
+<p>Первую часть, как самую интересную, оставим на конец статьи.</p>
+
+<p>Для графической части напишем интерфейс:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">abstract</span> <span class="k">class</span> <span class="nc">Avatar</span><span class="o">(</span><span class="k">val</span> <span class="nv">player</span><span class="k">:</span> <span class="kt">Player</span><span class="o">,</span> <span class="k">val</span> <span class="nv">model</span><span class="k">:</span> <span class="kt">Airplane</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">getState</span><span class="o">(</span><span class="n">time</span><span class="k">:</span> <span class="kt">Long</span><span class="o">)</span><span class="k">:</span> <span class="kt">VisibleState</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Реализацию приводить не буду, но суть проста — внутри хранится последовательность состояний с временами t1, t2, t3 и т.д., t(n+1)&gt;t(n). Состояния достраиваются при необходимости, в методе getState происходит интерполяция двух ближайших. Таким образом, можно, например, считать физику 10 раз в секунду и при этом наблюдать плавное движение при 60 fps.</p>
+
+<p>Напишем следующий интерфейс:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">Airplane</span><span class="o">{</span>
+
+  <span class="k">def</span> <span class="nf">mass</span><span class="k">:</span> <span class="kt">Float</span>
+
+  <span class="k">def</span> <span class="nf">I</span><span class="k">:</span> <span class="kt">Matrix4</span>
+
+  <span class="k">private</span> <span class="k">val</span> <span class="nv">tempM</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Matrix4</span><span class="o">()</span>
+  <span class="k">private</span> <span class="k">val</span> <span class="nv">tempQ</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">QuaternionS</span><span class="o">()</span>
+
+  <span class="k">def</span> <span class="nf">getInertiaTensor</span><span class="o">(</span><span class="n">orientation</span><span class="k">:</span> <span class="kt">Quaternion</span><span class="o">)</span><span class="k">:</span> <span class="kt">Matrix4</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="nv">tempM</span><span class="o">.</span><span class="py">set</span><span class="o">(</span><span class="n">orientation</span><span class="o">)</span>
+    <span class="nv">tempM</span><span class="o">.</span><span class="py">mul</span><span class="o">(</span><span class="n">I</span><span class="o">)</span>
+    <span class="n">tempQ</span> <span class="o">:=</span> <span class="n">orientation</span>
+    <span class="nv">tempQ</span><span class="o">.</span><span class="py">conjugate</span><span class="o">()</span>
+    <span class="nv">tempM</span><span class="o">.</span><span class="py">rotate</span><span class="o">(</span><span class="n">tempQ</span><span class="o">)</span>
+    <span class="n">tempM</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="nf">getForceAndMoment</span><span class="o">(</span><span class="n">state</span><span class="k">:</span> <span class="kt">State</span><span class="o">,</span> <span class="n">input</span><span class="k">:</span> <span class="kt">PlaneInput</span><span class="o">)</span><span class="k">:</span> <span class="kt">Derivative</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Момент импульса L = I * w, причём L и w(угловая скорость) преобразуются как вектора. Таким образом, в преобразовании L’ = qL, w’ = qw получается:
+L’ = I’ * w’
+qL = I’ * qw
+L = q^(-1) * I’ * q * w</p>
+
+<p>Получаем I = q^(-1) * I’ * q, или I’ = q * I * q^(-1).</p>
+
+<p>Преобразование w’ = position.rot * w переводит угловую скорость из локальной системы координат в глобальную.</p>
+
+<p>Метод getForceAndMoment будет рассмотрен позже, в нём вычисляются силы и крутящий момент, действующие на самолёт.</p>
+
+<p>Я не очень хорошо представляю, как точно посчитать движение модели, которая движется и вращается с ускорениями, поэтому был выбран самый простой способ c фиксированным шагом в 20мс.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">StateGenerator</span> <span class="o">{</span>
+
+  <span class="c1">//чтобы не мучить сборщик мусора в андроиде, используемые в рассчётах объекты по возможности создаются только один раз</span>
+  <span class="c1">//без фанатизма, конечно, всему есть разумные пределы</span>
+  <span class="k">private</span> <span class="k">val</span> <span class="nv">inversed</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Matrix4</span><span class="o">()</span>
+  <span class="k">private</span> <span class="k">val</span> <span class="nv">omega</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Vector3f</span><span class="o">()</span>
+  <span class="k">private</span> <span class="k">val</span> <span class="nv">iOm</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Vector3f</span><span class="o">()</span>
+  <span class="k">private</span> <span class="k">val</span> <span class="nv">angularAcceleration</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Vector3f</span><span class="o">()</span>
+  <span class="k">private</span> <span class="k">val</span> <span class="nv">inv</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">QuaternionS</span><span class="o">()</span>
+
+  <span class="k">def</span> <span class="nf">nextState</span><span class="o">(</span><span class="n">now</span><span class="k">:</span> <span class="kt">State</span><span class="o">,</span> <span class="n">timeStep</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">model</span><span class="k">:</span> <span class="kt">Airplane</span><span class="o">,</span> <span class="n">planeInput</span><span class="k">:</span> <span class="kt">PlaneInput</span><span class="o">)</span><span class="k">:</span> <span class="kt">State</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="nf">assert</span><span class="o">(</span><span class="n">timeStep</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>
+
+    <span class="k">val</span> <span class="nv">dt</span> <span class="k">=</span> <span class="n">timeStep</span> <span class="o">*</span> <span class="mf">0.001f</span> <span class="c1">//время в секундах</span>
+    <span class="k">val</span> <span class="nv">next</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">State</span><span class="o">(</span><span class="nv">now</span><span class="o">.</span><span class="py">time</span> <span class="o">+</span> <span class="n">timeStep</span><span class="o">)</span>
+
+    <span class="nv">next</span><span class="o">.</span><span class="py">position</span> <span class="o">:=</span> <span class="nv">now</span><span class="o">.</span><span class="py">position</span>
+    <span class="nv">next</span><span class="o">.</span><span class="py">speed</span> <span class="o">:=</span> <span class="nv">now</span><span class="o">.</span><span class="py">speed</span>
+
+    <span class="c1">//код этого метода будет приведён позже</span>
+    <span class="k">val</span> <span class="nv">forces</span> <span class="k">=</span> <span class="nv">model</span><span class="o">.</span><span class="py">getForceAndMoment</span><span class="o">(</span><span class="n">now</span><span class="o">,</span> <span class="n">planeInput</span><span class="o">)</span>
+
+    <span class="c1">//linear</span>
+    <span class="nv">next</span><span class="o">.</span><span class="py">speed</span><span class="o">.</span><span class="py">linear</span> <span class="o">+=</span> <span class="nv">forces</span><span class="o">.</span><span class="py">linear</span> <span class="o">*</span> <span class="o">(</span><span class="n">dt</span> <span class="o">/</span> <span class="nv">model</span><span class="o">.</span><span class="py">mass</span><span class="o">)</span>
+    <span class="nv">next</span><span class="o">.</span><span class="py">position</span><span class="o">.</span><span class="py">pos</span> <span class="o">+=</span> <span class="o">(</span><span class="nv">now</span><span class="o">.</span><span class="py">speed</span><span class="o">.</span><span class="py">linear</span> <span class="o">+</span> <span class="nv">next</span><span class="o">.</span><span class="py">speed</span><span class="o">.</span><span class="py">linear</span><span class="o">)</span> <span class="o">*</span> <span class="o">(</span><span class="mf">0.5f</span> <span class="o">*</span> <span class="n">dt</span><span class="o">)</span>
+
+    <span class="c1">//angular</span>
+    <span class="k">val</span> <span class="nv">I</span> <span class="k">=</span> <span class="nv">model</span><span class="o">.</span><span class="py">getInertiaTensor</span><span class="o">(</span><span class="nv">now</span><span class="o">.</span><span class="py">position</span><span class="o">.</span><span class="py">rot</span><span class="o">)</span>
+    <span class="nv">inversed</span><span class="o">.</span><span class="py">set</span><span class="o">(</span><span class="n">I</span><span class="o">).</span><span class="py">inv</span><span class="o">()</span> 
+
+    <span class="n">omega</span> <span class="o">:=</span> <span class="nv">now</span><span class="o">.</span><span class="py">speed</span><span class="o">.</span><span class="py">angular</span>
+    <span class="n">iOm</span> <span class="o">:=</span> <span class="n">omega</span>
+    <span class="nv">iOm</span><span class="o">.</span><span class="py">mul</span><span class="o">(</span><span class="n">I</span><span class="o">)</span>
+
+    <span class="nv">angularAcceleration</span><span class="o">.</span><span class="py">setCross</span><span class="o">(</span><span class="n">iOm</span><span class="o">,</span> <span class="n">omega</span><span class="o">)</span>
+
+    <span class="n">angularAcceleration</span> <span class="o">+=</span> <span class="nv">forces</span><span class="o">.</span><span class="py">angular</span>
+    <span class="nv">angularAcceleration</span><span class="o">.</span><span class="py">mul</span><span class="o">(</span><span class="n">inversed</span><span class="o">)</span>
+
+    <span class="nv">next</span><span class="o">.</span><span class="py">speed</span><span class="o">.</span><span class="py">angular</span><span class="o">.</span><span class="py">madd</span><span class="o">(</span><span class="n">angularAcceleration</span><span class="o">,</span> <span class="n">dt</span><span class="o">)</span>
+    <span class="nv">next</span><span class="o">.</span><span class="py">speed</span><span class="o">.</span><span class="py">angular</span> <span class="o">*=</span> <span class="mf">1f</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="mf">0.1f</span> <span class="c1">//трение. Необходимо для устойчивости вычислений. Характерное время затухания вращения - 10 сек.</span>
+
+    <span class="k">val</span> <span class="nv">angSp</span> <span class="k">=</span> <span class="o">(</span><span class="nv">next</span><span class="o">.</span><span class="py">speed</span><span class="o">.</span><span class="py">angular</span> <span class="o">+</span> <span class="nv">now</span><span class="o">.</span><span class="py">speed</span><span class="o">.</span><span class="py">angular</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="nv">next</span><span class="o">.</span><span class="py">position</span><span class="o">.</span><span class="py">rot</span> <span class="o">:=</span> <span class="k">new</span> <span class="nc">QuaternionS</span><span class="o">(</span><span class="n">angSp</span> <span class="o">*</span> <span class="n">dt</span><span class="o">)</span> <span class="o">*</span> <span class="nv">now</span><span class="o">.</span><span class="py">position</span><span class="o">.</span><span class="py">rot</span>
+
+    <span class="n">next</span> <span class="c1">// в Scala можно не писать return</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Подробнее о вращении можно посмотреть в этой статье: <a href="https://habr.com/ru/post/264099/">habrahabr.ru/post/264099</a>. Честно говоря, я не любитель тензоров, просто взял оттуда формулу в векторном виде, чтобы получать угловое ускорение. Расчёты производятся в системе координат мира. К слову, при отключении внешних сил мне удалось наблюдать движение, вполне похожее на эффект Джанибекова.</p>
+
+<h2 id="силы-действующие-на-самолёт">Силы, действующие на самолёт</h2>
+
+<p>Самолётом надо управлять:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">PlaneInput</span> <span class="k">extends</span> <span class="nc">TimeStamp</span> <span class="o">{</span>
+
+  <span class="k">def</span> <span class="nf">yaw</span><span class="k">:</span> <span class="kt">Float</span> <span class="c1">// right is positive</span>
+
+  <span class="k">def</span> <span class="nf">pitch</span><span class="k">:</span> <span class="kt">Float</span> <span class="c1">// up is positive</span>
+
+  <span class="k">def</span> <span class="nf">roll</span><span class="k">:</span> <span class="kt">Float</span> <span class="c1">// clockwise is positive</span>
+
+  <span class="k">def</span> <span class="nf">engineTrust</span><span class="k">:</span> <span class="kt">Float</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Значения обрезаются до интервала [-1, 1], тяга двигателя от 0 до 1.</p>
+
+<p>Что же, перейдём к самой важной части — найдём силы. Тут немножко Terra incognita, мои познания в аэродинамике весьма поверхностные. Возможны ошибки и неточности.</p>
+
+<p>Первое, что приходит в голову — подъёмная сила. Дабы не сотворить фигни, на просторах интернета был найден справочник авиационных профилей с графиками коэффициента подъёмной силы в зависимости от угла атаки. Суть оказалась довольно простой — Сy(коэффициент подъёмной силы) довольно линейно растёт вполь до критических углов, достигает примерно единички, а потом происходит срыв потока с крыла, и подъёмная сила начинает уменьшаться. Также график коэффициента для абстрактного крыла <a href="https://en.wikipedia.org/wiki/Lift_coefficient">можно посмотреть в английской википедии</a>:</p>
+
+<p>Тут меня подстерегали грабли — если прочитать ещё одну <a href="https://ru.wikipedia.org/wiki/%D0%9B%D0%BE%D0%B1%D0%BE%D0%B2%D0%BE%D0%B5_%D1%81%D0%BE%D0%BF%D1%80%D0%BE%D1%82%D0%B8%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5">статью на википедии</a> по лобовому сопротивлению, то можно заметить, что существует какое-то индуктивное сопротивление. Сюрприз в том, что подъёмную силу принято считать в направлении, перепендикулярном направлению скорости, а не перпендикулярно поверхности крыла (как думал я). Поскольку разница в давлении воздуха сверху и снизу крыла всё-таки приводит к силе, перпендикулярной поверхности крыла, то проекция этой силы на направление, противпоположное движению, ненулевая. <del>Если я правильно понял, это и есть индуктивная сила.</del>
+А вот и нет. См. <a href="https://habr.com/ru/post/266367/comments/#comment_8563391">комментарий</a> ниже. Дальнейший текст и код оставляю без изменений.</p>
+
+<p>Если считать, что подъёмная сила направлена вверх в системе отсчёта самолёта, то индуктивная сила вроде и не нужна — она уже учтена. Ориентация осей такая же, как и в openGL:</p>
+
+<p>Ox — вправо
+Oy — вверх
+Oz — назад</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//коэффициент подъёмной силы</span>
+<span class="k">def</span> <span class="nf">cy</span><span class="o">(</span><span class="n">angle</span><span class="k">:</span> <span class="kt">Float</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="nv">pi</span> <span class="k">=</span> <span class="mf">3.1415928535f</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="n">angle</span> <span class="o">&gt;</span> <span class="n">maxAngle</span><span class="o">)</span> <span class="o">(</span><span class="n">pi</span> <span class="o">-</span> <span class="n">angle</span><span class="o">)</span> <span class="o">/</span> <span class="o">(</span><span class="n">pi</span> <span class="o">-</span> <span class="n">maxAngle</span><span class="o">)</span>
+    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">angle</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">maxAngle</span><span class="o">)</span> <span class="o">-(</span><span class="n">pi</span> <span class="o">+</span> <span class="n">angle</span><span class="o">)</span> <span class="o">/</span> <span class="o">(</span><span class="n">pi</span> <span class="o">-</span> <span class="n">maxAngle</span><span class="o">)</span>
+    <span class="k">else</span> <span class="n">angle</span> <span class="o">/</span> <span class="n">maxAngle</span>
+  <span class="o">}</span>
+
+<span class="k">def</span> <span class="nf">liftingForce</span><span class="o">(</span><span class="n">speed2</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">angle</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">airDensity</span><span class="k">:</span> <span class="kt">Float</span><span class="o">)</span><span class="k">:</span> <span class="kt">Float</span> <span class="o">=</span>
+    <span class="nf">cy</span><span class="o">(</span><span class="n">angle</span><span class="o">)</span> <span class="o">*</span> <span class="n">airDensity</span> <span class="o">*</span> <span class="n">speed2</span> <span class="o">*</span> <span class="mf">0.5f</span> <span class="o">*</span> <span class="n">planesS</span>
+
+<span class="c1">//расчёты будут производиться в локальной СО самолёта.</span>
+
+<span class="k">val</span> <span class="nv">forceLocal</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Vector3f</span>
+<span class="k">val</span> <span class="nv">speedLocal</span> <span class="k">=</span> <span class="nv">state</span><span class="o">.</span><span class="py">position</span><span class="o">.</span><span class="py">rot</span><span class="o">^(-</span><span class="mi">1</span><span class="o">)</span> <span class="o">*</span> <span class="nv">state</span><span class="o">.</span><span class="py">speed</span><span class="o">.</span><span class="py">linear</span>
+<span class="k">val</span> <span class="nv">sp2</span> <span class="k">=</span> <span class="nv">state</span><span class="o">.</span><span class="py">speed</span><span class="o">.</span><span class="py">linear</span><span class="o">.</span><span class="py">length2</span>
+
+<span class="k">val</span> <span class="nv">airDensity</span> <span class="k">=</span> <span class="nv">WorldParams</span><span class="o">.</span><span class="py">atmosphere</span><span class="o">.</span><span class="py">aitDensity</span><span class="o">(</span><span class="nv">state</span><span class="o">.</span><span class="py">position</span><span class="o">.</span><span class="py">pos</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="nv">attackAngle</span> <span class="k">=</span> <span class="o">-</span><span class="nv">Math</span><span class="o">.</span><span class="py">asin</span><span class="o">(</span><span class="nv">speedLocal</span><span class="o">.</span><span class="py">y</span> <span class="o">/</span> <span class="o">(</span><span class="nv">speedLocal</span><span class="o">.</span><span class="py">length</span> <span class="o">+</span> <span class="mf">0.1f</span><span class="o">)).</span><span class="py">toFloat</span>
+<span class="k">val</span> <span class="nv">steeringAngle</span> <span class="k">=</span> <span class="nv">Math</span><span class="o">.</span><span class="py">asin</span><span class="o">(</span><span class="nv">speedLocal</span><span class="o">.</span><span class="py">x</span> <span class="o">/</span> <span class="o">(</span><span class="nv">speedLocal</span><span class="o">.</span><span class="py">length</span> <span class="o">+</span> <span class="mf">0.1f</span><span class="o">)).</span><span class="py">toFloat</span>
+
+<span class="c1">// подъёмная и прочие силы пропорциональны квадрату скорости, так что при малых скоростях (поярдка 0.1 м/с) они пренебрежительно малы, и можно "наврать" с углом. Главное - не поделить на ноль.</span>
+
+<span class="nv">forceLocal</span><span class="o">.</span><span class="py">y</span> <span class="o">+=</span> <span class="nf">liftingForce</span><span class="o">(</span><span class="n">sp2</span><span class="o">,</span> <span class="n">attackAngle</span><span class="o">,</span> <span class="n">airDensity</span><span class="o">)</span>
+<span class="nv">forceLocal</span><span class="o">.</span><span class="py">x</span> <span class="o">-=</span> <span class="nf">steeringForce</span><span class="o">(</span><span class="n">sp2</span><span class="o">,</span> <span class="n">steeringAngle</span><span class="o">,</span> <span class="n">airDensity</span><span class="o">)</span>
+<span class="n">forceLocal</span> <span class="o">+=</span> <span class="n">speedLocal</span><span class="o">/(</span><span class="mf">0.1f</span> <span class="o">+</span> <span class="nv">speedLocal</span><span class="o">.</span><span class="py">length</span><span class="o">)</span> <span class="o">*</span> <span class="o">-</span><span class="nf">dragForce</span><span class="o">(</span><span class="n">sp2</span><span class="o">,</span> <span class="n">attackAngle</span><span class="o">,</span> <span class="n">steeringAngle</span><span class="o">,</span> <span class="n">airDensity</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Кроме подъёмной силы, понадобятся сила сопротивления воздуха: <code class="language-plaintext highlighter-rouge">dragForce</code> и сила, которая возникает, если самолёт летит немного боком: <code class="language-plaintext highlighter-rouge">steeringForce</code>.</p>
+
+<p>Я не обладаю достаточными знаниями в аэродинамике. Основная цель — простота формул и по возможности адекватное поведение самолёта для лётных углов атаки и скольжения. 0.5f — последствия делителя 2 в формулах. 0.1f — последствия подгона коэффициентов.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">private</span> <span class="k">def</span> <span class="nf">steeringForce</span><span class="o">(</span><span class="n">speed2</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">angle</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">airDensity</span><span class="k">:</span> <span class="kt">Float</span><span class="o">)</span><span class="k">:</span> <span class="kt">Float</span> <span class="o">=</span>
+  <span class="n">angle</span> <span class="o">*</span> <span class="n">airDensity</span> <span class="o">*</span> <span class="n">speed2</span> <span class="o">*</span> <span class="mf">0.5f</span> <span class="o">*</span> <span class="n">planeSVert</span>
+
+<span class="k">private</span> <span class="k">def</span> <span class="nf">dragForce</span><span class="o">(</span><span class="n">speed2</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">attackAngle</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">steeringAngle</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">airDensity</span><span class="k">:</span> <span class="kt">Float</span><span class="o">)</span><span class="k">:</span> <span class="kt">Float</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="n">speed2</span> <span class="o">*</span> <span class="o">(</span><span class="mf">0.5f</span> <span class="o">*</span> <span class="n">airDensity</span> <span class="o">*</span> <span class="n">crossSectionalArea</span>
+    <span class="o">+</span> <span class="nv">Math</span><span class="o">.</span><span class="py">abs</span><span class="o">(</span><span class="n">attackAngle</span><span class="o">)</span> <span class="o">*</span> <span class="mf">0.1f</span> <span class="o">*</span> <span class="n">planesS</span>
+    <span class="o">+</span> <span class="nv">Math</span><span class="o">.</span><span class="py">abs</span><span class="o">(</span><span class="n">steeringAngle</span><span class="o">)</span> <span class="o">*</span> <span class="mf">0.1f</span> <span class="o">*</span> <span class="n">planeSVert</span><span class="o">)</span>
+  <span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="добавим-тягу-мотора">Добавим тягу мотора</h3>
+
+<p>Модель максимально простая: никаких шагов винта, пусть двигатель тратит всю мощность на ускорение самолёта. Никаких бонусов к моменту инерции, никакого крутящего момента при изменении количества оборотов. Впрочем, оборотов тоже нет. Мощность = сила * скорость. Чтобы самолёт не мог взлетать вверх, как ракета, ограничим максимальную силу (с помощью ограничения минимальной скорости).</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">speed</span> <span class="k">=</span> <span class="nv">Math</span><span class="o">.</span><span class="py">max</span><span class="o">(</span><span class="n">minSpeed</span><span class="o">,</span> <span class="o">-</span><span class="nv">speedLocal</span><span class="o">.</span><span class="py">z</span><span class="o">)</span>
+<span class="nv">forceLocal</span><span class="o">.</span><span class="py">z</span> <span class="o">-=</span> <span class="nv">input</span><span class="o">.</span><span class="py">engineTrust</span> <span class="o">*</span> <span class="n">maxPower</span> <span class="o">/</span> <span class="n">speed</span>
+</code></pre></div></div>
+
+<h3 id="управление">Управление</h3>
+
+<p>Есть интересный момент — разогнанный винтом воздух попадает прямо на управляющие плоскости хвоста, и самолёт, в принципе, немного управляется хвостом даже на взлётной полосе. Кроме того, сопротивление воздуха пытается закрутить самолёт в обратном вращению винта направлении. И до кучи — у двигателя есть момент инерции, при увеличении/уменьшении скорости вращения самолёт тоже будет немного «закручивать». Я всем этим пренебрегу…</p>
+
+<p>Как и для крыла, появляется знакомый множитель с квадратом скорости и плотностью воздуха:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">mul</span> <span class="k">=</span> <span class="nv">spLocal</span><span class="o">.</span><span class="py">z</span> <span class="o">*</span> <span class="nv">spLocal</span><span class="o">.</span><span class="py">z</span> <span class="o">*</span> <span class="n">airDensity</span>
+
+<span class="nv">result</span><span class="o">.</span><span class="py">angular</span><span class="o">.</span><span class="py">x</span> <span class="k">=</span> <span class="o">(</span><span class="nv">input</span><span class="o">.</span><span class="py">pitch</span> <span class="o">+</span> <span class="mf">0.3f</span><span class="o">)</span> <span class="o">*</span> <span class="n">mul</span> <span class="o">*</span> <span class="mf">2f</span>
+<span class="nv">result</span><span class="o">.</span><span class="py">angular</span><span class="o">.</span><span class="py">y</span> <span class="k">=</span> <span class="o">-</span><span class="nv">input</span><span class="o">.</span><span class="py">yaw</span> <span class="o">*</span> <span class="n">mul</span> <span class="o">*</span> <span class="mf">1f</span>
+<span class="nv">result</span><span class="o">.</span><span class="py">angular</span><span class="o">.</span><span class="py">z</span> <span class="k">=</span> <span class="o">-</span><span class="nv">input</span><span class="o">.</span><span class="py">roll</span> <span class="o">*</span> <span class="n">mul</span> <span class="o">*</span> <span class="mi">5</span>
+</code></pre></div></div>
+
+<p>По тангажу нет симметрии, самолёт (да и пилот) намного лучше переносит положительные перегрузки, чем отрицательные. Кроме того, самолёт сам по-себе устойчив (если это не Су-47) и стремится возвратиться в положение «носом вперёд»:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">result</span><span class="o">.</span><span class="py">angular</span><span class="o">.</span><span class="py">x</span> <span class="o">-=</span> <span class="n">attackAngle</span> <span class="o">*</span> <span class="n">airDensity</span> <span class="o">*</span> <span class="n">mul</span> <span class="o">*</span> <span class="mf">5f</span>
+<span class="nv">result</span><span class="o">.</span><span class="py">angular</span><span class="o">.</span><span class="py">y</span> <span class="o">-=</span> <span class="n">steeringAngle</span> <span class="o">*</span> <span class="n">airDensity</span> <span class="o">*</span> <span class="n">mul</span> <span class="o">*</span> <span class="mf">5f</span>
+</code></pre></div></div>
+
+<h3 id="ничего-не-забыли">Ничего не забыли?</h3>
+
+<p>Есть ещё одна сила, с которой поведение становится более интересным. При взгляде на самолёт спереди или сзади можно заметить, что крыло немного загнуто вверх латинской буквой V — это продиктовано заботой об устойчивости полёта. Если самолёт будет лететь не прямо вперёд, а немного смещаться боком, подъёмные силы слева и справа станут разными, и он начнёт вращаться.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">result</span><span class="o">.</span><span class="py">angular</span><span class="o">.</span><span class="py">z</span> <span class="o">+=</span> <span class="nv">forceLocal</span><span class="o">.</span><span class="py">y</span> <span class="o">*</span> <span class="n">steeringAngle</span> <span class="o">*</span> <span class="mf">1f</span>
+</code></pre></div></div>
+
+<p>forceLocal.y — подъёмная сила</p>
+
+<h3 id="добавляем-трение-к-вращению">Добавляем «трение» к вращению</h3>
+
+<p>Случилось то, против чего протестовало моё чувство прекрасного, но иначе пришлось бы сильно усложнять модель. Прежде, чем добавить силу, я всё-таки попытаюсь её обосновать. Если прямо летящий самолёт вращается, например, креном налево, то угол атаки левого крыла повышается, а правого — наоборот, и этот эффект тормозит вращение. По другим осям — наверно, есть что-то похожее (в классе StateGenerator очень слабое трение при вращении сделано для устойчивости вычислительной схемы, а здесь — просто для того, чтобы самолёт не уподоблялся маятнику):</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">result</span><span class="o">.</span><span class="py">angular</span><span class="o">.</span><span class="py">mulAdd</span><span class="o">(</span><span class="n">spAngLocal</span><span class="o">,</span> <span class="o">-</span><span class="n">airDensity</span> <span class="o">*</span> <span class="mf">5000f</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Переводим в глобальную систему координат:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">result</span><span class="o">.</span><span class="py">angular</span><span class="o">.</span><span class="py">mul</span><span class="o">(</span><span class="nv">state</span><span class="o">.</span><span class="py">position</span><span class="o">.</span><span class="py">rot</span><span class="o">)</span>
+
+<span class="nv">forceLocal</span><span class="o">.</span><span class="py">mul</span><span class="o">(</span><span class="nv">state</span><span class="o">.</span><span class="py">position</span><span class="o">.</span><span class="py">rot</span><span class="o">)</span>
+<span class="nv">result</span><span class="o">.</span><span class="py">linear</span> <span class="o">:=</span> <span class="n">forceLocal</span>
+</code></pre></div></div>
+
+<h2 id="примечание">Примечание</h2>
+
+<p>Система единиц — метры, килограммы, секунды. «Подгоночные коэффициенты» приведены неспроста — я пытался подобрать их под параметры И-16. Масса 1400, мощность 750л.с., или (750*735.5) Ватт.
+<del>Момент инерции (по приблизительной оценке) — 5000 вдоль OX, OY и намного меньше вдоль OZ (типа сновная масса сосредоточена в фюзеляже самолёта, а он довольно длинный).</del>
+<a href="https://habr.com/ru/users/imp5/">Imp5</a> сообщил более точные данные: главные моменты инерции 2440, 5520, 3080 по осям «вперёд», «вверх» и «вправо» соответственно.</p>
+
+<p>Данная физическая модель не учитывает вращение самолёта, и в штопор упасть не получится. В дальнейшем я планирую брать несколько точек на каждом крыле и индивидуально для каждой точки рассчитывать углы атаки и скорость движения относительно воздуха. Управление хвостом и элеронами реализовать как изменение параметров кусочков крыльев. Возможно, тогда вращение самолёта будет честно затухать из-за сопротивления воздуха.</p>
+
+<p>Код, рассчитывающий силы и перемещение самолёта, в любой момент можно заменить на что-нибудь более серьёзное.</p>
+
+<p>P.S. Снимаю шляпу перед отечественными разработчиками симулятора о самолётах второй мировой, с которого когда-то давно начался мой интерес к авиации.</p>
+
+<p>Стоило попробовать написать физику самому, чтобы понять, какой титанический труд они проделали. Например, вращение продольно расположенного двигателя приводит к тому, что при вираже в одну сторону нос самолёта уводит вверх, а в другую — вниз. У меня этого эффекта нет, как и многих других. С одной стороны, мелочь, но из таких мелочей и складывается уникальное для каждой модели поведение.</p>
+
+<p>Изначально это был <a href="https://habr.com/ru/post/266367/">пост на хабре</a></p>
+
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Kright/kright.github.io">kright.github.io</a> is maintained by <a href="https://github.com/Kright">Kright</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

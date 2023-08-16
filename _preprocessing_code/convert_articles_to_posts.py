@@ -56,6 +56,11 @@ def process_article(article_path: Path, date: str, dry_run: bool = False):
         log.debug(f"replace '{text}' with '{new_text}'")
         article_text = article_text.replace(text, new_text)
 
+        text = f"""src=("imgs/{image}")"""
+        new_text = f"""src=("/{new_images_dir.relative_to(site_root)}/{image}")"""
+        log.debug(f"replace '{text}' with '{new_text}'")
+        article_text = article_text.replace(text, new_text)
+
     languages = {line for line in article_text.split('\n') if line.startswith('```') and len(line) > 3}
     for language in languages:
         log.debug(f"replace '{language} with {language.lower()}")
@@ -97,7 +102,7 @@ date_by_name = {
     'scala 3: transparent inline with Dynamic.md': "2022-01-01",
     'Inut lag в мониторе.md': "2022-01-01",
     'Впечатления от Forza Horizon 4 на руле.md': "2022-01-01",
-    'моё домашнее сетевое хранилище из raspberry pi 4b.md': "2022-01-01",
+    'моё домашнее сетевое хранилище из raspberry pi 4b.md': "2022-01-24",
     'Физика вращения 3д тел.md': "2022-11-05",
 }
 

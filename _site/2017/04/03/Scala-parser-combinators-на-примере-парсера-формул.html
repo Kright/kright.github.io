@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Scala: parser combinators на примере парсера формул | kright.github.io</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Scala: parser combinators на примере парсера формул" />
+<meta name="author" content="kright" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Scala: parser combinators на примере парсера формул" />
+<meta property="og:description" content="Scala: parser combinators на примере парсера формул" />
+<link rel="canonical" href="http://localhost:4000/2017/04/03/Scala-parser-combinators-%D0%BD%D0%B0-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D0%B5-%D0%BF%D0%B0%D1%80%D1%81%D0%B5%D1%80%D0%B0-%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB.html" />
+<meta property="og:url" content="http://localhost:4000/2017/04/03/Scala-parser-combinators-%D0%BD%D0%B0-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D0%B5-%D0%BF%D0%B0%D1%80%D1%81%D0%B5%D1%80%D0%B0-%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB.html" />
+<meta property="og:site_name" content="kright.github.io" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-04-03T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Scala: parser combinators на примере парсера формул" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"kright"},"dateModified":"2017-04-03T00:00:00+02:00","datePublished":"2017-04-03T00:00:00+02:00","description":"Scala: parser combinators на примере парсера формул","headline":"Scala: parser combinators на примере парсера формул","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/04/03/Scala-parser-combinators-%D0%BD%D0%B0-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D0%B5-%D0%BF%D0%B0%D1%80%D1%81%D0%B5%D1%80%D0%B0-%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB.html"},"url":"http://localhost:4000/2017/04/03/Scala-parser-combinators-%D0%BD%D0%B0-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D0%B5-%D0%BF%D0%B0%D1%80%D1%81%D0%B5%D1%80%D0%B0-%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=04936c4141575b8269035838047e98a4dd849258">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Scala: parser combinators на примере парсера формул</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="https://github.com/Kright/kright.github.io" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<nav>
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+</nav>
+
+
+<p>03 Apr 2017</p>
+
+<h1 id="scala-parser-combinators-на-примере-парсера-формул">Scala: parser combinators на примере парсера формул</h1>
+
+<p>Время от времени у меня возникает желание придумать свой собственный маленький язык программирования и написать интерпретатор. В этот раз я начал писать на scala, узнал про библиотеку parser combinators, и был поражён: оказывается, можно писать парсеры легко и просто. Чтобы не превращать статью в пособие по “рисованию совы”, ниже приведёна реализация разбора и вычисления выражений типа “1 + 2 * sin(pi / 2)”.</p>
+
+<p>Сам парсинг и вычисление выражения занимают всего лишь 44 непустых строчки — не то чтобы я сильно стремился сократить их количество, но выглядит это реально просто и лаконично.
+<a href="https://github.com/Kright/FormulaParser">Проект на github</a>.</p>
+
+<p>Для сравнения:</p>
+
+<ul>
+  <li><a href="https://habrahabr.ru/post/122397/">длинный пример на java</a></li>
+  <li><a href="https://habrahabr.ru/post/271285/">короткий, но непонятный пример на C#</a></li>
+  <li><a href="https://github.com/sirthias/parboiled/blob/master/examples-java/src/main/java/org/parboiled/examples/calculators/CalculatorParser4.java">пример на java с использованием parboiled</a></li>
+</ul>
+
+<p>Итак, если вам не терпится увидеть результат:</p>
+
+<p>Ответственный за парсинг кусочек кода</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">FormulaParser</span> <span class="k">extends</span> <span class="nc">RegexParsers</span> <span class="k">with</span> <span class="nc">PackratParsers</span> <span class="o">{</span>
+
+    <span class="k">def</span> <span class="nf">id</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Id</span><span class="o">]</span> <span class="k">=</span> <span class="s">"[a-zA-Z][a-zA-Z0-9_]*"</span><span class="o">.</span><span class="py">r</span> <span class="o">^^</span> <span class="nc">Id</span>
+
+    <span class="k">def</span> <span class="nf">number</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Number</span><span class="o">]</span> <span class="k">=</span> <span class="s">"-"</span> <span class="o">~&gt;</span> <span class="n">number</span> <span class="o">^^</span> <span class="o">(</span><span class="n">n</span> <span class="k">=&gt;</span> <span class="nc">Number</span><span class="o">(-</span><span class="nv">n</span><span class="o">.</span><span class="py">value</span><span class="o">))</span> <span class="o">|</span>
+        <span class="o">(</span><span class="s">"[0-9]+\\.[0-9]*"</span><span class="o">.</span><span class="py">r</span> <span class="o">|</span> <span class="s">"[0-9]+"</span><span class="o">.</span><span class="py">r</span><span class="o">)</span> <span class="o">^^</span> <span class="o">(</span><span class="n">s</span> <span class="k">=&gt;</span> <span class="nc">Number</span><span class="o">(</span><span class="nv">s</span><span class="o">.</span><span class="py">toDouble</span><span class="o">))</span>
+
+    <span class="k">def</span> <span class="nf">funcCall</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">FuncCall</span><span class="o">]</span> <span class="k">=</span> <span class="n">id</span> <span class="o">~</span> <span class="o">(</span><span class="s">"("</span> <span class="o">~&gt;</span> <span class="n">expression</span> <span class="o">&lt;~</span> <span class="s">")"</span><span class="o">)</span> <span class="o">^^</span> <span class="o">{</span><span class="k">case</span> <span class="n">id</span> <span class="o">~</span> <span class="n">exp</span> <span class="k">=&gt;</span> <span class="nc">FuncCall</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">exp</span><span class="o">)}</span>
+
+    <span class="k">def</span> <span class="nf">value</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span> <span class="n">number</span> <span class="o">|</span> <span class="n">funcCall</span> <span class="o">|</span> <span class="n">id</span> <span class="o">|</span> <span class="o">(</span><span class="s">"("</span> <span class="o">~&gt;</span> <span class="n">expression</span> <span class="o">&lt;~</span> <span class="s">")"</span><span class="o">)</span>
+
+    <span class="k">lazy</span> <span class="k">val</span> <span class="nv">term</span><span class="k">:</span> <span class="kt">PackratParser</span><span class="o">[</span><span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span> <span class="n">term</span> <span class="o">~</span> <span class="o">(</span><span class="s">"*"</span> <span class="o">|</span> <span class="s">"/"</span><span class="o">)</span> <span class="o">~</span> <span class="n">value</span> <span class="o">^^</span> <span class="n">binOperation</span> <span class="o">|</span> <span class="n">value</span>
+
+    <span class="k">lazy</span> <span class="k">val</span> <span class="nv">expression</span><span class="k">:</span> <span class="kt">PackratParser</span><span class="o">[</span><span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span> <span class="n">expression</span> <span class="o">~</span> <span class="o">(</span><span class="s">"+"</span> <span class="o">|</span> <span class="s">"-"</span><span class="o">)</span> <span class="o">~</span> <span class="n">term</span> <span class="o">^^</span> <span class="n">binOperation</span> <span class="o">|</span> <span class="n">term</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Посмотрите на следущую строчку:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">value</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span> <span class="n">number</span> <span class="o">|</span> <span class="n">funcCall</span> <span class="o">|</span> <span class="n">id</span> <span class="o">|</span> <span class="o">(</span><span class="s">"("</span> <span class="o">~&gt;</span> <span class="n">expression</span> <span class="o">&lt;~</span> <span class="s">")"</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Она подозрительно похожа на описание грамматики, но это валидный код, в котором среда разработки может сразу же обнаружить и подсветить большинство ошибок.</p>
+
+<p>Это возможно по следующим причинам:</p>
+
+<ol>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>В scala разрешено давать методам замечательные названия типа “~”, “~&gt;”, “&lt;~”, “</td>
+          <td>”, “^^”. Комбинация парсеров p и q записывается как p~q, а возможность выбрать один из них: p</td>
+          <td>q. Читается намного лучше, чем p.andThen(q) или p.or(q)</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>Благодаря неявным преобразованиям (implicits) и строчка “abc” и регулярное выражение “[0-9]+”.r при необходимости превращаются в парсеры.</li>
+  <li>В языке мощная статическая система типов, которая позволяет ловить ошибки сразу.</li>
+</ol>
+
+<p>Думаю, мне удалось Вас заинтересовать, поэтому дальше всё будет по порядку.</p>
+
+<h2 id="оглавление">Оглавление:</h2>
+
+<ol>
+  <li><a href="#regex-parsers">Regex Parsers</a></li>
+  <li><a href="#packrat-parsers">Packrat Parsers</a></li>
+  <li><a href="#парсер-готов">код парсера целиком</a></li>
+  <li><a href="#вычисление-выражений">вычисление выражений</a></li>
+  <li><a href="#заключение">заключение</a></li>
+</ol>
+
+<h2 id="parser-combinators">Parser Combinators</h2>
+
+<p>Когда-то эти классы были включены в стандартную библиотеку языка, но потом их вынесли в отдельную библиотеку. В конце я привёл ссылки, по которым можно найти более подробную информацию.</p>
+
+<h2 id="regex-parsers">Regex parsers</h2>
+
+<p>Итак, самое простое — RegexParsers. Добавляют неявные преобразования из строк и регулярных выражений в парсеры.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">SimpleExample</span> <span class="k">extends</span> <span class="nc">RegexParsers</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="nf">boolTrue</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Boolean</span><span class="o">]</span> <span class="k">=</span> <span class="s">"true"</span> <span class="o">^^</span> <span class="o">(</span><span class="k">_</span> <span class="k">=&gt;</span> <span class="kc">true</span><span class="o">)</span>
+    <span class="c1">// если читаем строчку "true", то вызывается функция, которая преобразует строчку в истинное значение boolean</span>
+
+    <span class="k">def</span> <span class="nf">bool</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Boolean</span><span class="o">]</span> <span class="k">=</span> <span class="o">(</span><span class="s">"true"</span> <span class="o">|</span> <span class="s">"false"</span><span class="o">)</span> <span class="o">^^</span> <span class="o">(</span><span class="k">_</span> <span class="o">==</span> <span class="s">"true"</span><span class="o">)</span>
+    <span class="c1">// можно сгруппировать парсеры и применить функцию к результату</span>
+
+    <span class="k">def</span> <span class="nf">alternativeBool</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Boolean</span><span class="o">]</span> <span class="k">=</span> <span class="s">"true"</span> <span class="o">^^</span> <span class="o">(</span><span class="k">_</span> <span class="k">=&gt;</span> <span class="kc">true</span><span class="o">)</span> <span class="o">|</span> <span class="s">"false"</span> <span class="o">^^</span> <span class="o">(</span><span class="k">_</span> <span class="k">=&gt;</span> <span class="kc">false</span><span class="o">)</span>
+    <span class="c1">// или преобразовать каждый результат по отдельности</span>
+
+    <span class="k">def</span> <span class="nf">int</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="s">"[0-9]+"</span><span class="o">.</span><span class="py">r</span> <span class="o">^^</span> <span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">toInt</span><span class="o">)</span>
+    <span class="c1">// парсим последовательность цифр и преобразуем в число.</span>
+    <span class="c1">// метод .r создаёт регулярное выражение из строки</span>
+
+    <span class="k">def</span> <span class="nf">id</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Id</span><span class="o">]</span> <span class="k">=</span> <span class="s">"[a-zA-Z][a-zA-Z0-9_]*"</span><span class="o">.</span><span class="py">r</span> <span class="o">^^</span> <span class="nc">Id</span>
+    <span class="c1">// Id - функция, которая делает из строки объект типа Id</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Кстати, значок ~ обозначает не только метод у парсера, но и имя case класса, хранящего пару значений. Кусочек кода из Parsers.scala:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">~</span><span class="o">[</span><span class="kt">+a</span>, <span class="kt">+b</span><span class="o">](</span><span class="n">_1</span><span class="k">:</span> <span class="kt">a</span><span class="o">,</span> <span class="n">_2</span><span class="k">:</span> <span class="kt">b</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">override</span> <span class="k">def</span> <span class="nf">toString</span> <span class="k">=</span> <span class="s">"("</span><span class="o">+</span> <span class="n">_1</span> <span class="o">+</span><span class="s">"~"</span><span class="o">+</span> <span class="n">_2</span> <span class="o">+</span><span class="s">")"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Допустим, мы хотим собрать из нескольких парсеров один:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">intInBrackets</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="s">"("</span> <span class="o">~</span> <span class="n">int</span> <span class="o">~</span> <span class="s">")"</span> <span class="o">^^</span> <span class="o">(</span><span class="n">p</span> <span class="k">=&gt;</span> <span class="nv">p</span><span class="o">.</span><span class="py">_1</span><span class="o">.</span><span class="py">_2</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Что произойдёт?</p>
+
+<ol>
+  <li>”(“ неявно из строки превращается в парсер, который возвращает String</li>
+  <li>парсер int возвращает Int</li>
+  <li>”(“ ~ int создаёт парсер для ~[String, Int]</li>
+  <li>”(“ ~ int ~ “)” создаёт парсер, который возвращает ~[~[String, Int], String]</li>
+  <li>у парсера будет вызван метод ^^</li>
+  <li>в метод передаётся функция, которая принимает аргумент p с типом ~[~[String, Int], String] и возвращает Int</li>
+</ol>
+
+<p>В данном случае скобки не несут никакой полезной информации. Можно сделать так:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">intInBrackets</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="s">"("</span> <span class="o">~&gt;</span>  <span class="n">int</span> <span class="o">&lt;~</span> <span class="s">")"</span>
+</code></pre></div></div>
+
+<p>В этот раз скобки будут отброшены.</p>
+
+<ol>
+  <li>”(“ ~&gt; int создаёт парсер, который парсит скобку и потом Int, но возвращает только Int</li>
+  <li>int &lt;~ “)” работает аналогично, но для левого аргумента</li>
+</ol>
+
+<p>Выражения с оператором &lt;~ советуют заключать в скобки, так как у него не очень высокий приоритет.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">funcCall</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">FuncCall</span><span class="o">]</span> <span class="k">=</span> <span class="n">id</span> <span class="o">~</span> <span class="o">(</span><span class="s">"("</span> <span class="o">~&gt;</span> <span class="n">expression</span> <span class="o">&lt;~</span> <span class="s">")"</span><span class="o">)</span> <span class="o">^^</span> <span class="o">(</span><span class="n">pair</span> <span class="k">=&gt;</span> <span class="nc">FuncCall</span><span class="o">(</span><span class="nv">pair</span><span class="o">.</span><span class="py">_1</span><span class="o">,</span> <span class="nv">pair</span><span class="o">.</span><span class="py">_2</span><span class="o">))</span>
+</code></pre></div></div>
+
+<p>Теперь должно быть понятно, что делает следующий код:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">number</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Number</span><span class="o">]</span> <span class="k">=</span> <span class="s">"-"</span> <span class="o">~&gt;</span> <span class="n">number</span> <span class="o">^^</span> <span class="o">(</span><span class="n">n</span> <span class="k">=&gt;</span> <span class="nc">Number</span><span class="o">(-</span><span class="nv">n</span><span class="o">.</span><span class="py">value</span><span class="o">))</span> <span class="o">|</span>
+        <span class="o">(</span><span class="s">"[0-9]+\\.[0-9]*"</span><span class="o">.</span><span class="py">r</span> <span class="o">|</span> <span class="s">"[0-9]+"</span><span class="o">.</span><span class="py">r</span><span class="o">)</span> <span class="o">^^</span> <span class="o">(</span><span class="n">s</span> <span class="k">=&gt;</span> <span class="nc">Number</span><span class="o">(</span><span class="nv">s</span><span class="o">.</span><span class="py">toDouble</span><span class="o">))</span>
+        <span class="c1">// s.toDouble преобразует строку в число.</span>
+
+<span class="k">def</span> <span class="nf">value</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span> <span class="n">number</span> <span class="o">|</span> <span class="n">funcCall</span> <span class="o">|</span> <span class="n">id</span> <span class="o">|</span> <span class="o">(</span><span class="s">"("</span> <span class="o">~&gt;</span> <span class="n">expression</span> <span class="o">&lt;~</span> <span class="s">")"</span><span class="o">)</span>
+
+<span class="k">private</span> <span class="k">def</span> <span class="nf">binOperation</span><span class="o">(</span><span class="n">p</span><span class="k">:</span> <span class="kt">Expression</span> <span class="kt">~</span> <span class="kt">String</span> <span class="kt">~</span> <span class="kt">Expression</span><span class="o">)</span> <span class="k">=</span> <span class="n">p</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="n">e1</span> <span class="o">~</span> <span class="n">op</span> <span class="o">~</span> <span class="n">e2</span> <span class="k">=&gt;</span> <span class="nc">BinOperation</span><span class="o">(</span><span class="n">e1</span><span class="o">,</span> <span class="nc">BinOperator</span><span class="o">(</span><span class="n">op</span><span class="o">),</span> <span class="n">e2</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Я немножко поленился и превращаю строку в число стандартными методами. Время надо экономить)</p>
+
+<p>Поскольку наше описание парсеров — это код, неоднозначные грамматики всё равно работают. В примере с парсингом <code class="language-plaintext highlighter-rouge">number | funcCall | id</code> мы пытаемся распарсить number, в случае неудачи — вызов функции и т.д. Порядок может быть важным, например <code class="language-plaintext highlighter-rouge">(id | funcCall)</code> при попытке распарсить <code class="language-plaintext highlighter-rouge">"sin(x)"</code> радостно распарсит <code class="language-plaintext highlighter-rouge">Id("sin")</code>, и парсер <code class="language-plaintext highlighter-rouge">funcCall</code> не будет вызван. Для корректной работы лучше написать <code class="language-plaintext highlighter-rouge">(funcCall | id)</code>.</p>
+
+<h2 id="packrat-parsers">Packrat Parsers</h2>
+
+<p>Допустим, мы хотим распарсить последовательность единичек:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">Ones</span> <span class="k">extends</span> <span class="nc">RegexParsers</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="nf">ones</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Any</span><span class="o">]</span> <span class="k">=</span>  <span class="n">ones</span> <span class="o">~</span> <span class="s">"1"</span> <span class="o">|</span> <span class="s">"1"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Парсинг <code class="language-plaintext highlighter-rouge">ones</code> начинается с того, что мы вызываем парсинг <code class="language-plaintext highlighter-rouge">ones</code>, который снова …</p>
+
+<p><img src="/assets/images/2017 scala parser combinators/meme.jpg" alt="" /></p>
+
+<p>Попытка распарсить единички приведёт к переполнению стека.</p>
+
+<p>В данном случае можно изменить описание так, чтобы каждый раз “поглощалось” что-нибудь. Например:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">ones</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Any</span><span class="o">]</span> <span class="k">=</span>  <span class="s">"1"</span> <span class="o">~</span> <span class="n">ones</span> <span class="o">|</span> <span class="s">"1"</span>
+</code></pre></div></div>
+
+<p>Но не всегда грамматику легко переписать. Выражния типа <code class="language-plaintext highlighter-rouge">3-2-1</code> должны распознаваться именно как <code class="language-plaintext highlighter-rouge">(3-2)-1</code>, вариант <code class="language-plaintext highlighter-rouge">3-(2-1)</code> не подойдёт. С делением будет аналогичная проблема. Как это сделать без усложнения грамматики?</p>
+
+<p>Нас спасут packrat — парсеры. Их идея заключается в том, что парсер может хранить “для себя” некоторую информацию о вызовах. Например, чтобы сохранять результат работы и не парсить одно и то же дважды… или чтобы корректно работать в случаях с рекурсией.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">Ones</span> <span class="k">extends</span> <span class="nc">RegexParsers</span> <span class="k">with</span> <span class="nc">PackratParsers</span><span class="o">{</span>
+    <span class="k">lazy</span> <span class="k">val</span> <span class="nv">ones</span><span class="k">:</span> <span class="kt">PackratParser</span><span class="o">[</span><span class="kt">Any</span><span class="o">]</span> <span class="k">=</span>  <span class="n">ones</span> <span class="o">~</span> <span class="s">"1"</span> <span class="o">|</span> <span class="s">"1"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>в трейте PackratParsers содержится неявное преобразование строчек и прочего в парсеры “нужного” типа.</p>
+
+<p>PackratParser лучше создавать только один раз и хранить в переменной. Кроме того, если парсер p использует q, а q использует p, стоит использовать ленивую инициализацию.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">lazy</span> <span class="k">val</span> <span class="nv">term</span><span class="k">:</span> <span class="kt">PackratParser</span><span class="o">[</span><span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span> <span class="n">term</span> <span class="o">~</span> <span class="o">(</span><span class="s">"*"</span> <span class="o">|</span> <span class="s">"/"</span><span class="o">)</span> <span class="o">~</span> <span class="n">value</span> <span class="o">^^</span> <span class="n">binOperation</span> <span class="o">|</span> <span class="n">value</span>
+
+<span class="k">lazy</span> <span class="k">val</span> <span class="nv">expression</span><span class="k">:</span> <span class="kt">PackratParser</span><span class="o">[</span><span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span> <span class="n">expression</span> <span class="o">~</span> <span class="o">(</span><span class="s">"+"</span> <span class="o">|</span> <span class="s">"-"</span><span class="o">)</span> <span class="o">~</span> <span class="n">term</span> <span class="o">^^</span> <span class="n">binOperation</span> <span class="o">|</span> <span class="n">term</span>
+</code></pre></div></div>
+
+<p>Думаю, теперь понятно, как можно легко и непринуждённо распарсить <code class="language-plaintext highlighter-rouge">3-2-1</code> как <code class="language-plaintext highlighter-rouge">(3-2)-1</code>.</p>
+
+<p>Возможно, у вас возникает вопрос: где парсер хранит информацию? Если её хранить прямо внутри PackratParser, то вызов парсера для другого ввода может дать некорректные результаты. Так вот, необходимая информация хранится вместе с “входными” данными парсера. Можно заглянуть в код библиотеки и убедиться в этом:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PackratReader</span><span class="o">[</span><span class="kt">+T</span><span class="o">](</span><span class="n">underlying</span><span class="k">:</span> <span class="kt">Reader</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Reader</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="o">{</span> <span class="n">outer</span> <span class="k">=&gt;</span>
+
+    <span class="k">private</span><span class="o">[</span><span class="kt">PackratParsers</span><span class="o">]</span> <span class="k">val</span> <span class="nv">cache</span> <span class="k">=</span> <span class="nv">mutable</span><span class="o">.</span><span class="py">HashMap</span><span class="o">.</span><span class="py">empty</span><span class="o">[(</span><span class="kt">Parser</span><span class="o">[</span><span class="k">_</span><span class="o">]</span>, <span class="kt">Position</span><span class="o">)</span>, <span class="kt">MemoEntry</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Поэтому парсер принимает на вход не строку, а new PackratReader(new CharSequenceReader(string))</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">apply</span><span class="o">(</span><span class="n">code</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Either</span><span class="o">[</span><span class="kt">LexerError</span>, <span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span>
+    <span class="nf">parse</span><span class="o">(</span><span class="n">expression</span><span class="o">,</span> <span class="k">new</span> <span class="nc">PackratReader</span><span class="o">(</span><span class="k">new</span> <span class="nc">CharSequenceReader</span><span class="o">(</span><span class="n">code</span><span class="o">)))</span> <span class="k">match</span> <span class="o">{</span>
+        <span class="k">case</span> <span class="nc">Success</span><span class="o">(</span><span class="n">result</span><span class="o">,</span> <span class="n">next</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Right</span><span class="o">(</span><span class="n">result</span><span class="o">)</span>
+        <span class="k">case</span> <span class="nc">NoSuccess</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">next</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Left</span><span class="o">(</span><span class="nc">LexerError</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>Что самое крутое — использование packrat парсеров ни к чему не обязывает, их можно комбинировать с обычными парсерами и наоборот.</p>
+
+<h2 id="парсер-готов">Парсер готов</h2>
+
+<p>Код целиком:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">FormulaParser</span> <span class="k">extends</span> <span class="nc">RegexParsers</span> <span class="k">with</span> <span class="nc">PackratParsers</span> <span class="o">{</span>
+
+    <span class="k">def</span> <span class="nf">id</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Id</span><span class="o">]</span> <span class="k">=</span> <span class="s">"[a-zA-Z][a-zA-Z0-9_]*"</span><span class="o">.</span><span class="py">r</span> <span class="o">^^</span> <span class="nc">Id</span>
+
+    <span class="k">def</span> <span class="nf">number</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Number</span><span class="o">]</span> <span class="k">=</span> <span class="s">"-"</span> <span class="o">~&gt;</span> <span class="n">number</span> <span class="o">^^</span> <span class="o">(</span><span class="n">n</span> <span class="k">=&gt;</span> <span class="nc">Number</span><span class="o">(-</span><span class="nv">n</span><span class="o">.</span><span class="py">value</span><span class="o">))</span> <span class="o">|</span>
+        <span class="o">(</span><span class="s">"[0-9]+\\.[0-9]*"</span><span class="o">.</span><span class="py">r</span> <span class="o">|</span> <span class="s">"[0-9]+"</span><span class="o">.</span><span class="py">r</span><span class="o">)</span> <span class="o">^^</span> <span class="o">(</span><span class="n">s</span> <span class="k">=&gt;</span> <span class="nc">Number</span><span class="o">(</span><span class="nv">s</span><span class="o">.</span><span class="py">toDouble</span><span class="o">))</span>
+
+    <span class="k">def</span> <span class="nf">funcCall</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">FuncCall</span><span class="o">]</span> <span class="k">=</span> <span class="n">id</span> <span class="o">~</span> <span class="o">(</span><span class="s">"("</span> <span class="o">~&gt;</span> <span class="n">expression</span> <span class="o">&lt;~</span> <span class="s">")"</span><span class="o">)</span> <span class="o">^^</span> <span class="o">{</span><span class="k">case</span> <span class="n">id</span> <span class="o">~</span> <span class="n">exp</span> <span class="k">=&gt;</span> <span class="nc">FuncCall</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">exp</span><span class="o">)}</span>
+
+    <span class="k">def</span> <span class="nf">value</span><span class="k">:</span> <span class="kt">Parser</span><span class="o">[</span><span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span> <span class="n">number</span> <span class="o">|</span> <span class="n">funcCall</span> <span class="o">|</span> <span class="n">id</span> <span class="o">|</span> <span class="o">(</span><span class="s">"("</span> <span class="o">~&gt;</span> <span class="n">expression</span> <span class="o">&lt;~</span> <span class="s">")"</span><span class="o">)</span>
+
+    <span class="k">lazy</span> <span class="k">val</span> <span class="nv">term</span><span class="k">:</span> <span class="kt">PackratParser</span><span class="o">[</span><span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span> <span class="n">term</span> <span class="o">~</span> <span class="o">(</span><span class="s">"*"</span> <span class="o">|</span> <span class="s">"/"</span><span class="o">)</span> <span class="o">~</span> <span class="n">value</span> <span class="o">^^</span> <span class="n">binOperation</span> <span class="o">|</span> <span class="n">value</span>
+
+    <span class="k">lazy</span> <span class="k">val</span> <span class="nv">expression</span><span class="k">:</span> <span class="kt">PackratParser</span><span class="o">[</span><span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span> <span class="n">expression</span> <span class="o">~</span> <span class="o">(</span><span class="s">"+"</span> <span class="o">|</span> <span class="s">"-"</span><span class="o">)</span> <span class="o">~</span> <span class="n">term</span> <span class="o">^^</span> <span class="n">binOperation</span> <span class="o">|</span> <span class="n">term</span>
+
+    <span class="k">private</span> <span class="k">def</span> <span class="nf">binOperation</span><span class="o">(</span><span class="n">p</span><span class="k">:</span> <span class="kt">Expression</span> <span class="kt">~</span> <span class="kt">String</span> <span class="kt">~</span> <span class="kt">Expression</span><span class="o">)</span> <span class="k">=</span> <span class="n">p</span> <span class="k">match</span> <span class="o">{</span>
+        <span class="k">case</span> <span class="n">e1</span> <span class="o">~</span> <span class="n">op</span> <span class="o">~</span> <span class="n">e2</span> <span class="k">=&gt;</span> <span class="nc">BinOperation</span><span class="o">(</span><span class="n">e1</span><span class="o">,</span> <span class="nc">BinOperator</span><span class="o">(</span><span class="n">op</span><span class="o">),</span> <span class="n">e2</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="o">(</span><span class="n">code</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Either</span><span class="o">[</span><span class="kt">ParserError</span>, <span class="kt">Expression</span><span class="o">]</span> <span class="k">=</span>
+        <span class="nf">parse</span><span class="o">(</span><span class="n">expression</span><span class="o">,</span> <span class="k">new</span> <span class="nc">PackratReader</span><span class="o">(</span><span class="k">new</span> <span class="nc">CharSequenceReader</span><span class="o">(</span><span class="n">code</span><span class="o">)))</span> <span class="k">match</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nc">Success</span><span class="o">(</span><span class="n">result</span><span class="o">,</span> <span class="n">next</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Right</span><span class="o">(</span><span class="n">result</span><span class="o">)</span>
+            <span class="k">case</span> <span class="nc">NoSuccess</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">next</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Left</span><span class="o">(</span><span class="nc">ParserError</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span>
+        <span class="o">}</span>
+
+    <span class="k">case</span> <span class="k">class</span> <span class="nc">ParserError</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Expression</span>
+
+<span class="k">case</span> <span class="k">class</span> <span class="nc">BinOperator</span><span class="o">(</span><span class="n">operator</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Number</span><span class="o">(</span><span class="n">value</span><span class="k">:</span> <span class="kt">Double</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Expression</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Id</span><span class="o">(</span><span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Expression</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">BinOperation</span><span class="o">(</span><span class="n">left</span><span class="k">:</span> <span class="kt">Expression</span><span class="o">,</span> <span class="n">op</span><span class="k">:</span> <span class="kt">BinOperator</span><span class="o">,</span> <span class="n">right</span><span class="k">:</span> <span class="kt">Expression</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Expression</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">FuncCall</span><span class="o">(</span><span class="n">funcName</span><span class="k">:</span> <span class="kt">Id</span><span class="o">,</span> <span class="n">argument</span><span class="k">:</span> <span class="kt">Expression</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Expression</span>
+</code></pre></div></div>
+
+<p>Результат парсинга — либо дерево, либо сообщение об ошибке.</p>
+
+<p>case классы — просто классы-обёртки над значениями, они все реализуют интерфейс Expression. слово sealed обозначает, что реализующие этот интерфейс классы должны содержаться в том же самом файле. Это позволяет с уверенностью говорить, что Expression может быть одного из четырёх типов.</p>
+
+<h2 id="вычисление-выражений">Вычисление выражений</h2>
+
+<p>Код, который вычисляет выражения, тоже прост. Я предполагаю, что на вход подаются корректные выражения.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">Evaluator</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="o">(</span><span class="n">expression</span><span class="k">:</span> <span class="kt">Expression</span><span class="o">,</span>
+              <span class="n">variables</span><span class="k">:</span> <span class="o">(</span><span class="kt">String</span><span class="o">)</span> <span class="o">=&gt;</span> <span class="nc">Double</span> <span class="k">=</span> <span class="nv">Map</span><span class="o">.</span><span class="py">empty</span><span class="o">,</span>
+              <span class="n">functions</span><span class="k">:</span> <span class="o">(</span><span class="kt">String</span><span class="o">)</span> <span class="o">=&gt;</span> <span class="o">(</span><span class="nc">Double</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Double</span> <span class="k">=</span> <span class="nv">Map</span><span class="o">.</span><span class="py">empty</span><span class="o">)</span><span class="k">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">{</span>
+
+        <span class="k">def</span> <span class="nf">eval</span><span class="o">(</span><span class="n">exp</span><span class="k">:</span> <span class="kt">Expression</span><span class="o">)</span> <span class="k">=</span> <span class="nf">this</span> <span class="o">(</span><span class="n">exp</span><span class="o">,</span> <span class="n">variables</span><span class="o">,</span> <span class="n">functions</span><span class="o">)</span>
+
+        <span class="n">expression</span> <span class="k">match</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nc">Number</span><span class="o">(</span><span class="n">value</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">value</span>
+            <span class="k">case</span> <span class="nc">Id</span><span class="o">(</span><span class="n">name</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nf">variables</span><span class="o">(</span><span class="n">name</span><span class="o">)</span>
+            <span class="k">case</span> <span class="nc">BinOperation</span><span class="o">(</span><span class="n">left</span><span class="o">,</span> <span class="n">op</span><span class="o">,</span> <span class="n">right</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nf">operator2func</span><span class="o">(</span><span class="n">op</span><span class="o">)(</span><span class="nf">eval</span><span class="o">(</span><span class="n">left</span><span class="o">),</span> <span class="nf">eval</span><span class="o">(</span><span class="n">right</span><span class="o">))</span>
+            <span class="k">case</span> <span class="nc">FuncCall</span><span class="o">(</span><span class="n">funcId</span><span class="o">,</span> <span class="n">expr</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nf">functions</span><span class="o">(</span><span class="nv">funcId</span><span class="o">.</span><span class="py">name</span><span class="o">)(</span><span class="nf">eval</span><span class="o">(</span><span class="n">expr</span><span class="o">))</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="k">def</span> <span class="nf">operator2func</span><span class="o">(</span><span class="n">binOperator</span><span class="k">:</span> <span class="kt">BinOperator</span><span class="o">)</span><span class="k">:</span> <span class="o">(</span><span class="kt">Double</span><span class="o">,</span> <span class="kt">Double</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Double</span> <span class="k">=</span>
+        <span class="nv">binOperator</span><span class="o">.</span><span class="py">operator</span> <span class="k">match</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="s">"+"</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+            <span class="k">case</span> <span class="s">"-"</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
+            <span class="k">case</span> <span class="s">"*"</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+            <span class="k">case</span> <span class="s">"/"</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span> <span class="o">/</span> <span class="n">b</span>
+        <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Фишечки скалы — можно объявить функцию eval внутри функции apply для повышения читаемости кода. Вторая фишечка — в качестве аргумента по-умолчанию мы подсовываем Map.empty. Она пустая, поэтому может быть любого типа, она неизменяемая, поэтому она останется пустой, и реально мы получим ссылки на один и тот же объект — синглтон. Map.empty имеет метод apply(a: In):Out — мы можем считать её функцией.</p>
+
+<h2 id="почти-всё">Почти всё</h2>
+
+<p>Парсинг и вычислени выражений готовы. Посчитаем получившиеся строки кода (непустые):</p>
+
+<ol>
+  <li>Парсер: 18 строк</li>
+  <li>case-классы для описания AST: 6</li>
+  <li>вычисление выражений: 20 строк.</li>
+</ol>
+
+<p>И всё — причём код легко читается, его легко изменять и он практчиески не содержит ничего лишнего. Красота!</p>
+
+<h2 id="а-оно-работает">А оно работает?</h2>
+
+<p>Об этом стоит подумать ещё на этапе написания парсера, но проверяющий код ни на что не влияет, потому приведён только только сейчас. (конечно, можно написать тестики… но эта статья о написании парсеров, а не тестов, поэтому я сделал как можно проще)</p>
+
+<p>Код, который проверяет работу:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">Main</span> <span class="k">extends</span> <span class="nc">App</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="nf">eval</span><span class="o">(</span><span class="n">code</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span>
+             <span class="n">variables</span><span class="k">:</span> <span class="o">(</span><span class="kt">String</span><span class="o">)</span> <span class="o">=&gt;</span> <span class="nc">Double</span> <span class="k">=</span> <span class="nv">Map</span><span class="o">.</span><span class="py">empty</span><span class="o">,</span>
+             <span class="n">functions</span><span class="k">:</span> <span class="o">(</span><span class="kt">String</span><span class="o">)</span> <span class="o">=&gt;</span> <span class="o">(</span><span class="nc">Double</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Double</span> <span class="k">=</span> <span class="nv">Map</span><span class="o">.</span><span class="py">empty</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="nv">parsed</span> <span class="k">=</span> <span class="nc">FormulaParser</span><span class="o">(</span><span class="n">code</span><span class="o">)</span>
+        <span class="nv">parsed</span><span class="o">.</span><span class="py">left</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">error</span> <span class="k">=&gt;</span> <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="s">"\'$code\' parsing error: $error"</span><span class="o">))</span>
+        <span class="nv">parsed</span><span class="o">.</span><span class="py">right</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">expr</span> <span class="k">=&gt;</span> <span class="nc">Evaluator</span><span class="o">(</span><span class="n">expr</span><span class="o">,</span> <span class="n">variables</span><span class="o">,</span> <span class="n">functions</span><span class="o">)).</span><span class="py">foreach</span><span class="o">(</span><span class="n">d</span> <span class="k">=&gt;</span> <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="s">"\'$code\' = $d"</span><span class="o">))</span>
+    <span class="o">}</span>
+
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"1"</span><span class="o">)</span>
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"0.1"</span><span class="o">)</span>
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"1."</span><span class="o">)</span>
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"  1  "</span><span class="o">)</span>
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"-0.1"</span><span class="o">)</span>
+
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"1+2"</span><span class="o">)</span>
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"2-1"</span><span class="o">)</span>
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"2*3"</span><span class="o">)</span>
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"4/2"</span><span class="o">)</span>
+
+    <span class="k">val</span> <span class="nv">vars</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">(</span>
+        <span class="s">"pi"</span> <span class="o">-&gt;</span> <span class="nv">math</span><span class="o">.</span><span class="py">Pi</span><span class="o">,</span>
+        <span class="s">"e"</span> <span class="o">-&gt;</span> <span class="nv">math</span><span class="o">.</span><span class="py">E</span><span class="o">)</span>
+
+    <span class="k">val</span> <span class="nv">funcs</span><span class="k">:</span> <span class="o">(</span><span class="kt">String</span><span class="o">)</span> <span class="o">=&gt;</span> <span class="o">(</span><span class="nc">Double</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Double</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">(</span>
+        <span class="s">"sin"</span> <span class="o">-&gt;</span> <span class="nv">math</span><span class="o">.</span><span class="py">sin</span><span class="o">,</span>
+        <span class="s">"cos"</span> <span class="o">-&gt;</span> <span class="nv">math</span><span class="o">.</span><span class="py">cos</span><span class="o">,</span>
+        <span class="s">"inc"</span> <span class="o">-&gt;</span> <span class="o">{</span> <span class="n">d</span><span class="k">:</span> <span class="kt">Double</span> <span class="o">=&gt;</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">}</span>
+    <span class="o">)</span>
+
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"pi"</span><span class="o">,</span> <span class="n">vars</span><span class="o">)</span>
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"inc(e)"</span><span class="o">,</span> <span class="n">vars</span><span class="o">,</span> <span class="n">funcs</span><span class="o">)</span>
+
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"2+2*2"</span><span class="o">)</span>
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"1+2*(3+4*5)"</span><span class="o">)</span>
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"8/2/2"</span><span class="o">)</span>
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"8-1-2"</span><span class="o">)</span>
+
+    <span class="nf">eval</span><span class="o">(</span><span class="s">"1. + 2.0 * sin(pi / 2)"</span><span class="o">,</span> <span class="n">vars</span><span class="o">,</span> <span class="n">funcs</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="заключение">Заключение</h2>
+
+<p>Для серьёзных целей существуют генераторы парсеров и прочие штуки.</p>
+
+<p>Но если Вам хочется парсить что-нибудь относительно простое, экспериментировать и получать мгновенную обратную связь — можно использовать описанный выше подход. Информации на русском почти нет, да и на английском тоже не очень много. Я надеюсь, что статья поможет кому-нибудь.</p>
+
+<p>Полезные ссылочки:</p>
+
+<ol>
+  <li><a href="https://github.com/scala/scala-parser-combinators">библиотека на github</a></li>
+  <li><a href="https://enear.github.io/2016/03/31/parser-combinators/">Пример парсинга DSL</a></li>
+  <li>“Programming in scala”, глава “<a href="https://www.artima.com/pins1ed/combinator-parsing.html">parser combinators</a>”</li>
+</ol>
+
+<p>Приведённый выше код я выложил на <a href="https://github.com/Kright/FormulaParser">github</a></p>
+
+<h3 id="как-запустить">Как запустить</h3>
+
+<p>Используется система сборки sbt. Достаточно установить её, перейти в папку с проектом и набрать в консоли “sbt run”</p>
+
+<p><strong>P.S.</strong> У меня всё ещё есть цель дописать свой интерпретатор lua-подобного языка с шахматами и поэтессами. Я вроде бы продумал синтаксис языка, потом в процессе написания парсера наткнулся на противоречия — пришлось отказаться от пары поэтесс и заменить шахматы на шашки, но результат всё равно получается довольно интересным.</p>
+
+<p>Изначально это был <a href="https://habr.com/ru/post/325446/">пост на хабре</a>.</p>
+
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Kright/kright.github.io">kright.github.io</a> is maintained by <a href="https://github.com/Kright">Kright</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

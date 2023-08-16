@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Физика вращения 3д тел | kright.github.io</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Физика вращения 3д тел" />
+<meta name="author" content="kright" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Когда я раньше задумывался о вращении в 3д, мне было неуютно. Оно казалось сложным. Вспомнить, например, эффект Джанибекова с прецессией свободно вращающейся гайки. Настало время разобраться!" />
+<meta property="og:description" content="Когда я раньше задумывался о вращении в 3д, мне было неуютно. Оно казалось сложным. Вспомнить, например, эффект Джанибекова с прецессией свободно вращающейся гайки. Настало время разобраться!" />
+<link rel="canonical" href="http://localhost:4000/2022/11/05/%D0%A4%D0%B8%D0%B7%D0%B8%D0%BA%D0%B0-%D0%B2%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D1%8F-3%D0%B4-%D1%82%D0%B5%D0%BB.html" />
+<meta property="og:url" content="http://localhost:4000/2022/11/05/%D0%A4%D0%B8%D0%B7%D0%B8%D0%BA%D0%B0-%D0%B2%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D1%8F-3%D0%B4-%D1%82%D0%B5%D0%BB.html" />
+<meta property="og:site_name" content="kright.github.io" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-11-05T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Физика вращения 3д тел" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"kright"},"dateModified":"2022-11-05T00:00:00+01:00","datePublished":"2022-11-05T00:00:00+01:00","description":"Когда я раньше задумывался о вращении в 3д, мне было неуютно. Оно казалось сложным. Вспомнить, например, эффект Джанибекова с прецессией свободно вращающейся гайки. Настало время разобраться!","headline":"Физика вращения 3д тел","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2022/11/05/%D0%A4%D0%B8%D0%B7%D0%B8%D0%BA%D0%B0-%D0%B2%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D1%8F-3%D0%B4-%D1%82%D0%B5%D0%BB.html"},"url":"http://localhost:4000/2022/11/05/%D0%A4%D0%B8%D0%B7%D0%B8%D0%BA%D0%B0-%D0%B2%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D1%8F-3%D0%B4-%D1%82%D0%B5%D0%BB.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=04936c4141575b8269035838047e98a4dd849258">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Физика вращения 3д тел</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="https://github.com/Kright/kright.github.io" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<nav>
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+</nav>
+
+
+<p>05 Nov 2022</p>
+
+<p>Когда я раньше задумывался о вращении в 3д, мне было неуютно. Оно казалось сложным. Вспомнить, например, <a href="https://ru.wikipedia.org/wiki/%D0%AD%D1%84%D1%84%D0%B5%D0%BA%D1%82_%D0%94%D0%B6%D0%B0%D0%BD%D0%B8%D0%B1%D0%B5%D0%BA%D0%BE%D0%B2%D0%B0">эффект Джанибекова</a> с прецессией свободно вращающейся гайки. Настало время разобраться!</p>
+
+<p>В статье Вас ждут математика, физика, а заодно численное моделирование и визуализация в libgdx.</p>
+
+<p>Можно провести аналогии между массой тела в поступательном движении и моментом инерции. Разница только в том, что масса выражается одним-единственным числом, а момент инерции - матрицей 3х3. В большинстве примеров ограничиваются вращением в 2д, где существует только одна возможная ось вращения, либо симметричными телами типа мяча, когда момен инерции по всем осям одинаковый. Вместо этого я рассмотрю наиболее общий случай.</p>
+
+<h2 id="математический-аппарат">Математический аппарат</h2>
+
+<p>Скалярное произведение векторов:
+$a \cdot b = |a||b| \cos(angle)$</p>
+
+<p>Для векторов единичной длины позволяет узнать косинус угла между ними.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Векторное произведение $a \times b$ - вектор, перпендикулярный векторам a и b, с длиной $</td>
+      <td>a</td>
+      <td> </td>
+      <td>b</td>
+      <td> </td>
+      <td>\sin(angle)</td>
+      <td>$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Для векторного произведения порядок a и b важен, $a \times b = - b \times a$ При выборе системы отсчёта есть произвол, в какую из двух сторон откладывать векторное произведение. Системы координат можно разделить на “правые” и “левые”. Дальнейшие рассуждения будуть работать и там и там.</p>
+
+<p>Вектора и матрицы:
+Я считаю, что вектор - столбик. Поэтому при умножении вектор ставится справа от матрицы, например $A v$</p>
+
+<p>При умножении нескольких матриц $A B v$ можно смотреть как на преобразование вектора матрицей $B$, а потом матрицей $A$. В игровых движках часто делают наоборот - вектор считается строчкой, домножается на матрицу слева, и преобразования “идут слева направо”: $v^T B^T A^T$</p>
+
+<p>Я буду использовать вектора-столбики, при желании можно транспонировать матрицы и применять то же самое к строчкам.</p>
+
+<h3 id="представление-вращения">Представление вращения</h3>
+
+<p>Можно использовать <a href="https://ru.wikipedia.org/wiki/%D0%A3%D0%B3%D0%BB%D1%8B_%D0%AD%D0%B9%D0%BB%D0%B5%D1%80%D0%B0">углы Эйлера</a>. Это три числа, но углы Эйлера неудобно комбинировать друг с другом. Кроме того, есть вырожденные состояния, при переходе через которые углы резко поменяются (например, направление “вверх”).</p>
+
+<p>Матрицы 3х3. Их можно инвертировать, комбинировать (перемножать), но использование девяти чисел для представления трёх степеней свободы выглядит избыточным. Со временем в матрице могут копиться ошибки, и тогда кроме вращения в матрице появятся масштабирование и прочие эффекты. Существует <a href="https://ru.wikipedia.org/wiki/%D0%9F%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81_%D0%93%D1%80%D0%B0%D0%BC%D0%B0_%E2%80%95_%D0%A8%D0%BC%D0%B8%D0%B4%D1%82%D0%B0">ортогонализация Грамма-Шмидта</a> для исправления накопившихся ошибок.</p>
+
+<p>Кватернионы: на мой взгляд, очень красивая конструкция из четырёх чисел. В отличие от углов Эйлера, вырожденных состояний нет. Обычно для представления вращения используют кватернионы единичной длины, что оставляет три степени свободы. Накопившиеся при перемножении кватернионов ошибки легко убираюстя нормализацией. В математике их используют разными способами, нас будет интересовать возможность выразить вращение.</p>
+
+<p>Компоненты кватерниона: (w, x, y, z)</p>
+
+<p>Допустим, если есть ось вращения $(v_x, v_y, v_z)$ и угол поворота $a$. В виде кватерниона это можно записать так: $(\cos(\frac{a}{2}), \sin(\frac{a}{2}) v_x, \sin(\frac{a}{2}) v_y, \sin(\frac{a}{2}) v_z)$</p>
+
+<p>В квантовой физике кватернионом можно описать спин частицы, и тогда между кватирнионами (1, 0, 0, 0) и (-1, 0, 0, 0) будет разница, но для нас они представляют одно и то же вращение. Это нетрудно заметить, если в предыдущей формуле увеличить угол $a$ на 360 градусов. Вместо кватерниона $(w, x, y, z)$ получится $(-w, -x, -y, -z)$</p>
+
+<p>Кватернион очень легко инвертировать - поменять угол вращения на отрицательный $(w, -x, -y, -z)$, ну или перевернуть w: $(-w, x, y, z)$ Замена угла вращения на отрицательный выглядит как “переворот” оси вращения.</p>
+
+<p>Нулевому вращению соответствуют кватернионы (1, 0, 0, 0) и (-1, 0, 0, 0)</p>
+
+<p>Из кватерниона довольно легко “извлечь” ось вращения и угол поворота. Благодаря этому кватернион можно возводить в произвольную (нецелую) степень и использовать для интерполяции вращения.</p>
+
+<p>Не обязательно ограничиваться чем-то одним, можно свободно преобразовывать одно представление вращения в другое и использовать то, что удобнее всего в данный момент.
+Например, в игре можно:</p>
+
+<ol>
+  <li>Хранить и комбинировать вращения в виде кватернионов.</li>
+  <li>Для рисования графики преобразовывать кватернион в матрицу.</li>
+  <li>В логи писать углы Эйлера, как более понятные для человека.</li>
+</ol>
+
+<p>В дальнейшем я храню ориентацию тела в виде кватерниона, а производные типа угловой скорости и ускорения - в виде векторов.</p>
+
+<h2 id="физические-обозначения">Физические обозначения</h2>
+
+<p>Сила $F$.</p>
+
+<p>Аналог силы для вращения - крутящий момент: $M = r \times F$. Разница в домножении на “длину рычага”.</p>
+
+<p>У тела есть <a href="https://ru.wikipedia.org/wiki/%D0%9C%D0%BE%D0%BC%D0%B5%D0%BD%D1%82_%D0%B8%D0%BD%D0%B5%D1%80%D1%86%D0%B8%D0%B8">момент инерции</a> $I$. Если тело не является шаром или кубом, то вдоль разных осей момент может быть разным. В общем случае $I$ - тензор с 9 чиселками. Из курса физики я помню, что с помощью поворота $I$ всегда можно привести к диагональной форме с тремя числами вокруг трёх главных осей и остальными нулями.</p>
+
+<p>Cкорость $v$, угловая скорость $w$.</p>
+
+<p>Импульс $P = Ft = mv$</p>
+
+<p>Момент импульса: $L = r \times P = M t = I w$</p>
+
+<p>Энергия поступательного движения  $E = \frac{1} {2} m v \cdot v = \frac{1}{2} v \cdot P$</p>
+
+<p>Кинетическая энергия вращения: $E = \frac{1}{2} w \cdot (I w) = \frac{1}{2} w  \cdot L$</p>
+
+<p>Линейное ускорение $a$, угловое ускорение $\varepsilon$.</p>
+
+<p><a href="https://ru.wikipedia.org/wiki/%D0%A3%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F_%D0%AD%D0%B9%D0%BB%D0%B5%D1%80%D0%B0">Уравнения Эйлера</a>:</p>
+
+\[I \varepsilon + w \times (I w) = M\]
+
+\[I \varepsilon = M - w \times (I w)\]
+
+\[\varepsilon = I^{-1} (M - w \times (I w))\]
+
+<p>Если моменты вращения тела вокруг главных осей равны, то $w \times (Iw) = 0$ и уравнение упрощается до $\varepsilon = I^{-1} M$, а его аналог для поступательного движения - $a = \frac{F}{m}$</p>
+
+<p>В общем случае $w \times (Iw) \neq 0$, и для свободно вращающегося тела ось вращения может меняться. Наглядной демонстрацией является <a href="https://ru.wikipedia.org/wiki/%D0%AD%D1%84%D1%84%D0%B5%D0%BA%D1%82_%D0%94%D0%B6%D0%B0%D0%BD%D0%B8%D0%B1%D0%B5%D0%BA%D0%BE%D0%B2%D0%B0">эффект Джанибекова</a></p>
+
+<p>Кроме того, нужно чётко понимать, в какой системе проводятся эти вычисления. Если тело как-то повёрнуто (допустим, матрицей $R$), то в глобальной системе отсчёта $I$ преобразуется:
+$I_{global} = R I_{local} R^{-1}$</p>
+
+<p>В виде кода у меня получилось <a href="https://github.com/Kright/ScalaGameMath/blob/master/src/main/scala/com/kright/physics3d/Inertia3d.scala#L49">так</a>:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">globalI</span><span class="k">:</span> <span class="kt">Matrix3d</span> <span class="o">=</span>
+  <span class="n">rot</span> <span class="o">*</span> <span class="n">objectI</span> <span class="o">*</span> <span class="nv">rot</span><span class="o">.</span><span class="py">inverted</span><span class="o">()</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">getE</span><span class="o">(</span><span class="n">torque</span><span class="k">:</span> <span class="kt">IVector3d</span><span class="o">)</span><span class="k">:</span> <span class="kt">Vector3d</span> <span class="o">=</span>
+  <span class="k">val</span> <span class="nv">I</span> <span class="k">=</span> <span class="n">globalI</span>
+  <span class="nv">I</span><span class="o">.</span><span class="py">inverted</span><span class="o">()</span> <span class="o">*</span> <span class="o">(</span><span class="n">torque</span> <span class="o">-</span> <span class="nv">omega</span><span class="o">.</span><span class="py">cross</span><span class="o">(</span><span class="n">I</span> <span class="o">*</span> <span class="n">omega</span><span class="o">))</span>
+</code></pre></div></div>
+
+<p>и симуляция вращения:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">update</span><span class="o">(</span><span class="n">dt</span><span class="k">:</span> <span class="kt">Double</span><span class="o">,</span> <span class="n">moment</span><span class="k">:</span> <span class="kt">IVector3d</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span>
+  <span class="k">val</span> <span class="nv">acc</span> <span class="k">=</span> <span class="nv">body</span><span class="o">.</span><span class="py">getE</span><span class="o">(</span><span class="n">moment</span><span class="o">)</span>
+  <span class="k">val</span> <span class="nv">dw</span> <span class="k">=</span> <span class="nc">Quaternion</span><span class="o">().</span><span class="py">setFromExp</span><span class="o">(</span><span class="nv">body</span><span class="o">.</span><span class="py">omega</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span><span class="o">)</span>
+  <span class="nv">body</span><span class="o">.</span><span class="py">rot</span> <span class="o">:=</span> <span class="n">dw</span> <span class="o">*</span> <span class="nv">body</span><span class="o">.</span><span class="py">rot</span>
+  <span class="nv">body</span><span class="o">.</span><span class="py">omega</span><span class="o">.</span><span class="py">madd</span><span class="o">(</span><span class="n">acc</span><span class="o">,</span> <span class="n">dt</span><span class="o">)</span>
+  <span class="n">t</span> <span class="o">+=</span> <span class="n">dt</span>
+</code></pre></div></div>
+
+<p>P.S. В примере была ошибка, исправил - ориентация должна обновляться на основе предыдущего значения скорости, а не нового.</p>
+
+<p>P.P.S. Код выше применим только для методов решения первого-второго порядков точности, для четвёртого надо хранить производные от кватерниона и усреднять именно их. Иначе точность остаётся на уровне методов решения второго порядка.
+Можно посмотреть <a href="https://gist.github.com/uranix/b101ca6ce8dcc2b616502dd8e9a2f9e9">пример</a> из этого <a href="https://habr.com/ru/post/697534/#comment_24885798">комментария</a> - он работает хорошо. Я повторил его и в репозиторий с примерами добавил SolverEuler2Alt, SolverRK2Alt, SolverRK4Alt. Для второго порядка разницы нет или точность даже хуже, для четвёртого порядка - радикально лучше.</p>
+
+<h2 id="хочешь-сделать-хорошо---сделай-сам">Хочешь сделать хорошо - сделай сам</h2>
+
+<p>Так уж получилось, что в различных библиотеках для линейной алгребы были те или иные недостатки - например, не было кватернионов, или не хватало каких-то методов. Кроме того, есть произвол в определении направления вектороного произведения, в направлениях вращения и в том, считать вектора столбиками или строчками, что влияет на все дальнейшие формулы.</p>
+
+<p>Спустя много лет использования разных библиотек и копирования кода туда-сюда я наконец-то собрался и написал свою библиотеку: <a href="https://github.com/Kright/ScalaGameMath">https://github.com/Kright/ScalaGameMath</a></p>
+
+<p>Возможно, было бы лучше написать библиотеку на java, чтобы её можно было использовать из любого jvm языка. Но тогда для scala придётся писать обёртку, чтобы вместо методов типа <code class="language-plaintext highlighter-rouge">plus, minus</code> и т.п. были доступны более удобные + и -.</p>
+
+<p>Вектора, матрицы, кватернионы и т.п. используют double, а не float. Я не хочу бороться с ошибками округления и перспектива удвоенного количества занятых байтов меня не пугает.</p>
+
+<p>По старой памяти и по аналогии с libgdx я cделал кучу изменяющих методов типа
+<code class="language-plaintext highlighter-rouge">+=</code>, <code class="language-plaintext highlighter-rouge">*=</code> и т.п., а так же варианты типа <code class="language-plaintext highlighter-rouge">matrix *&gt; vector</code>, когда результат операции записывается в правый аргумент. но потом я взял <a href="https://github.com/openjdk/jmh">jmh</a>, написал какие-то бенчмарки и выяснил, что jvm умеет в escape analysis. создание временных объектов почти не влияет на производительность.</p>
+
+<p>Можно писать код типа</p>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">:=</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span> <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="n">m</span>
+</code></pre></div></div>
+
+<p>Вместо менее читаемого опимизированного</p>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">:=</span> <span class="n">b</span>
+<span class="n">a</span> <span class="o">+=</span> <span class="n">c</span>
+<span class="nv">a</span><span class="o">.</span><span class="py">madd</span><span class="o">(</span><span class="n">d</span><span class="o">,</span> <span class="n">m</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Или ещё менее читаемого</p>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">((</span><span class="n">a</span> <span class="o">:=</span> <span class="n">b</span><span class="o">)</span> <span class="o">+=</span> <span class="n">c</span><span class="o">).</span><span class="py">madd</span><span class="o">(</span><span class="n">d</span><span class="o">.</span> <span class="n">m</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Я не буду делать никаких общих утверждений, просто призываю не заниматься преждевременной оптимизацией без нужды. Простота и читаемость кода - это тоже очень важные свойства.</p>
+
+<p>Кроме того, в моей библиотеке операции с кватернионами, матрицами, углами Эйлера и преобразования между ними согласованы друг с другом.</p>
+
+<p>Например, можно превратить углы Эйлера в матрицы, перемножить их, превратить обратно в углы Эйлера и получить тот же самый результат, как если бы я в качестве промежуточного преставления использовал кватернионы.</p>
+
+<p>Это очевидное требование, но его легко нарушить, если, допустим, добавлять кватернионы в чей-то проект с готовыми матрицами.</p>
+
+<p>Я использовал property based testing и в тестах явно требовал математических свойств типа ассоциативности, обратимости и т.п.
+Например, что для любых кватернионов <code class="language-plaintext highlighter-rouge">(q1 * q2) * q3 == q1 * (q2 * q3)</code></p>
+
+<h2 id="как-проверить-корректность">Как проверить корректность</h2>
+
+<p>По-сути, есть дифференциальное уравнение $\varepsilon = f(w, R)$, которое можно численно решить.</p>
+
+<p>Можно проверить на <a href="https://ru.wikipedia.org/wiki/%D0%AD%D1%84%D1%84%D0%B5%D0%BA%D1%82_%D0%94%D0%B6%D0%B0%D0%BD%D0%B8%D0%B1%D0%B5%D0%BA%D0%BE%D0%B2%D0%B0">эффекте Джанибекова</a> - взять тело с моментами инерции $I_x &lt; I_y &lt; I_z$, отправить его вращатья вокруг оси $Y$ с каким-то возмущением.</p>
+
+<p>Ось вращения будет прецессировать, а вот кинетическая энергия и момент импульса - оставаться постоянными. Если они не будут сохраняться, значит где-то есть ошибка - либо в формулах, либо в коде.</p>
+
+<p>Для меня было небольшим открытием, что именно это нужно и тестировать. Получается очень просто! Взять произвольную систему с вращающимся телом и проверить, как сохраняются физические инварианты - импульс с энергия. Если что-то выглядит и крякает как утка - это она и есть :) Такой тест по своей полезности оказывается важнее десятка юнит-тестов для отдельных функций.</p>
+
+<h2 id="численное-решение-уравнения-движения">Численное решение уравнения движения</h2>
+
+<p>Здесь и далее будет более прикладная часть с кодом.</p>
+
+<p>Итак, вращение тела можно описать дифференциальным уравнением второго порядка. Для оценки того, насколько точное получилось решение, я буду запускать в свободный полёт “гайку” и смотреть на вращаельный импульс и энергию. Чем сильнее они отклоняются от начальных значений - тем менее точное решение.</p>
+
+<p>Дальше будет сравнение четырёх численных способов решения:</p>
+
+<ul>
+  <li><a href="https://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D1%82%D0%BE%D0%B4_%D0%AD%D0%B9%D0%BB%D0%B5%D1%80%D0%B0">Метод Эйлера первого порядка</a> - точность ужасна, используется в качестве простейшего примера.</li>
+  <li><a href="https://en.wikipedia.org/wiki/Heun%27s_method">Улучшенный метод Эйлера</a>, второго порядка.</li>
+  <li>Метод Рунге-Кутты второго порядка.</li>
+  <li><a href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Метод Рунге-Кутты</a> четвёртого порядка.</li>
+</ul>
+
+<p>Ещё существует метод <a href="https://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D1%82%D0%BE%D0%B4_%D0%A1%D1%82%D1%91%D1%80%D0%BC%D0%B5%D1%80%D0%B0_%E2%80%94_%D0%92%D0%B5%D1%80%D0%BB%D0%B5">метод Верле</a> - его часто используют в играх, вместо скорости надо хранить координаты в текущий и в предыдущий момент времени. Но для рассчёта ускорения вращающегося тела надо знать его точную скорость, а её в явном виде нет.</p>
+
+<p>В защиту своей лени скажу, что метод Рунге-Кутты второго порядка очень похож на метод Верле - делается “подшаг” на половину шага вперёд, там считается ускорение и это ускорение применяется для рассчёта следующего состояния из текущего.</p>
+
+<p>Для наглядности для каждого метода решения я построил графики отклонений по вращательной энергии и по кинетической энергии.</p>
+
+<p>В общем виде решаем уравнение с каким-то шагом $dt$ и известным $y_0$</p>
+
+<p>$y’ = f(y, t)$</p>
+
+<p>Конкретно в нашем случае уравнение второго порядка, которое можно записать так:</p>
+
+<p>$(^{y’‘}<em>{y’}) = (^{f(y, y’, t)}</em>{y’})$</p>
+
+<p>вектор $^{y’‘}_{y’}$ можно обозвать как-нибудь типа $Y$ и свести всё к диффуру первого порядка:</p>
+
+<p>$Y’ = F(Y, t)$</p>
+
+<p>В моём коде есть вспомогательные классы типа  <code class="language-plaintext highlighter-rouge">State3d(Position3d, Velocity3d)</code>, а так же производная <code class="language-plaintext highlighter-rouge">State3dDerivative(Velocity3d, Acceleration3d)</code>
+В этих терминах решение выражается просто и красиво.</p>
+
+<h3 id="метод-эйлера">Метод Эйлера</h3>
+
+<p>Именем <a href="https://ru.wikipedia.org/wiki/%D0%AD%D0%B9%D0%BB%D0%B5%D1%80,_%D0%9B%D0%B5%D0%BE%D0%BD%D0%B0%D1%80%D0%B4">Леонарда Эйлера</a> названо очень много всего - и углы, и уравнение вращения, и способ численного решения дифференциальных уравнений.</p>
+
+<p>Самый простой, но катастрофически неточный.
+Точность линейно зависит от размера шага.</p>
+
+<p>$y_{n+1} = y_n + f(y_n, t) dt$</p>
+
+<p>В виде кода получается так:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">k1</span> <span class="k">=</span> <span class="nf">getDerivative</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">time</span><span class="o">)</span>
+<span class="nf">nextState</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">k1</span><span class="o">,</span> <span class="n">dt</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/2022/Физика вращения 3д тел/Euler.png" alt="" /></p>
+
+<p>Для каждого из методов - график изменения энергии и отклонения момента импульса. Шаг рассчётов 0.01 сек, скорость вращения - порядка 1 радиана в секунду, время симуляции - 100 сек.</p>
+
+<p>Синяя линяя - изменение кинетической энергии, делённое на начальную энергию для нормирования.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><del>Красная</del> Оранжевая линия - отклонение момента импульса L от начального, опять же делённое на начальный</td>
+      <td>L</td>
+      <td>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="улучшенный-метод-эйлера">Улучшенный метод Эйлера</h3>
+
+<p>Второй порядок точности.
+Считаем ускорение в начальной точке, по нему находим “приблизительную следующую” точку (в обычном методе Эйлера мы бы тут и остановились)</p>
+
+<p>$\bar{y}_{n+1} = y_n + f(y_n, t) dt$</p>
+
+<p>Потом считаем ускорение в “приблизительно следующей” точке, усредняем его с ускорением в начальной и уже по этому ускорению находим конечную.</p>
+
+<p>$y_{n+1} = y_n + \dfrac{1}{2}(f(y_n, t) + f(\bar{y}_{n+1}, t+dt))dt$</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">k1</span> <span class="k">=</span> <span class="nf">getDerivative</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">time</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">k2</span> <span class="k">=</span> <span class="nf">getDerivative</span><span class="o">(</span><span class="nf">nextState</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">k1</span><span class="o">,</span> <span class="n">dt</span><span class="o">),</span> <span class="n">time</span> <span class="o">+</span> <span class="n">dt</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="nv">kMean</span> <span class="k">=</span> <span class="nf">newZeroDerivative</span><span class="o">()</span>
+<span class="nf">madd</span><span class="o">(</span><span class="n">kMean</span><span class="o">,</span> <span class="n">k1</span><span class="o">,</span> <span class="mf">0.5</span><span class="o">)</span>
+<span class="nf">madd</span><span class="o">(</span><span class="n">kMean</span><span class="o">,</span> <span class="n">k2</span><span class="o">,</span> <span class="mf">0.5</span><span class="o">)</span>
+
+<span class="nf">nextState</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">kMean</span><span class="o">,</span> <span class="n">dt</span><span class="o">)</span>
+</code></pre></div></div>
+<p><img src="/assets/images/2022/Физика вращения 3д тел/Euler2.png" alt="" /></p>
+
+<p>Советую обратить внимание на масштаб. Относительная ошибка составляет 0.0001 от L, кинетическая энергия осцилирует слабее, но решительно и неутомимо растёт.</p>
+
+<h3 id="метод-рунге-кутты-второго-порядка">Метод Рунге-Кутты второго порядка</h3>
+
+<p>Второй порядок, похоже на метод Верле.</p>
+
+<p>Находим ускорение, делаем половину шага вперёд и находим ускорение там.</p>
+
+<p>$y_{n+0.5} = y_n + f(y_n, t) \dfrac{dt}{2}$</p>
+
+<p>$y_{n+1} = y_n + f(y_{n+0.5}, t + \dfrac{dt}{2}) dt$</p>
+
+<p>А потом применяем делаем шаг от <em>начального</em> состояния с этим ускорением.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">k1</span> <span class="k">=</span> <span class="nf">getDerivative</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">time</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">k2</span> <span class="k">=</span> <span class="nf">getDerivative</span><span class="o">(</span><span class="nf">nextState</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">k1</span><span class="o">,</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span><span class="o">),</span> <span class="n">time</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span><span class="o">)</span>
+
+<span class="nf">nextState</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">k2</span><span class="o">,</span> <span class="n">dt</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/2022/Физика вращения 3д тел/RK2.png" alt="" /></p>
+
+<p>Точность примерно такая же как в предыдущем методе. Энергия вращения потихоньку убывает. Я не проверял этот факт для всех возможных моментов инерции, просто забавный момент.</p>
+
+<h3 id="метод-рунге-кутты-четвёртого-порядка">Метод Рунге-Кутты четвёртого порядка</h3>
+
+<p>Если предыдущие методы было легко представить и понять, то в этом я не могу сказать, почему коэффициенты именно такие.</p>
+
+<p>Берутся аж 4 точки - начальная, пол-шага вперёд, “уточнённые” пол-шага и потом шаг вперёд. Ускорения из всех четырёх точек усредняются с какими-то весами и с этим усреднённым делается шаг.</p>
+
+<p>Я не буду писать длинные формулы, напишу сразу код:</p>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">k1</span> <span class="k">=</span> <span class="nf">getDerivative</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">time</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">k2</span> <span class="k">=</span> <span class="nf">getDerivative</span><span class="o">(</span><span class="nf">nextState</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">k1</span><span class="o">,</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span><span class="o">),</span> <span class="n">time</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">k3</span> <span class="k">=</span> <span class="nf">getDerivative</span><span class="o">(</span><span class="nf">nextState</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">k2</span><span class="o">,</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span><span class="o">),</span> <span class="n">time</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">k4</span> <span class="k">=</span> <span class="nf">getDerivative</span><span class="o">(</span><span class="nf">nextState</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">k3</span><span class="o">,</span> <span class="n">dt</span><span class="o">),</span> <span class="n">time</span> <span class="o">+</span> <span class="n">dt</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="nv">kMean</span> <span class="k">=</span> <span class="nf">newZeroDerivative</span><span class="o">()</span>
+<span class="nf">madd</span><span class="o">(</span><span class="n">kMean</span><span class="o">,</span> <span class="n">k1</span><span class="o">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">6.0</span><span class="o">)</span>
+<span class="nf">madd</span><span class="o">(</span><span class="n">kMean</span><span class="o">,</span> <span class="n">k2</span><span class="o">,</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="mf">6.0</span><span class="o">)</span>
+<span class="nf">madd</span><span class="o">(</span><span class="n">kMean</span><span class="o">,</span> <span class="n">k3</span><span class="o">,</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="mf">6.0</span><span class="o">)</span>
+<span class="nf">madd</span><span class="o">(</span><span class="n">kMean</span><span class="o">,</span> <span class="n">k4</span><span class="o">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">6.0</span><span class="o">)</span>
+
+<span class="nf">nextState</span><span class="o">(</span><span class="n">initial</span><span class="o">,</span> <span class="n">kMean</span><span class="o">,</span> <span class="n">dt</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/2022/Физика вращения 3д тел/RK4.png" alt="" /></p>
+
+<p>Для L ошибка меньше раза в 3, энергия вращения в среднем растёт на какую-то крохотную капелюшечку - меньше одной стотысячной. Если между методами первого и второго порядка радикальная разница в точности, то переход к четвёртмоу порядку, похоже, даёт небольшой вклад.</p>
+
+<p>Возможно, я где-то ошибся и вместо четвёртого порядка точности у меня так и остался второй. Надеюсь, что нет.</p>
+
+<p>P. P. S. Ошибка дейтвительно была. Именно для метода четвёртого порядка надо считать честную производную от кватерниона (она тоже будет иметь четыре компонента, как и кватернион), усреднять производные с какими-то весами, добавлять к кватерниону ориентации и только потом нормализовать его. График для такого подхода:</p>
+
+<p><img src="imgs/RK4Alt.png" alt="" /></p>
+
+<p>Если симулировать только линейные движения тел, то толку от метода четвёртого порядка может и не быть - например свободно падающее тело двигатеся с постоянным ускорением g, производная от ускорения и последующие производные равны нулю, метод второго порядка точности даст идеально точное решение.</p>
+
+<p><img src="/assets/images/2022/Физика вращения 3д тел/RK4LargeStep.png" alt="" /></p>
+
+<p>Для сравнения целых три графика (для старой некорректной версии) - с шагом в 0.1, 0.01 и 0.001.</p>
+
+<p>Предлагаю обратить внимание на левый график. За шаг модель поворачивается примерно на 0.1 радиана. Примерно 6 градусов. Точность хуже, за пару десятков оборотов ошибка успевает вырасти на 0.2%. Можно добавить в модель слабую силу трения, чтобы энергия не росла и использовать её в играх. Вряд ли игрок расстроится, если вращение будет потихоньку “затухать” с характерным временем в несколько часов.</p>
+
+<p>P.P.S. Ниже графики для исправленного метода. Точность лучше для любого шага по времени, но шаг 0.1 всё равно можно считать минимально допустимым.</p>
+
+<p><img src="imgs/RK4AltLargeStep.png" alt="" /></p>
+
+<p>Кроме явных схем решения дифференциальных уравнений есть ещё и неявные. Я в них не разбираюсь, поэтому ничего про них не пишу.</p>
+
+<p>Код солверов в двух местах:</p>
+
+<ul>
+  <li><a href="https://github.com/Kright/ScalaGameMath/blob/master/src/main/scala/com/kright/math/DifferentialSolvers.scala">абстрактные функции</a></li>
+  <li><a href="https://github.com/Kright/my-articles/blob/master/2022/%D0%A4%D0%B8%D0%B7%D0%B8%D0%BA%D0%B0%20%D0%B2%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D1%8F%203%D0%B4%20%D1%82%D0%B5%D0%BB/libgdxDemo/src/main/scala/com/kright/benchmark/Solver.scala">код для 3д тел, который их вызывает</a></li>
+</ul>
+
+<h2 id="результаты">Результаты</h2>
+
+<p><img src="/assets/images/2022/Физика вращения 3д тел/screenshot.png" alt="" /></p>
+
+<p>В репозитории лежит <a href="https://github.com/Kright/my-articles/tree/master/2022/%D0%A4%D0%B8%D0%B7%D0%B8%D0%BA%D0%B0%20%D0%B2%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D1%8F%203%D0%B4%20%D1%82%D0%B5%D0%BB/libgdxDemo">sbt проект</a>. Можно запустить <code class="language-plaintext highlighter-rouge">sbt run</code> и выбрать один из двух вариантов:</p>
+
+<ol>
+  <li><a href="https://github.com/Kright/my-articles/blob/master/2022/%D0%A4%D0%B8%D0%B7%D0%B8%D0%BA%D0%B0%20%D0%B2%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D1%8F%203%D0%B4%20%D1%82%D0%B5%D0%BB/libgdxDemo/src/main/scala/com/kright/RotationDemo.scala">libgdxDemo</a> - симуляция + визуализация вращения “гайки”</li>
+  <li><a href="https://github.com/Kright/my-articles/blob/master/2022/%D0%A4%D0%B8%D0%B7%D0%B8%D0%BA%D0%B0%20%D0%B2%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D1%8F%203%D0%B4%20%D1%82%D0%B5%D0%BB/libgdxDemo/src/main/scala/com/kright/benchmark/PrecisionTest.scala">precisionTest</a> - сравнение разных солверов на разных шагах по времени. Порядок скорости вращения - единица. Вместо увеличения скорости вращения тела можно “эмулировать” это увеличением шага по времени для той же скорости. Для понимания происходящего результаты сохранятся в виде csv файлов. В репозитории их нет, надо хотя бы разок запустить precisionTest.</li>
+</ol>
+
+<p>Рядом лежит <a href="https://github.com/Kright/my-articles/blob/master/2022/%D0%A4%D0%B8%D0%B7%D0%B8%D0%BA%D0%B0%20%D0%B2%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D1%8F%203%D0%B4%20%D1%82%D0%B5%D0%BB/PrecisionCharts.ipynb">jupyter notebook</a>, в котором можно полюбоваться на графики изменения ошибок в зависимости от времени.</p>
+
+<p>Например, для шага в 0.1 секунды методы второго порядка становятся не очень точными, за условные 100 секунд и пару десятков оборотов накапливается ошибка в два-три процента. У Рунге-Кутты четвёртого порядка точность лучше, накопленная ошибка - около одной четвёртой процента.</p>
+
+<p>Графики такие же как в статье, но их больше. Для разных методов сравниваются разные шаги по времени.</p>
+
+<h2 id="выводы">Выводы</h2>
+
+<p>Я попробовал собрать всё в одном месте и пройти путь от теории до практического применения.</p>
+
+<p>Методы второго порядка выглядят хорошим компромиссом между точностью и простотой. Четвёртый порядок точности лучше, я бы советовал использовать именно его. Первый порядок точности можно использовать разве что в образовательных целях.</p>
+
+<p>Наверно, минимальным разумным шагом симуляции можно считать шаг, за который тело повернётся на 0.1 радиан (примерно 6 градусов). Ошибка будет расти не очень быстро, особенно если для использовать метод четвёртого порядка.</p>
+
+<p>Если уменьшить шаг симуляции до угловой скорости 0.01-0.001 радиана за шаг, то можно получить точность порядка 10^5 - 10^7 и её, наверно, хватит всем.</p>
+
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Kright/kright.github.io">kright.github.io</a> is maintained by <a href="https://github.com/Kright">Kright</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

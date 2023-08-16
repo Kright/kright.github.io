@@ -8,5 +8,4 @@ permalink: /about
 
 [habr](https://habr.com/ru/users/lgorSL/posts/)
 
-[github репозиторий с этими заметками](https://github.com/Kright/kright.github.io)
-
+репозиторий с оригинальными заметками: [https://github.com/Kright/my-articles](https://github.com/Kright/my-articles)

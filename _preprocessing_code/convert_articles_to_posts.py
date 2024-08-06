@@ -37,6 +37,9 @@ def process_article(article_path: Path, date: str, dry_run: bool = False):
     log.debug(f"start processing {article_path}")
 
     images_dir = article_path.parent / 'imgs'
+    if not images_dir.exists():
+         images_dir = article_path.parent / 'img'
+    
     article_path_new = posts_dir / f"{date}-{article_path.name.replace(' ', '-')}"
 
     images_names_list = []

@@ -54,15 +54,16 @@ def process_article(article_path: Path, date: str, dry_run: bool = False):
 
     article_text = article_path.read_text()
     for image in images_names_list:
-        text = f"](imgs/{image})"
-        new_text = f"](/{new_images_dir.relative_to(site_root)}/{image})"
-        log.debug(f"replace '{text}' with '{new_text}'")
-        article_text = article_text.replace(text, new_text)
+        for prefix in ["imgs", "img"]:
+            text = f"]({prefix}/{image})"
+            new_text = f"](/{new_images_dir.relative_to(site_root)}/{image})"
+            log.debug(f"replace '{text}' with '{new_text}'")
+            article_text = article_text.replace(text, new_text)
 
-        text = f"""src=("imgs/{image}")"""
-        new_text = f"""src=("/{new_images_dir.relative_to(site_root)}/{image}")"""
-        log.debug(f"replace '{text}' with '{new_text}'")
-        article_text = article_text.replace(text, new_text)
+            text = f"""src=("{prefix}/{image}")"""
+            new_text = f"""src=("/{new_images_dir.relative_to(site_root)}/{image}")"""
+            log.debug(f"replace '{text}' with '{new_text}'")
+            article_text = article_text.replace(text, new_text)
 
     languages = {line for line in article_text.split('\n') if line.startswith('```') and len(line) > 3}
     for language in languages:

@@ -6,16 +6,18 @@ import textwrap
 import csv
 from datetime import datetime
 
-site_root = Path("..")
-articles_dir = Path("../../my-articles")
+site_root = Path(".")
+articles_dir = site_root / "../my-articles"
 posts_dir = site_root / "_posts"
 assets_images_dir = site_root / "assets" / "images"
+dates_file = site_root / "_preprocessing_code" / "dates.csv"
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger("main")
 
 assert articles_dir.exists()
 assert posts_dir.exists()
+assert dates_file.exists()
 
 
 # %%
@@ -94,7 +96,7 @@ def process_article(article_path: Path, date: str, dry_run: bool = False):
 # %%
 
 def load_dates() -> Dict[str, str]:
-    with open('dates.csv') as csvfile:
+    with open(dates_file) as csvfile:
         reader = csv.reader(csvfile)
         return {
             name: date for name, date in reader
@@ -107,7 +109,7 @@ def get_missed_articles(articles_lst: List[Path], date_by_name: Dict[str, str]) 
 
 def append_dates(missed_articles: List[Path]) -> Dict[str, str]:
     current_date: str = datetime.today().strftime('%Y-%m-%d')
-    with open('dates.csv', 'a') as csvfile:
+    with open(dates_file, 'a') as csvfile:
         writer = csv.writer(csvfile)
         for article in missed_articles:
             writer.writerow([article.name, current_date])

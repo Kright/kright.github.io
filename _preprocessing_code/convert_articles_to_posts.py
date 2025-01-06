@@ -4,6 +4,7 @@ import shutil
 import logging
 import textwrap
 import csv
+from datetime import datetime
 
 site_root = Path("..")
 articles_dir = Path("../../my-articles")
@@ -17,7 +18,7 @@ assert articles_dir.exists()
 assert posts_dir.exists()
 
 
-#%%
+# %%
 def make_articles_list(articles_dir: Path) -> List[Path]:
     possible_dirs = [d for d in articles_dir.iterdir() if d.is_dir() and d.name != ".git"]
 
@@ -33,14 +34,14 @@ def make_articles_list(articles_dir: Path) -> List[Path]:
 articles_lst = make_articles_list(articles_dir)
 
 
-#%%
+# %%
 def process_article(article_path: Path, date: str, dry_run: bool = False):
     log.debug(f"start processing {article_path}")
 
     images_dir = article_path.parent / 'imgs'
     if not images_dir.exists():
-         images_dir = article_path.parent / 'img'
-    
+        images_dir = article_path.parent / 'img'
+
     article_path_new = posts_dir / f"{date}-{article_path.name.replace(' ', '-')}"
 
     images_names_list = []
@@ -90,14 +91,32 @@ def process_article(article_path: Path, date: str, dry_run: bool = False):
         article_path_new.write_text(article_text)
 
 
-#%%
+# %%
 
-with open('dates.csv') as csvfile:
-	reader = csv.reader(csvfile)
-	date_by_name = {
-		name: date for name, date in reader 
-	}
+def load_dates() -> Dict[str, str]:
+    with open('dates.csv') as csvfile:
+        reader = csv.reader(csvfile)
+        return {
+            name: date for name, date in reader
+        }
+
+
+def get_missed_articles(articles_lst: List[Path], date_by_name: Dict[str, str]) -> List[Path]:
+    return [article for article in articles_lst if article.name not in date_by_name]
+
+
+def append_dates(missed_articles: List[Path]) -> Dict[str, str]:
+    current_date: str = datetime.today().strftime('%Y-%m-%d')
+    with open('dates.csv', 'a') as csvfile:
+        writer = csv.writer(csvfile)
+        for article in missed_articles:
+            writer.writerow([article.name, current_date])
+    return load_dates()
+
+
+date_by_name = append_dates(missed_articles=get_missed_articles(articles_lst, load_dates()))
 
 for article in articles_lst:
     process_article(article_path=article, date=date_by_name[article.name], dry_run=False)
-#%%
+
+# %%

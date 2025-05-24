@@ -297,8 +297,52 @@ WantedBy=multi-user.target
 
 Очень странно, что нельзя просто взять и указать, что сервис просто ждёт файла в папке, вместо этого надо фигачить стрёмные приседания типа .path -> .service -> .target -> .service waiting for target
 
+## Qbittorrent
 
+[в документации к qBittorrent](https://github.com/qbittorrent/qBittorrent/wiki/Running-qBittorrent-without-X-server-(WebUI-only,-systemd-service-set-up,-Ubuntu-15.04-or-newer)) волне понятно рассказано.
 
+надо поставить `qbittorrent-nox`, можно перенести папки из .local и .share на новую систему, комп их подцепит и если торренты лежат в той же папке - то они засчитаются как скачанные.
 
+В этот раз я попробовал для торрента сделать своего пользователя. А для папки для скачивания указал пользователя-торрента и группу своего пользователя. Благодаря этому у меня есть доступ к файлам в папке. Ещё есть вариант добавить себя в группу пользователя для торрента и по-идее доступ тоже будет.
 
+В первый раз надо посмотреть в ```systemctl status qbittorrent-nox``` - там qbittorrent напишет временный пароль для входа.
 
+## Jellyfin
+
+медиасервер, к которому можно подключаться с телефона/пк и смотреть фильмы или слушать музыку.
+
+Для входа через браузер по-умолчанию порт 8096
+
+Я написал свой docker-compose.yml.
+По-умолчанию предполагается, что jellyfin ждёт медиайфайлы в :/media, но я ему туда хитро смонтировал ещё пару директорий - для музыки и фильмов.
+
+```
+name: jellyfin
+
+services:
+  jellyfin:
+    container_name: jellyfin_server
+    image: jellyfin/jellyfin:latest
+    network_mode: host
+    restart: always
+    volumes:
+      - /mnt/data/services/jellyfin/config:/config
+      - /mnt/data/services/jellyfin/cache:/cache
+      - /mnt/data/services/jellyfin/media:/media
+      - type: bind
+        source: /mnt/data/safedata/music
+        target: /media/music
+      - type: bind
+        source: /mnt/data/films
+        target: /media/films
+```
+
+## Gitea
+
+Кажется, самая беспроблемная установка:
+
+https://docs.gitea.com/installation/install-with-docker
+
+Можно сделать режим зеркала для репозитория снаружи либо наоборот режим, когда изменения из gitea автоматически пушатся на гитхаб или ещё куда.
+
+Я пока не придумал как это использовать. Возможно, будет удобно там создавать приватные репозитории или миррорить какие-то большие репозитории, чтобы их можно было быстро скачать из локального зеркала.

@@ -38,6 +38,7 @@ articles_lst = make_articles_list(articles_dir)
 
 # %%
 def process_article(article_path: Path, date: str, dry_run: bool = False):
+    log.debug(f"")
     log.debug(f"start processing {article_path}")
 
     images_dir = article_path.parent / 'imgs'

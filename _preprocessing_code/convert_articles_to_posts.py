@@ -28,7 +28,7 @@ def make_articles_list(articles_dir: Path) -> List[Path]:
     for d in possible_dirs:
         for d2 in [d] + [dd for dd in d.iterdir() if dd.is_dir()]:
             for f in d2.iterdir():
-                if f.is_file() and f.name.endswith(".md"):
+                if f.is_file() and (f.name.endswith(".md") or f.name.endswith(".html")):
                     articles.append(f)
     return articles
 
@@ -45,34 +45,35 @@ def process_article(article_path: Path, date: str, dry_run: bool = False):
         images_dir = article_path.parent / 'img'
 
     article_path_new = posts_dir / f"{date}-{article_path.name.replace(' ', '-')}"
-
-    images_names_list = []
-    if images_dir.exists():
-        images_names_list = [img.name for img in images_dir.iterdir()]
-        relative_images_dir = (images_dir.parent.resolve()).relative_to(articles_dir.resolve())
-        new_images_dir = assets_images_dir / relative_images_dir
-
-        log.debug(f"copy images to {new_images_dir}, images = [{', '.join(images_names_list)}]")
-        if not dry_run:
-            shutil.copytree(images_dir, new_images_dir, dirs_exist_ok=True)
-
     article_text = article_path.read_text()
-    for image in images_names_list:
-        for prefix in ["imgs", "img"]:
-            text = f"]({prefix}/{image})"
-            new_text = f"](/{new_images_dir.relative_to(site_root)}/{image})"
-            log.debug(f"replace '{text}' with '{new_text}'")
-            article_text = article_text.replace(text, new_text)
 
-            text = f"""src=("{prefix}/{image}")"""
-            new_text = f"""src=("/{new_images_dir.relative_to(site_root)}/{image}")"""
-            log.debug(f"replace '{text}' with '{new_text}'")
-            article_text = article_text.replace(text, new_text)
+    if article_path.suffix == ".md":
+        images_names_list = []
+        if images_dir.exists():
+            images_names_list = [img.name for img in images_dir.iterdir()]
+            relative_images_dir = (images_dir.parent.resolve()).relative_to(articles_dir.resolve())
+            new_images_dir = assets_images_dir / relative_images_dir
 
-    languages = {line for line in article_text.split('\n') if line.startswith('```') and len(line) > 3}
-    for language in languages:
-        log.debug(f"replace '{language} with {language.lower()}")
-        article_text = article_text.replace(language + '\n', language.lower() + '\n')
+            log.debug(f"copy images to {new_images_dir}, images = [{', '.join(images_names_list)}]")
+            if not dry_run:
+                shutil.copytree(images_dir, new_images_dir, dirs_exist_ok=True)
+
+        for image in images_names_list:
+            for prefix in ["imgs", "img"]:
+                text = f"]({prefix}/{image})"
+                new_text = f"](/{new_images_dir.relative_to(site_root)}/{image})"
+                log.debug(f"replace '{text}' with '{new_text}'")
+                article_text = article_text.replace(text, new_text)
+
+                text = f"""src=("{prefix}/{image}")"""
+                new_text = f"""src=("/{new_images_dir.relative_to(site_root)}/{image}")"""
+                log.debug(f"replace '{text}' with '{new_text}'")
+                article_text = article_text.replace(text, new_text)
+
+        languages = {line for line in article_text.split('\n') if line.startswith('```') and len(line) > 3}
+        for language in languages:
+            log.debug(f"replace '{language} with {language.lower()}")
+            article_text = article_text.replace(language + '\n', language.lower() + '\n')
 
     frontmatter = textwrap.dedent(f"""\
         ---

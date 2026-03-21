@@ -4,7 +4,7 @@ title: "Обо мне"
 permalink: /about
 ---
 
-* telegram - Kright
+* telegram - [Kright](https://t.me/Kright)
 * [linkedIn](https://www.linkedin.com/in/igorslobodskov/)
 * [habr](https://habr.com/ru/users/lgorSL/posts/)
 * [dtf](https://dtf.ru/u/321207-kright)

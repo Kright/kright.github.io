@@ -59,8 +59,8 @@ def generate_old_jekyll_url(name_without_ext, date):
     url = f"/{year}/{month}/{day}/{slug}.html"
     
     # Но если вы хотите прямо "ту самую" закодированную ссылку, раскомментируйте это:
-    # encoded_slug = urllib.parse.quote(slug)
-    # url = f"/{year}/{month}/{day}/{encoded_slug}.html"
+    encoded_slug = urllib.parse.quote(slug)
+    url = f"/{year}/{month}/{day}/{encoded_slug}.html"
     
     return url
 

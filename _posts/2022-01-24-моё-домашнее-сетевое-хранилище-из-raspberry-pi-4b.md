@@ -1,6 +1,6 @@
 ---
 redirect_from:
-  - /2022/01/24/моё-домашнее-сетевое-хранилище-из-raspberry-pi-4b.html
+  - /2022/01/24/%D0%BC%D0%BE%D1%91-%D0%B4%D0%BE%D0%BC%D0%B0%D1%88%D0%BD%D0%B5%D0%B5-%D1%81%D0%B5%D1%82%D0%B5%D0%B2%D0%BE%D0%B5-%D1%85%D1%80%D0%B0%D0%BD%D0%B8%D0%BB%D0%B8%D1%89%D0%B5-%D0%B8%D0%B7-raspberry-pi-4b.html
 permalink: /2022/01/24/moe-domashnee-setevoe-khranilishche-iz-raspberry-pi-4b/
 title: "Моё домашнее сетевое хранилище из Raspberry Pi 4b"
 author: Kright

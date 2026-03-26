@@ -3,7 +3,7 @@ title: "Как можно взять  tensorflow и смешать две кар
 author: kright
 permalink: /2021/11/25/kak-mozhno-vziat-tensorflow-i-smeshat-dve-kartinki-v-odnu/
 redirect_from:
-  - /2021/11/25/Как-можно-взять-tensorflow-и-смешать-две-картинки-в-одну.html
+  - /2021/11/25/%D0%9A%D0%B0%D0%BA-%D0%BC%D0%BE%D0%B6%D0%BD%D0%BE-%D0%B2%D0%B7%D1%8F%D1%82%D1%8C-tensorflow-%D0%B8-%D1%81%D0%BC%D0%B5%D1%88%D0%B0%D1%82%D1%8C-%D0%B4%D0%B2%D0%B5-%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8-%D0%B2-%D0%BE%D0%B4%D0%BD%D1%83.html
 ---
 # Как можно взять  tensorflow и смешать две картинки в одну
 

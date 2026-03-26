@@ -3,7 +3,7 @@ title: "Ностальгии пост: j2me, gravity defied, 64kb"
 author: kright
 permalink: /2020/05/31/nostalgii-post-j2me-gravity-defied-64kb/
 redirect_from:
-  - /2020/05/31/Ностальгии-пост-j2me-Gravity-Defied-64kb.html
+  - /2020/05/31/%D0%9D%D0%BE%D1%81%D1%82%D0%B0%D0%BB%D1%8C%D0%B3%D0%B8%D0%B8-%D0%BF%D0%BE%D1%81%D1%82-j2me-Gravity-Defied-64kb.html
 ---
 # Ностальгии пост: j2me, Gravity Defied, 64kb
 

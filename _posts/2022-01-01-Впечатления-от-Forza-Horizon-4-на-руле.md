@@ -3,7 +3,7 @@ title: "Впечатления от forza horizon 4 на руле"
 author: kright
 permalink: /2022/01/01/vpechatleniia-ot-forza-horizon-4-na-rule/
 redirect_from:
-  - /2022/01/01/Впечатления-от-Forza-Horizon-4-на-руле.html
+  - /2022/01/01/%D0%92%D0%BF%D0%B5%D1%87%D0%B0%D1%82%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BE%D1%82-Forza-Horizon-4-%D0%BD%D0%B0-%D1%80%D1%83%D0%BB%D0%B5.html
 ---
 # Впечатления от Forza Horizon 4 на руле
 

@@ -3,7 +3,7 @@ title: "Learn opengl. урок 5.3 карты теней"
 author: kright
 permalink: /2018/04/20/learn-opengl-urok-5-3-karty-tenei/
 redirect_from:
-  - /2018/04/20/Learn-OpenGL-Урок-5-3-карты-теней.html
+  - /2018/04/20/Learn-OpenGL-%D0%A3%D1%80%D0%BE%D0%BA-5-3-%D0%BA%D0%B0%D1%80%D1%82%D1%8B-%D1%82%D0%B5%D0%BD%D0%B5%D0%B9.html
 ---
 <img src="imgs/logo.png" width="200" align="left">
 

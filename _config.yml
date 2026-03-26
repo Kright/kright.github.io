@@ -13,6 +13,7 @@ plugins:
   - jekyll-remote-theme
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-redirect-from
 gist:
   noscript: false
 markdown: kramdown

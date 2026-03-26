@@ -1,6 +1,9 @@
 ---
 title: "Learn open gl. урок 5.7 - hdr"
 author: kright
+permalink: /2018/08/16/learn-open-gl-urok-5-7-hdr/
+redirect_from:
+  - /2018/08/16/Learn-Open-GL-Урок-5-7-HDR.html
 ---
 <img src="imgs/logo.png" width="200" align="left">
 

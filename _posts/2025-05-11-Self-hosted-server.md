@@ -1,4 +1,7 @@
----
+            ---
+            redirect_from:
+              - /2025/05/11/Self-hosted-server.html
+            permalink: /2025/05/11/self-hosted-server/
 title: "Self-hosted server"
 author: Kright
 date: 2025-05-12

@@ -1,4 +1,7 @@
----
+            ---
+            redirect_from:
+              - /2025/02/08/GUI-в-Python-c-помощью-Dear-ImGui.html
+            permalink: /2025/02/08/gui-v-python-c-pomoshchiu-dear-imgui/
 title: "GUI в Python c помощью Dear ImGui"
 author: Kright
 date: 2025-02-08

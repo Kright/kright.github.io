@@ -5,6 +5,9 @@ import logging
 import textwrap
 import csv
 from datetime import datetime
+from slugify import slugify
+import re
+import urllib.parse
 
 site_root = Path(".")
 articles_dir = site_root / "../my-articles"
@@ -31,6 +34,36 @@ def make_articles_list(articles_dir: Path) -> List[Path]:
                 if f.is_file() and (f.name.endswith(".md") or f.name.endswith(".html")):
                     articles.append(f)
     return articles
+
+def generate_old_jekyll_url(name_without_ext, date):
+    match = re.match(r'^(\d{4})-(\d{2})-(\d{2})', date)
+    if not match:
+        return None # Если файл не соответствует формату статьи Jekyll
+        
+    year, month, day = match.groups()
+    
+    # 3. Эмулируем поведение Jekyll slugify:
+    # Заменяем всё, что не является буквой, цифрой или дефисом, на дефис
+    # \w включает буквы (в т.ч. кириллицу), цифры и подчеркивание
+    slug = re.sub(r'[^\w\-]+', '-', name_without_ext)
+    
+    # Схлопываем несколько дефисов подряд в один
+    slug = re.sub(r'-+', '-', slug)
+    
+    # Убираем дефисы по краям (если вдруг спецсимволы были в начале/конце)
+    slug = slug.strip('-')
+    
+    # 4. Собираем старый URL
+    # jekyll-redirect-from отлично понимает читаемую кириллицу, поэтому можно
+    # возвращать ссылку прямо так, без превращения в страшные %D0%BD:
+    url = f"/{year}/{month}/{day}/{slug}.html"
+    
+    # Но если вы хотите прямо "ту самую" закодированную ссылку, раскомментируйте это:
+    # encoded_slug = urllib.parse.quote(slug)
+    # url = f"/{year}/{month}/{day}/{encoded_slug}.html"
+    
+    return url
+
 
 
 articles_lst = make_articles_list(articles_dir)
@@ -76,15 +109,31 @@ def process_article(article_path: Path, date: str, dry_run: bool = False):
             log.debug(f"replace '{language} with {language.lower()}")
             article_text = article_text.replace(language + '\n', language.lower() + '\n')
 
+    permalink = f"/{date.replace('-', '/')}/{slugify(article_path.stem)}/"
+    redirect_from = generate_old_jekyll_url(article_path.stem, date)
+
     frontmatter = textwrap.dedent(f"""\
         ---
         title: "{article_path.name[:-3].capitalize()}"
         author: kright
+        permalink: {permalink}
+        redirect_from:
+          - {redirect_from}
         ---
         """)
 
     if not article_text.startswith('---'):
         article_text = frontmatter + article_text
+    
+    if "\npermalink: " not in article_text:
+        article_text = f"---\n" + f"permalink: {permalink}\n" + article_text[4:]
+        
+    if "\nredirect_from:" not in article_text:
+        article_text = f"""\
+            ---
+            redirect_from:
+              - {redirect_from}
+            """ + article_text[4:]
 
     if not dry_run:
         shutil.copy(article_path, article_path_new)

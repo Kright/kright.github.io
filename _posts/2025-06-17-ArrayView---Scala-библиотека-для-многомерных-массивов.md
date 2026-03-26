@@ -1,4 +1,7 @@
----
+            ---
+            redirect_from:
+              - /2025/06/17/ArrayView-Scala-библиотека-для-многомерных-массивов.html
+            permalink: /2025/06/17/arrayview-scala-biblioteka-dlia-mnogomernykh-massivov/
 title: "ArrayView - Scala библиотека для многомерных массивов"
 author: Kright
 date: 2025-06-17

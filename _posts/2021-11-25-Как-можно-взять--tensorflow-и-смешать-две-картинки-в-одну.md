@@ -1,6 +1,9 @@
 ---
 title: "Как можно взять  tensorflow и смешать две картинки в одну"
 author: kright
+permalink: /2021/11/25/kak-mozhno-vziat-tensorflow-i-smeshat-dve-kartinki-v-odnu/
+redirect_from:
+  - /2021/11/25/Как-можно-взять-tensorflow-и-смешать-две-картинки-в-одну.html
 ---
 # Как можно взять  tensorflow и смешать две картинки в одну
 

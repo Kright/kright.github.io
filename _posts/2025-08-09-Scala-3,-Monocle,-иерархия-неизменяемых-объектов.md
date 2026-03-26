@@ -1,4 +1,7 @@
----
+            ---
+            redirect_from:
+              - /2025/08/09/Scala-3-Monocle-иерархия-неизменяемых-объектов.html
+            permalink: /2025/08/09/scala-3-monocle-ierarkhiia-neizmeniaemykh-obektov/
 title: "Scala 3, Monocle, иерархия неизменяемых объектов"
 author: Kright
 date: 2025-08-09

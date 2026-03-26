@@ -1,6 +1,9 @@
 ---
 title: "Telegram bot для персонализированной подборки статей с хабра"
 author: kright
+permalink: /2019/11/11/telegram-bot-dlia-personalizirovannoi-podborki-statei-s-khabra/
+redirect_from:
+  - /2019/11/11/telegram-bot-для-персонализированной-подборки-статей-с-хабра.html
 ---
 Для вопросов в стиле "зачем?" есть более старая статья - [Натуральный Geektimes — делаем пространство чище](https://habr.com/ru/post/391233/).
 

@@ -1,6 +1,9 @@
 ---
 title: "Learn opengl. урок 5.9 отложенный рендеринг"
 author: kright
+permalink: /2018/08/19/learn-opengl-urok-5-9-otlozhennyi-rendering/
+redirect_from:
+  - /2018/08/19/Learn-OpenGL-Урок-5-9-Отложенный-рендеринг.html
 ---
 <img src="imgs/logo.png" width="200" align="left">
 

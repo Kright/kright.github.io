@@ -1,6 +1,9 @@
 ---
 title: "Scala: parser combinators на примере парсера формул"
 author: kright
+permalink: /2017/04/03/scala-parser-combinators-na-primere-parsera-formul/
+redirect_from:
+  - /2017/04/03/Scala-parser-combinators-на-примере-парсера-формул.html
 ---
 # Scala: parser combinators на примере парсера формул
 

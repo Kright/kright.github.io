@@ -1,6 +1,9 @@
 ---
 title: "Value types в java"
 author: kright
+permalink: /2024/12/30/value-types-v-java/
+redirect_from:
+  - /2024/12/30/Value-types-в-java.html
 ---
 TLDR: разобрался как запустить превью версию, но эффект на производительность пока что отрицательный.
 

@@ -1,6 +1,9 @@
 ---
 title: "Заметки про steam deck"
 author: kright
+permalink: /2024/01/15/zametki-pro-steam-deck/
+redirect_from:
+  - /2024/01/15/Заметки-про-Steam-Deck.html
 ---
 Внутри arch linux, пакетный менеджер - pacman
 

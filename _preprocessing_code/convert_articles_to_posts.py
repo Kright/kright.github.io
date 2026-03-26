@@ -129,11 +129,11 @@ def process_article(article_path: Path, date: str, dry_run: bool = False):
         article_text = f"---\n" + f"permalink: {permalink}\n" + article_text[4:]
         
     if "\nredirect_from:" not in article_text:
-        article_text = f"""\
+        article_text = textwrap.dedent(f"""\
             ---
             redirect_from:
               - {redirect_from}
-            """ + article_text[4:]
+            """) + article_text[4:]
 
     if not dry_run:
         shutil.copy(article_path, article_path_new)

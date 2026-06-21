@@ -5,6 +5,7 @@ permalink: /about
 ---
 
 * telegram - [Kright](https://t.me/Kright)
+* email: simplicivy@gmail.com
 * [linkedIn](https://www.linkedin.com/in/igorslobodskov/)
 * [github](https://github.com/Kright)
 * [habr](https://habr.com/ru/users/lgorSL/posts/)

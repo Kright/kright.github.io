@@ -8,6 +8,7 @@ permalink: /about
 * email: simplicivy@gmail.com
 * [linkedIn](https://www.linkedin.com/in/igorslobodskov/)
 * [github](https://github.com/Kright)
+* [gitlab](https://gitlab.com/Kright)
 * [habr](https://habr.com/ru/users/lgorSL/posts/)
 * [dtf](https://dtf.ru/u/321207-kright)
 * [youtube](https://www.youtube.com/@kright6311/videos)

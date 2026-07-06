@@ -70,7 +70,32 @@ articles_lst = make_articles_list(articles_dir)
 
 
 # %%
-def process_article(article_path: Path, date: str, dry_run: bool = False):
+def convert_md_links(article_text: str, date_by_name: Dict[str, str]) -> str:
+    def replace_link(match):
+        link_target = match.group(1)
+        if link_target.startswith(('http://', 'https://')):
+            return match.group(0)
+
+        anchor = ""
+        if '#' in link_target:
+            idx = link_target.index('#')
+            anchor = link_target[idx:]
+            link_target = link_target[:idx]
+
+        filename = Path(link_target).name
+        if filename in date_by_name:
+            date = date_by_name[filename]
+            stem = Path(filename).stem
+            slug = slugify(stem)
+            permalink = f"/{date.replace('-', '/')}/{slug}/"
+            log.debug(f"convert md link '{filename}' -> '{permalink}{anchor}'")
+            return f"]({permalink}{anchor})"
+        return match.group(0)
+
+    return re.sub(r'\]\(([^)]+\.md[^)]*)\)', replace_link, article_text)
+
+
+def process_article(article_path: Path, date: str, date_by_name: Dict[str, str], dry_run: bool = False):
     log.debug(f"")
     log.debug(f"start processing {article_path}")
 
@@ -108,6 +133,8 @@ def process_article(article_path: Path, date: str, dry_run: bool = False):
         for language in languages:
             log.debug(f"replace '{language} with {language.lower()}")
             article_text = article_text.replace(language + '\n', language.lower() + '\n')
+
+        article_text = convert_md_links(article_text, date_by_name)
 
     permalink = f"/{date.replace('-', '/')}/{slugify(article_path.stem)}/"
     redirect_from = generate_old_jekyll_url(article_path.stem, date)
@@ -170,6 +197,6 @@ def append_dates(missed_articles: List[Path]) -> Dict[str, str]:
 date_by_name = append_dates(missed_articles=get_missed_articles(articles_lst, load_dates()))
 
 for article in articles_lst:
-    process_article(article_path=article, date=date_by_name[article.name], dry_run=False)
+    process_article(article_path=article, date=date_by_name[article.name], date_by_name=date_by_name, dry_run=False)
 
 # %%

@@ -1,0 +1,16 @@
+ru:
+  home_url: /
+  about_url: /about.html
+  notes: Заметки
+  about: Обо мне
+  other_language: На английском
+  months: [января, февраля, марта, апреля, мая, июня, июля, августа, сентября, октября, ноября, декабря]
+  months_short: [янв, фев, мар, апр, мая, июн, июл, авг, сен, окт, ноя, дек]
+en:
+  home_url: /en/
+  about_url: /en/about.html
+  notes: Notes
+  about: About
+  other_language: In Russian
+  months: [January, February, March, April, May, June, July, August, September, October, November, December]
+  months_short: [Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]

@@ -1,0 +1,22 @@
+{%- comment %}
+  Список заметок для главной на языке include.lang:
+  сначала заметки на этом языке, потом (отдельной секцией) заметки на другом языке,
+  у которых нет перевода на этот. Перевод - это пост с тем же `ref` во front matter.
+{% endcomment -%}
+{%- assign t = site.data.i18n[include.lang] -%}
+{%- assign own = site.posts | where: "lang", include.lang -%}
+{%- assign foreign = site.posts | where_exp: "post", "post.lang != include.lang" -%}
+{%- assign untranslated = "" | split: "" -%}
+{%- for post in foreign -%}
+  {%- assign twins = "" | split: "" -%}
+  {%- if post.ref -%}{%- assign twins = own | where: "ref", post.ref -%}{%- endif -%}
+  {%- if twins.size == 0 -%}
+    {%- assign one = foreign | where: "url", post.url -%}
+    {%- assign untranslated = untranslated | concat: one -%}
+  {%- endif -%}
+{%- endfor -%}
+{% include post-list.html posts=own lang=include.lang %}
+{%- if own.size > 0 and untranslated.size > 0 %}
+<h2 class="section">{{ t.other_language }}</h2>
+{%- endif %}
+{% include post-list.html posts=untranslated lang=include.lang %}

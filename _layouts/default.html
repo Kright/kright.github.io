@@ -1,0 +1,46 @@
+{%- assign lang = page.lang | default: "ru" -%}
+{%- assign t = site.data.i18n[lang] -%}
+{%- assign translation = nil -%}
+{%- if page.ref -%}
+  {%- assign candidates = site.pages | concat: site.posts | where: "ref", page.ref -%}
+  {%- for candidate in candidates -%}
+    {%- if candidate.lang != lang -%}{%- assign translation = candidate -%}{%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+<!DOCTYPE html>
+<html lang="{{ lang }}"{% if page.ext == ".html" and page.layout == "post" %} data-theme="light"{% endif %}>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.url == t.home_url %}{{ site.title }} · {{ t.notes }}{% else %}{{ page.title }} · {{ site.title }}{% endif %}</title>
+  {% seo title=false %}
+  {%- if translation %}
+  <link rel="alternate" hreflang="{{ lang }}" href="{{ page.url | absolute_url }}">
+  <link rel="alternate" hreflang="{{ translation.lang }}" href="{{ translation.url | absolute_url }}">
+  {%- endif %}
+  <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
+  {% include head-custom-google-analytics.html %}
+  {%- if page.layout == "post" %}
+  <script>
+    MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  {%- endif %}
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{{ t.home_url }}">{{ site.title }}</a>
+    <nav>
+      <a href="{{ t.home_url }}"{% if page.url == t.home_url %} aria-current="page"{% endif %}>{{ t.notes }}</a>
+      <a href="{{ t.about_url }}"{% if page.url == t.about_url %} aria-current="page"{% endif %}>{{ t.about }}</a>
+      {%- if translation %}
+      <a class="lang-switch" href="{{ translation.url }}" hreflang="{{ translation.lang }}" lang="{{ translation.lang }}">{{ translation.lang | upcase }}</a>
+      {%- endif %}
+    </nav>
+  </header>
+
+  <main>
+{{ content }}
+  </main>
+</body>
+</html>

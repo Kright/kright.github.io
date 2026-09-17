@@ -1,7 +1,8 @@
 ---
 layout: page
 title: "Обо мне"
-permalink: /about
+permalink: /about.html
+ref: about
 ---
 
 * telegram - [Kright](https://t.me/Kright)
@@ -14,7 +15,7 @@ permalink: /about
 * [youtube](https://www.youtube.com/@kright6311/videos)
 * Репозиторий с оригинальными заметками: [https://github.com/Kright/my-articles](https://github.com/Kright/my-articles)
 
-### Мои интересы:
+## Мои интересы
 
 Программирование с уклоном в алгоритмы и ФП, нейронки, физика, геймдев, 3д моделирование и 3д графика.
 

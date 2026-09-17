@@ -1,20 +1,15 @@
 ---
 layout: default
 ---
-
-<script>
-MathJax = {
-  tex: {
-    inlineMath: [['$', '$'], ['\\(', '\\)']]
-  }
-};
-</script>
-<script id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
-</script>
-
-
-	
-{% include navigation.html %}
-<p>{{ page.date | date_to_string }}</p>
+{%- assign t = site.data.i18n[page.lang] | default: site.data.i18n.ru -%}
+{%- assign month = page.date | date: "%-m" | minus: 1 -%}
+{%- assign body = content | strip -%}
+{%- assign first_tag = body | slice: 0, 3 %}
+<article class="post">
+  <time class="post-date" datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%-d" }} {{ t.months[month] }} {{ page.date | date: "%Y" }}</time>
+  {%- comment %} у части статей заголовок уже есть в тексте - не дублируем его {% endcomment %}
+  {%- if first_tag != "<h1" %}
+  <h1>{{ page.title }}</h1>
+  {%- endif %}
 {{ content }}
+</article>

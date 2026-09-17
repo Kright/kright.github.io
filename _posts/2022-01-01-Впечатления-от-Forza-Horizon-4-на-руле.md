@@ -1,5 +1,5 @@
 ---
-title: "Впечатления от forza horizon 4 на руле"
+title: "Впечатления от Forza Horizon 4 на руле"
 author: kright
 permalink: /2022/01/01/vpechatleniia-ot-forza-horizon-4-na-rule/
 redirect_from:

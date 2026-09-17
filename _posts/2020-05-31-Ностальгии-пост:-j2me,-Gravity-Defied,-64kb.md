@@ -1,5 +1,5 @@
 ---
-title: "Ностальгии пост: j2me, gravity defied, 64kb"
+title: "Ностальгии пост: j2me, Gravity Defied, 64kb"
 author: kright
 permalink: /2020/05/31/nostalgii-post-j2me-gravity-defied-64kb/
 redirect_from:

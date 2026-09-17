@@ -1,5 +1,5 @@
 ---
-title: "Заметки про steam deck"
+title: "Заметки про Steam Deck"
 author: kright
 permalink: /2024/01/15/zametki-pro-steam-deck/
 redirect_from:

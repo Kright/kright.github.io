@@ -1,5 +1,5 @@
 ---
-title: "Scala 3: transparent inline with dynamic"
+title: "Scala 3: transparent inline with Dynamic"
 author: kright
 permalink: /2022/01/01/scala-3-transparent-inline-with-dynamic/
 redirect_from:

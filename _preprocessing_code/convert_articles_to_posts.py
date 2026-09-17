@@ -70,6 +70,43 @@ articles_lst = make_articles_list(articles_dir)
 
 
 # %%
+# Переводы лежат рядом с оригиналом и называются "Статья.en.md".
+# Оригинал и перевод связываются в Jekyll через одинаковый `ref` во front matter.
+translation_langs = ["en"]
+
+
+def split_lang(article_path: Path) -> tuple[str, str | None]:
+    """'Статья.en.md' -> ('Статья', 'en'), 'Статья.md' -> ('Статья', None)"""
+    for lang in translation_langs:
+        if article_path.stem.endswith(f".{lang}"):
+            return article_path.stem[:-len(lang) - 1], lang
+    return article_path.stem, None
+
+
+def get_original(article_path: Path) -> Path | None:
+    base_stem, lang = split_lang(article_path)
+    if lang is None:
+        return None
+    for ext in [".md", ".html"]:
+        original = article_path.with_name(base_stem + ext)
+        if original.exists():
+            return original
+    return None
+
+
+def has_translation(article_path: Path) -> bool:
+    return any(article_path.with_name(f"{article_path.stem}.{lang}{ext}").exists()
+               for lang in translation_langs for ext in [".md", ".html"])
+
+
+def add_frontmatter_defaults(article_text: str, values: Dict[str, str]) -> str:
+    """Дописывает в front matter поля, которых там ещё нет"""
+    head = article_text[:article_text.index('\n---', 3)]
+    missing = "".join(f"{key}: {value}\n" for key, value in values.items() if f"\n{key}:" not in head)
+    return "---\n" + missing + article_text[4:]
+
+
+# %%
 def convert_md_links(article_text: str, date_by_name: Dict[str, str]) -> str:
     def replace_link(match):
         link_target = match.group(1)
@@ -124,8 +161,8 @@ def process_article(article_path: Path, date: str, date_by_name: Dict[str, str],
                 log.debug(f"replace '{text}' with '{new_text}'")
                 article_text = article_text.replace(text, new_text)
 
-                text = f"""src=("{prefix}/{image}")"""
-                new_text = f"""src=("/{new_images_dir.relative_to(site_root)}/{image}")"""
+                text = f"""src="{prefix}/{image}\""""
+                new_text = f"""src="/{new_images_dir.relative_to(site_root)}/{image}\""""
                 log.debug(f"replace '{text}' with '{new_text}'")
                 article_text = article_text.replace(text, new_text)
 
@@ -139,9 +176,13 @@ def process_article(article_path: Path, date: str, date_by_name: Dict[str, str],
     permalink = f"/{date.replace('-', '/')}/{slugify(article_path.stem)}/"
     redirect_from = generate_old_jekyll_url(article_path.stem, date)
 
+    # только первая буква: str.capitalize() портит "OpenGL", "Scala" и т.п.
+    base_stem, lang = split_lang(article_path)
+    title = base_stem[:1].upper() + base_stem[1:]
+
     frontmatter = textwrap.dedent(f"""\
         ---
-        title: "{article_path.name[:-3].capitalize()}"
+        title: "{title}"
         author: kright
         permalink: {permalink}
         redirect_from:
@@ -161,6 +202,13 @@ def process_article(article_path: Path, date: str, date_by_name: Dict[str, str],
             redirect_from:
               - {redirect_from}
             """) + article_text[4:]
+
+    defaults = {"title": f'"{title}"'}
+    if lang is not None:
+        defaults["lang"] = lang
+    if lang is not None or has_translation(article_path):
+        defaults["ref"] = slugify(base_stem)
+    article_text = add_frontmatter_defaults(article_text, defaults)
 
     if not dry_run:
         shutil.copy(article_path, article_path_new)
@@ -189,8 +237,12 @@ def append_dates(missed_articles: List[Path]) -> Dict[str, str]:
     current_date: str = datetime.today().strftime('%Y-%m-%d')
     with open(dates_file, 'a') as csvfile:
         writer = csv.writer(csvfile)
+        known_dates = load_dates()
         for article in missed_articles:
-            writer.writerow([article.name, current_date])
+            # перевод получает дату оригинала, а не сегодняшнюю
+            original = get_original(article)
+            date = known_dates.get(original.name, current_date) if original else current_date
+            writer.writerow([article.name, date])
     return load_dates()
 
 

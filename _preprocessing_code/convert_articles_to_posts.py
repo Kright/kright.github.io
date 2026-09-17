@@ -25,7 +25,8 @@ assert dates_file.exists()
 
 # %%
 def make_articles_list(articles_dir: Path) -> List[Path]:
-    possible_dirs = [d for d in articles_dir.iterdir() if d.is_dir() and d.name != ".git"]
+    # служебные каталоги (.git, .obsidian, _translation и т.п.) статьями не считаются
+    possible_dirs = [d for d in articles_dir.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))]
 
     articles = []
     for d in possible_dirs:

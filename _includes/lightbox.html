@@ -1,0 +1,33 @@
+<dialog class="lightbox" aria-label="Image">
+  <img alt="">
+</dialog>
+<script>
+  (function () {
+    const dialog = document.querySelector("dialog.lightbox");
+    const full = dialog.querySelector("img");
+    const images = document.querySelectorAll("article.post img");
+
+    // кликабельны только картинки, которые на странице показаны уменьшенными
+    function update(img) {
+      const zoomable = !img.closest("a") && img.naturalWidth > img.clientWidth + 1;
+      img.classList.toggle("zoomable", zoomable);
+    }
+
+    images.forEach(function (img) {
+      if (img.complete) update(img);
+      img.addEventListener("load", function () { update(img); });
+      img.addEventListener("click", function () {
+        if (!img.classList.contains("zoomable")) return;
+        full.src = img.currentSrc || img.src;
+        full.alt = img.alt;
+        dialog.showModal();
+      });
+    });
+
+    window.addEventListener("resize", function () { images.forEach(update); });
+
+    // закрываем по клику в любом месте, Esc работает у dialog сам
+    dialog.addEventListener("click", function () { dialog.close(); });
+    dialog.addEventListener("close", function () { full.removeAttribute("src"); });
+  })();
+</script>
